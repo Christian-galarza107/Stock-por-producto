@@ -14,15 +14,15 @@
   "dir": "ltr",
   "categories": ["productivity", "business", "utilities"],
   "icons": [
-    { "src": "icons/icon-192.png",     "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png",     "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "icon-192.png",     "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png",     "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "Buscar producto",  "short_name": "Buscar",    "url": "./index.html?ir=buscar",    "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Escanear código",  "short_name": "Escanear",  "url": "./index.html?ir=escanear",  "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Buscar ubicación", "short_name": "Ubicación", "url": "./index.html?ir=ubicacion", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Ver alertas",      "short_name": "Alertas",   "url": "./index.html?ir=alertas",   "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+    { "name": "Buscar producto",  "short_name": "Buscar",    "url": "./index.html?ir=buscar",    "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Escanear código",  "short_name": "Escanear",  "url": "./index.html?ir=escanear",  "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Buscar ubicación", "short_name": "Ubicación", "url": "./index.html?ir=ubicacion", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Ver alertas",      "short_name": "Alertas",   "url": "./index.html?ir=alertas",   "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
   ]
 }

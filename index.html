@@ -176,6 +176,7 @@ mark{background:var(--tint-warn);color:inherit;border-radius:3px;padding:0 1px}
 .rec span{font-size:12px;color:var(--ink-muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rec .i{flex:1;min-width:0}
 .rec .q{font-size:11px;color:var(--ink-muted);flex:none;font-variant-numeric:tabular-nums}
+.rec .mini{flex:none}
 .sechd{display:flex;justify-content:space-between;align-items:baseline;margin:20px 0 8px;gap:10px}
 .sechd h2{font-size:14px}
 .sechd button{border:0;background:transparent;color:var(--link);font-size:12.5px;font-weight:600;padding:4px}
@@ -362,6 +363,30 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 .instbox ol{margin:8px 0 0;padding-left:20px;font-size:13px;line-height:1.7;color:var(--ink-2)}
 .vtag{font-family:var(--f-num);font-size:11px;color:var(--ink-muted)}
 /* ── V2: barra inferior de 5 pestañas (va al final para ganar en cascada) ── */
+/* ── LOGIN / IDENTIFICACIÓN ──────────────────────────────────────────── */
+#gateLogin{position:fixed;inset:0;z-index:100;background:var(--header-bg);display:flex;
+  align-items:flex-start;justify-content:center;overflow-y:auto;padding:calc(env(safe-area-inset-top) + 22px) 16px 30px}
+#gateLogin.off{display:none}
+.gl-card{width:100%;max-width:420px}
+.gl-iso{height:44px;color:#fff;display:block;margin:0 auto 14px}
+#gateLogin h1{color:#fff;text-align:center;font-size:21px;margin-bottom:4px}
+.gl-sub{color:rgba(255,255,255,.75);text-align:center;font-size:13.5px;margin:0 0 6px}
+.gl-rol{display:flex;flex-direction:column;gap:9px}
+.gl-rol button{min-height:56px;border-radius:var(--r-md);border:1.5px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.06);color:#fff;font-size:15px;font-weight:600;
+  display:flex;align-items:center;gap:12px;padding:0 16px;text-align:left}
+.gl-rol button .ic{font-size:20px}
+.gl-rol button.on{background:#fff;color:var(--brand-deep);border-color:#fff}
+#gateLogin .lb{color:rgba(255,255,255,.7)}
+#gateLogin .txt{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25);color:#fff}
+#gateLogin .txt::placeholder{color:rgba(255,255,255,.45)}
+#gateLogin .note{color:rgba(255,255,255,.55)}
+#gateLogin .btn.gh{color:rgba(255,255,255,.75);border-color:rgba(255,255,255,.25)}
+#gateLogin .btn.pri{background:#fff;border-color:#fff;color:var(--brand-deep)}
+#gateLogin .al.c1{background:rgba(255,255,255,.1);border-left-color:var(--crit)}
+#gateLogin .al.c1 .m{color:#fff}
+
+/* ── LOGIN / IDENTIFICACIÓN (fin) ─────────────────────────────────────── */
 .tabs{grid-template-columns:repeat(5,1fr)}
 .tabs button{font-size:9.5px;padding:8px 1px 7px;gap:2px;letter-spacing:-.01em}
 .tabs button svg{width:21px;height:21px}
@@ -371,6 +396,33 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 </style>
 </head>
 <body>
+
+<!-- ═══ LOGIN · identificación previa a entrar ═══ -->
+<div id="gateLogin">
+  <div class="gl-card">
+    <svg class="gl-iso" viewBox="0 0 109.6 100" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M51.1 98.8C41.1 97 34.7 92.9 28.2 84.1C27.2 82.8 26.1 81.7 25.6 81.7C24 81.7 20.3 80.2 17.4 78.3C15.7 77.3 14.1 76.3 13.8 76.2C11.7 75.5 7 70.2 4 65.1C-1.7 55.5 -1.3 42 4.8 32.3C8.2 27.1 9.3 25.8 13.8 22.4C16.1 20.6 19.3 18.1 20.8 16.8C22.4 15.5 24.9 13.4 26.5 12.1C28.1 10.8 30.3 9 31.4 8C32.5 7 33.8 6 34.2 5.8C34.6 5.5 35.3 5 35.9 4.5C36.4 4.1 38.4 2.9 40.4 1.8L44.1 0L55.6 0L67.1 -0L69.7 1.2C75.9 4.1 79.3 7.1 83.8 13.4C85.3 15.4 86.7 16.9 87.7 17.4C98.2 22.3 100.5 24.1 104.9 30.3C109.5 36.7 109.4 36 109.4 49.3L109.4 61L107.8 64C106.9 65.7 106.1 67.1 105.9 67.1C105.8 67.1 105.2 67.9 104.7 68.8C103.5 70.9 99.8 74.6 96.3 77.3C86.1 84.9 80.7 89 78.6 90.9C75.9 93.3 69 97 65.3 98C62.8 98.6 53.3 99.2 51.1 98.8ZM63 91.2C67.2 90 76.5 84 75.5 83.1C75.3 82.9 73.6 82.5 71.7 82.2C61.3 80.3 51.7 72.9 47.4 63.5C46.7 62 46.2 60.6 44.7 55.3C44.4 54.4 44.3 51.3 44.4 48.5C44.5 42.4 44.4 42.2 40.7 45C31.3 51.9 27.5 63.8 31.4 74.4C36 87.2 50.5 94.9 63 91.2ZM81.1 73.9C82.3 71.7 82.3 61.5 81.1 57.9C80 54.3 79.6 54.3 74.2 59.3C73.2 60.2 70.2 62.9 67.5 65.2C64.7 67.7 62.6 69.8 62.6 70.3C62.6 70.8 63.5 71.5 65.6 72.5C71.3 75 72 75.2 77.3 75.3C80.3 75.3 80.4 75.3 81.1 73.9ZM22.9 65.5C23.1 58.7 23.1 58.6 24.8 54.6C27.2 48.9 27.2 48.8 25.7 45.6C22.7 39.5 21.6 34 22.2 28.8C22.6 25.5 22.1 25.3 19.2 27.4C11.2 33.2 7.6 39.9 7.6 49.1C7.5 57.4 10 63.1 15.9 68.6C18.9 71.3 21.9 73.2 22.5 72.7C22.6 72.5 22.8 69.3 22.9 65.5ZM96.6 67.4C101.6 62.4 103.4 57.5 103.4 49.3C103.4 39.9 100.8 34.5 93.5 28.7C89.6 25.6 88.8 25.6 89.2 29C89.7 33.7 87.5 43.8 85.6 46.1C84.6 47.4 84.6 48.2 85.8 50.5C88.5 55.5 89.5 59.5 89.5 66.5C89.5 69.5 89.6 72.1 89.8 72.3C90.2 72.7 94 70 96.6 67.4ZM57.1 60.8C58.6 57.4 58.9 56.6 59.4 53C60.3 47 57.9 36.1 55.6 36.1C53.3 36.1 50.7 46.8 51.6 52.4C53 61 55.4 64.8 57.1 60.8ZM71.6 51.8C87 39.4 84.7 16.7 67 8C62.8 5.9 59.7 5.3 53.9 5.6C49.3 5.8 48.9 5.9 44.7 7.9C40.4 10 34.6 14.7 35.4 15.5C35.7 15.7 37.3 16.1 39 16.4C42.4 17.1 43.5 17.5 48.6 19.9C59.6 25.2 67.3 37.6 67.1 50C67 54.7 67 54.8 67.5 54.8C67.8 54.8 69.6 53.5 71.6 51.8ZM33.7 41.2C34.4 40.8 36.2 39.3 37.7 37.9C39.2 36.5 42.2 33.9 44.4 32.2C46.6 30.4 48.4 28.8 48.4 28.5C48.4 26.7 40.9 23.8 35.2 23.4L31.1 23.2L30.4 24.6C28.9 27.4 29.7 39.2 31.6 41.4C32.2 42.2 32.2 42.2 33.7 41.2Z"/></svg>
+    <h1>Stock Permaquim</h1>
+    <p class="gl-sub">Identificate para ver el stock de tu base.</p>
+
+    <p class="eyebrow" style="margin:18px 0 8px">¿Quién sos?</p>
+    <div class="gl-rol" id="glRol">
+      <button data-rol="tecnico"><span class="ic">🔧</span>Técnico Permaquim</button>
+      <button data-rol="supervisor"><span class="ic">🧑‍💼</span>Supervisor Permaquim</button>
+      <button data-rol="responsable"><span class="ic">📦</span>Responsable de Stock</button>
+    </div>
+
+    <label class="lb" style="margin-top:16px">Nombre</label>
+    <input class="txt" id="glNombre" type="text" placeholder="Tu nombre y apellido" autocomplete="name">
+    <label class="lb">Número de legajo</label>
+    <input class="txt" id="glLegajo" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Ej.: 253">
+
+    <div id="glErr" class="al c1" style="display:none;margin:4px 0 10px"><div class="m" id="glErrMsg"></div></div>
+
+    <button class="btn pri" id="glEntrar" style="min-height:56px;font-size:16px">Ingresar</button>
+    <button class="btn gh" id="glOmitir">Continuar sin identificarme</button>
+    <p class="note" id="glNote" style="text-align:center">El legajo se cruza contra los datos ya cargados en el teléfono.</p>
+  </div>
+</div>
 
 <header class="hd">
   <svg class="iso" viewBox="0 0 109.6 100" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M51.1 98.8C41.1 97 34.7 92.9 28.2 84.1C27.2 82.8 26.1 81.7 25.6 81.7C24 81.7 20.3 80.2 17.4 78.3C15.7 77.3 14.1 76.3 13.8 76.2C11.7 75.5 7 70.2 4 65.1C-1.7 55.5 -1.3 42 4.8 32.3C8.2 27.1 9.3 25.8 13.8 22.4C16.1 20.6 19.3 18.1 20.8 16.8C22.4 15.5 24.9 13.4 26.5 12.1C28.1 10.8 30.3 9 31.4 8C32.5 7 33.8 6 34.2 5.8C34.6 5.5 35.3 5 35.9 4.5C36.4 4.1 38.4 2.9 40.4 1.8L44.1 0L55.6 0L67.1 -0L69.7 1.2C75.9 4.1 79.3 7.1 83.8 13.4C85.3 15.4 86.7 16.9 87.7 17.4C98.2 22.3 100.5 24.1 104.9 30.3C109.5 36.7 109.4 36 109.4 49.3L109.4 61L107.8 64C106.9 65.7 106.1 67.1 105.9 67.1C105.8 67.1 105.2 67.9 104.7 68.8C103.5 70.9 99.8 74.6 96.3 77.3C86.1 84.9 80.7 89 78.6 90.9C75.9 93.3 69 97 65.3 98C62.8 98.6 53.3 99.2 51.1 98.8ZM63 91.2C67.2 90 76.5 84 75.5 83.1C75.3 82.9 73.6 82.5 71.7 82.2C61.3 80.3 51.7 72.9 47.4 63.5C46.7 62 46.2 60.6 44.7 55.3C44.4 54.4 44.3 51.3 44.4 48.5C44.5 42.4 44.4 42.2 40.7 45C31.3 51.9 27.5 63.8 31.4 74.4C36 87.2 50.5 94.9 63 91.2ZM81.1 73.9C82.3 71.7 82.3 61.5 81.1 57.9C80 54.3 79.6 54.3 74.2 59.3C73.2 60.2 70.2 62.9 67.5 65.2C64.7 67.7 62.6 69.8 62.6 70.3C62.6 70.8 63.5 71.5 65.6 72.5C71.3 75 72 75.2 77.3 75.3C80.3 75.3 80.4 75.3 81.1 73.9ZM22.9 65.5C23.1 58.7 23.1 58.6 24.8 54.6C27.2 48.9 27.2 48.8 25.7 45.6C22.7 39.5 21.6 34 22.2 28.8C22.6 25.5 22.1 25.3 19.2 27.4C11.2 33.2 7.6 39.9 7.6 49.1C7.5 57.4 10 63.1 15.9 68.6C18.9 71.3 21.9 73.2 22.5 72.7C22.6 72.5 22.8 69.3 22.9 65.5ZM96.6 67.4C101.6 62.4 103.4 57.5 103.4 49.3C103.4 39.9 100.8 34.5 93.5 28.7C89.6 25.6 88.8 25.6 89.2 29C89.7 33.7 87.5 43.8 85.6 46.1C84.6 47.4 84.6 48.2 85.8 50.5C88.5 55.5 89.5 59.5 89.5 66.5C89.5 69.5 89.6 72.1 89.8 72.3C90.2 72.7 94 70 96.6 67.4ZM57.1 60.8C58.6 57.4 58.9 56.6 59.4 53C60.3 47 57.9 36.1 55.6 36.1C53.3 36.1 50.7 46.8 51.6 52.4C53 61 55.4 64.8 57.1 60.8ZM71.6 51.8C87 39.4 84.7 16.7 67 8C62.8 5.9 59.7 5.3 53.9 5.6C49.3 5.8 48.9 5.9 44.7 7.9C40.4 10 34.6 14.7 35.4 15.5C35.7 15.7 37.3 16.1 39 16.4C42.4 17.1 43.5 17.5 48.6 19.9C59.6 25.2 67.3 37.6 67.1 50C67 54.7 67 54.8 67.5 54.8C67.8 54.8 69.6 53.5 71.6 51.8ZM33.7 41.2C34.4 40.8 36.2 39.3 37.7 37.9C39.2 36.5 42.2 33.9 44.4 32.2C46.6 30.4 48.4 28.8 48.4 28.5C48.4 26.7 40.9 23.8 35.2 23.4L31.1 23.2L30.4 24.6C28.9 27.4 29.7 39.2 31.6 41.4C32.2 42.2 32.2 42.2 33.7 41.2Z"/></svg>
@@ -506,18 +558,33 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
         <span>Actualizar desde la carpeta de red</span></button>
       <button class="btn gh" id="btnRedChg" style="display:none">Cambiar carpeta de red</button>
       <p class="note" id="redNote"></p>
-    </div>
 
-    <div class="panel">
-      <h2>Técnicos por base</h2>
-      <p class="sub" id="frSub">Se usa solo para saber en qué base trabaja cada técnico, así podés buscar «Buscar mi base» por nombre. No se toca ningún otro dato de Fill Rate.</p>
+      <div style="border-top:1px solid var(--grid);margin:14px 0 12px"></div>
+      <p class="sub" id="frSub" style="margin-bottom:8px">Técnicos por base (Fill Rate) — se usa sólo para saber en qué base trabaja cada técnico y a qué nodo devuelve. No se toca ningún otro dato.</p>
       <div class="kv"><span>Archivo</span><b id="frFile">—</b></div>
       <div class="kv"><span>Bases identificadas</span><b id="frDeps" class="num">—</b></div>
       <div class="kv"><span>Técnicos identificados</span><b id="frTecs" class="num">—</b></div>
-      <label class="btn pri" for="fileFR" style="margin-top:10px">
+      <label class="btn" for="fileFR" style="margin-top:10px">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 17V5M7 10l5-5 5 5M4 20h16"/></svg>
         Elegir Fill Rate.xlsx</label>
       <input id="fileFR" type="file" accept=".xlsx,.xlsm,.xlsb,.xls" class="sr">
+
+      <div style="border-top:1px solid var(--grid);margin:14px 0 12px"></div>
+      <p class="sub" id="perSub" style="margin-bottom:8px">Legajos de supervisores y técnicos — para identificar quién sos al entrar a la app y quién supervisa a quién.</p>
+      <div class="kv"><span>Archivo</span><b id="perFile">—</b></div>
+      <div class="kv"><span>Personas identificadas</span><b id="perN" class="num">—</b></div>
+      <label class="btn" for="filePER" style="margin-top:10px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 17V5M7 10l5-5 5 5M4 20h16"/></svg>
+        Elegir Supervisores y técnicos.xlsx</label>
+      <input id="filePER" type="file" accept=".xlsx,.xlsm,.xlsb,.xls" class="sr">
+    </div>
+
+    <div class="panel">
+      <h2>Tu sesión</h2>
+      <div class="kv"><span>Identificado como</span><b id="sesRol">—</b></div>
+      <div class="kv"><span>Nombre</span><b id="sesNom">—</b></div>
+      <div class="kv"><span>Base / nodo</span><b id="sesBase">—</b></div>
+      <button class="btn gh" id="btnCambiarUser" style="margin-top:10px;color:var(--crit);border-color:var(--crit)">Cambiar de usuario</button>
     </div>
 
     <div class="panel" id="pnlInst">
@@ -720,7 +787,8 @@ const ST = {
   target: null, targetSec: 'C', tpl: null, lastBuf: null, lastName: '',
   /* V2 */ fav: [], recientes: [], vistas: {}, busq: [], vocab: [], byCod: null,
   alertas: [], alFiltro: 'todas', alShown: 0, cfg: { sup: false, bloq: false },
-  fkRow: null, scanStream: null, scanTimer: null, fillRate: null, baseVista: null
+  fkRow: null, scanStream: null, scanTimer: null, fillRate: null, baseVista: null,
+  personal: null, login: null
 };
 
 /* ══════════════ MAPEO DE COLUMNAS ══════════════
@@ -882,10 +950,11 @@ function parseWorkbook(wb, fileName) {
          (no por el texto armado) — así "Mi base" y la alerta de devolución
          pueden identificar la base exacta sin depender del formato del texto. */
       const depCodRow = T(rf, map.dep) || '(sin código)';
-      if (!o.porDep[depCodRow]) o.porDep[depCodRow] = { desc: depDesc, cant: 0, rot: null };
+      if (!o.porDep[depCodRow]) o.porDep[depCodRow] = { desc: depDesc, cant: 0, rot: null, ubi: '' };
       const pd = o.porDep[depCodRow];
       pd.cant += q;
       if (rotRow != null) pd.rot = pd.rot == null ? rotRow : Math.max(pd.rot, rotRow);
+      if (ubi && !pd.ubi) pd.ubi = ubi;
     }
   }
   if (!byCod.size) throw new Error('No se encontró ningún código de producto. Revisá el mapeo de columnas.');
@@ -926,8 +995,10 @@ function sampleFor(rows) {
 
 /* ══════════════════════════════════════════════════════════════════════
    V2 · MÓDULO — TÉCNICOS POR BASE (cruce liviano con Fill Rate)
-   Se usa Fill Rate SOLO para dos cosas: Depósito Entrega (código + descripción)
-   y Apellido y Nombre del técnico. Nada más de Fill Rate entra a la app.
+   De Fill Rate sólo se usan: Depósito Entrega (código+desc), Técnico
+   (legajo+nombre) y el Depósito Abastecedor (código+desc, columnas G/H) —
+   este último dice a qué nodo devuelve materiales cada base. Nada más de
+   Fill Rate entra a la app.
    ══════════════════════════════════════════════════════════════════════ */
 function parseFillRatePersonal(wb, fileName) {
   let sheet = wb.SheetNames[0], bs = -1;
@@ -956,22 +1027,35 @@ function parseFillRatePersonal(wb, fileName) {
   const header = (fmt[hr] || []).map(norm);
   let iDep = header.findIndex(x => /deposito entrega/.test(x));
   let iDesc = iDep >= 0 ? iDep + 1 : colIdx('F');
+  /* el depósito ABASTECEDOR es el próximo par "Depósito/Descripción" después
+     del de Entrega — nunca el primero, para no confundirlo con el de arriba. */
+  let iAbC = -1, iAbD = -1;
+  for (let i = (iDesc >= 0 ? iDesc + 1 : 0); i < header.length; i++)
+    if (/^deposito$/.test(header[i])) { iAbC = i; iAbD = i + 1; break; }
+  if (iAbC < 0) { iAbC = colIdx('G'); iAbD = colIdx('H'); }
+  let iLeg = header.findIndex(x => /^tecnico$/.test(x));
   let iTec = header.findIndex(x => /apellido y nombre/.test(x));
   if (iDep < 0) iDep = colIdx('E');
   if (iTec < 0) iTec = colIdx('J');
+  if (iLeg < 0) iLeg = colIdx('I');
 
   const filas = fmt.slice(hr + 1);
-  const depIndex = new Map();     // código depósito -> {desc, tecnicos:Map(nombre->apariciones)}
+  const depIndex = new Map();     // código depósito -> {desc, tecnicos:Map(nombre->apariciones), retorno:Map}
+  const legIndex = new Map();     // legajo (texto) -> {code, desc, nombre}
   let leidas = 0;
   for (const r of filas) {
     const code = (r[iDep] || '').trim(); if (!code) continue;
     leidas++;
     const desc = (r[iDesc] || '').trim();
     const tec = (r[iTec] || '').trim();
-    if (!depIndex.has(code)) depIndex.set(code, { desc: '', tecnicos: new Map() });
+    const leg = (r[iLeg] || '').toString().trim();
+    const abC = (r[iAbC] || '').trim(), abD = (r[iAbD] || '').trim();
+    if (!depIndex.has(code)) depIndex.set(code, { desc: '', tecnicos: new Map(), retorno: new Map() });
     const e = depIndex.get(code);
     if (desc && !e.desc) e.desc = desc;
     if (tec) e.tecnicos.set(tec, (e.tecnicos.get(tec) || 0) + 1);
+    if (abD) e.retorno.set(abD, (e.retorno.get(abD) || 0) + 1);
+    if (leg && tec) legIndex.set(leg, { code, desc, nombre: tec });
   }
   const tecIndex = new Map();     // nombre normalizado -> [{code, desc, nombre}]
   for (const [code, info] of depIndex) for (const [tec] of info.tecnicos) {
@@ -979,8 +1063,14 @@ function parseFillRatePersonal(wb, fileName) {
     if (!tecIndex.has(key)) tecIndex.set(key, []);
     tecIndex.get(key).push({ code, desc: info.desc, nombre: tec });
   }
+  /* el retorno más frecuente por depósito, resuelto una sola vez */
+  for (const [code, info] of depIndex) {
+    let best2 = '', bn = -1;
+    for (const [d, n] of info.retorno) if (n > bn) { bn = n; best2 = d; }
+    info.retornoDesc = best2;
+  }
   if (!depIndex.size) throw new Error('No se encontró "Depósito Entrega" ni "Apellido y Nombre" en el archivo.');
-  return { depIndex, tecIndex, file: fileName, rows: leidas, deps: depIndex.size,
+  return { depIndex, tecIndex, legIndex, file: fileName, rows: leidas, deps: depIndex.size,
     tecs: tecIndex.size, when: Date.now() };
 }
 function renderFillRate() {
@@ -1003,8 +1093,179 @@ $('#fileFR').addEventListener('change', async e => {
     await DB.set('fillrate', fr);
     renderFillRate(); loading(false);
     toast(fr.deps + ' bases · ' + fr.tecs + ' técnicos identificados');
+    reresolverLogin();
   } catch (err) { loading(false); alert('No se pudo leer el archivo.\n\n' + (err.message || err)); }
 });
+
+/* ══════════════════════════════════════════════════════════════════════
+   V2 · MÓDULO — DIRECTORIO DE PERSONAL (Supervisores y técnicos)
+   De este archivo se usa: Legajo, Apellido y Nombre, Depósito Asociado
+   (código+desc) y Supervisado Por. Es la fuente de verdad para identificar
+   a alguien por legajo al entrar a la app.
+   ══════════════════════════════════════════════════════════════════════ */
+function parsePersonal(wb, fileName) {
+  let sheet = wb.SheetNames[0], bs = -1;
+  for (const name of wb.SheetNames) {
+    const ws = wb.Sheets[name]; if (!ws || !ws['!ref']) continue;
+    const head = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, blankrows: false }).slice(0, 6)
+      .map(r => (r || []).map(norm));
+    let hits = 0;
+    for (const row of head) { if (row.some(x => /^legajo$/.test(x))) hits++;
+      if (row.some(x => /supervisado por/.test(x))) hits++; }
+    if (hits > bs) { bs = hits; sheet = name; }
+  }
+  const ws = wb.Sheets[sheet];
+  if (!ws || !ws['!ref']) throw new Error('La hoja está vacía.');
+  const fmt = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, blankrows: false, defval: '' });
+  if (!fmt.length) throw new Error('No se leyeron filas.');
+  const header = (fmt[0] || []).map(norm);
+  const iLeg = header.findIndex(x => /^legajo$/.test(x));
+  const iNom = header.findIndex(x => /apellido y nombre/.test(x));
+  const iCat = header.findIndex(x => /categoria/.test(x));
+  const iDep = header.findIndex(x => /deposito asociado/.test(x));
+  const iDesc = iDep >= 0 ? iDep + 1 : -1;
+  const iSup = header.findIndex(x => /supervisado por/.test(x));
+  if (iLeg < 0 || iNom < 0) throw new Error('No encontré "Legajo" y "Apellido y Nombre" en el archivo.');
+
+  const porLegajo = new Map();       // legajo -> {nombre, cat, code, desc, supervisadoPor}
+  const porNombreNorm = new Map();   // nombre normalizado -> legajo
+  for (const r of fmt.slice(1)) {
+    const leg = (r[iLeg] || '').toString().trim(); if (!leg) continue;
+    const nombre = (r[iNom] || '').trim(); if (!nombre) continue;
+    const info = { nombre, cat: (r[iCat] || '').trim(),
+      code: iDep >= 0 ? (r[iDep] || '').trim() : '', desc: iDesc >= 0 ? (r[iDesc] || '').trim() : '',
+      supervisadoPor: iSup >= 0 ? (r[iSup] || '').trim() : '' };
+    porLegajo.set(leg, info);
+    porNombreNorm.set(norm(nombre), leg);
+  }
+  /* índice inverso: dado el nombre de un supervisor, quiénes le reportan */
+  const supervisadosPor = new Map();
+  for (const [leg, info] of porLegajo) {
+    if (!info.supervisadoPor) continue;
+    const key = norm(info.supervisadoPor);
+    if (!supervisadosPor.has(key)) supervisadosPor.set(key, []);
+    supervisadosPor.get(key).push(leg);
+  }
+  if (!porLegajo.size) throw new Error('No se encontró ningún legajo válido.');
+  return { porLegajo, porNombreNorm, supervisadosPor, file: fileName, n: porLegajo.size, when: Date.now() };
+}
+function renderPersonal() {
+  const p = ST.personal;
+  $('#perFile').textContent = p ? p.file : '—';
+  $('#perN').textContent = p ? p.n.toLocaleString('es-AR') : '—';
+  $('#perSub').innerHTML = p
+    ? 'Cargado el ' + dfmt(new Date(p.when)) + ' · ' + p.n + ' legajos.'
+    : 'Legajos de supervisores y técnicos — para identificar quién sos al entrar a la app y quién supervisa a quién.';
+}
+$('#filePER').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  loading(true, 'Leyendo legajos', f.name);
+  try {
+    const buf = await f.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array', cellDates: false, cellNF: false, cellStyles: false });
+    const per = parsePersonal(wb, f.name);
+    ST.personal = per;
+    await DB.set('personal', per);
+    renderPersonal(); loading(false);
+    toast(per.n + ' legajos identificados');
+    reresolverLogin();
+  } catch (err) { loading(false); alert('No se pudo leer el archivo.\n\n' + (err.message || err)); }
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   V2 · MÓDULO — LOGIN / IDENTIFICACIÓN
+   Tres roles. El de "Responsable de Stock" es una asignación fija de la
+   empresa (no viene en ningún Excel), así que va hardcodeado acá.
+   ══════════════════════════════════════════════════════════════════════ */
+const RESPONSABLES_STOCK = {
+  '78':  { nombre: 'Fabian Orlate',              code: 'NODO01', desc: 'Permaquim - Nodo Logístico 01 - Microcentro' },
+  '345': { nombre: 'Rodriguez Zelaya, Gaston',    code: 'NODO04', desc: 'Permaquim - Nodo Logístico 04 - Tucuman' },
+  '195': { nombre: 'Di Virgilio, Nicolas Ezequiel', code: 'NODO03', desc: 'Permaquim - Nodo Logístico 03 - Rosario' },
+  '592': { nombre: 'Fernandez, Lautaro Benjamín', code: 'NODO02', desc: 'Permaquim - Nodo Logístico 02 - Cordoba' }
+};
+const ROL_LB = { tecnico: 'Técnico Permaquim', supervisor: 'Supervisor Permaquim', responsable: 'Responsable de Stock' };
+
+/* Intenta resolver rol+legajo contra lo que ya esté cargado. Devuelve
+   { ok, nombre, bases:[{code,desc}], motivo } — nunca lanza. */
+function resolverLogin(rol, legajo) {
+  const leg = String(legajo).trim();
+  if (rol === 'responsable') {
+    const r = RESPONSABLES_STOCK[leg];
+    if (r) return { ok: true, nombre: r.nombre, bases: [{ code: r.code, desc: r.desc }] };
+    return { ok: false, motivo: 'Ese legajo no está en la lista de responsables de stock.' };
+  }
+  if (rol === 'tecnico') {
+    if (ST.personal && ST.personal.porLegajo.has(leg)) {
+      const info = ST.personal.porLegajo.get(leg);
+      if (info.code) return { ok: true, nombre: info.nombre, bases: [{ code: info.code, desc: info.desc }] };
+    }
+    if (ST.fillRate && ST.fillRate.legIndex.has(leg)) {
+      const info = ST.fillRate.legIndex.get(leg);
+      return { ok: true, nombre: info.nombre, bases: [{ code: info.code, desc: info.desc }] };
+    }
+    /* si ya tenemos AL MENOS uno de los dos archivos cargados y el legajo
+       no aparece en ninguno, es un error real — no "todavía no cargaste" */
+    if (ST.personal || ST.fillRate)
+      return { ok: false, motivo: 'Ese legajo no figura en los datos cargados. Verificá el número.' };
+    return { ok: false, motivo: 'pendiente' };
+  }
+  if (rol === 'supervisor') {
+    if (!ST.personal) return { ok: false, motivo: 'pendiente' };
+    if (!ST.personal.porLegajo.has(leg))
+      return { ok: false, motivo: 'Ese legajo no figura en Supervisores y técnicos. Verificá el número.' };
+    const yo = ST.personal.porLegajo.get(leg);
+    const legs = ST.personal.supervisadosPor.get(norm(yo.nombre)) || [];
+    const bases = new Map();
+    if (yo.code) bases.set(yo.code, yo.desc);
+    for (const l of legs) { const info = ST.personal.porLegajo.get(l);
+      if (info && info.code) bases.set(info.code, info.desc); }
+    if (!bases.size) return { ok: false, motivo: 'Ese legajo no tiene bases asociadas ni gente a cargo.' };
+    return { ok: true, nombre: yo.nombre, bases: Array.from(bases, ([code, desc]) => ({ code, desc })) };
+  }
+  return { ok: false, motivo: 'Elegí quién sos.' };
+}
+/* Reintenta resolver el login guardado cuando recién se termina de cargar
+   un archivo (Fill Rate o Personal) — por si alguien ya había entrado antes
+   de que los datos estuvieran disponibles. */
+function reresolverLogin() {
+  if (!ST.login || ST.login.bases) return;
+  const r = resolverLogin(ST.login.rol, ST.login.legajo);
+  if (r.ok) { ST.login.nombre = r.nombre || ST.login.nombre; ST.login.bases = r.bases;
+    LS.set('pq_login', ST.login); renderSesion(); toast('Ya identificamos tu base: ' + r.bases[0].desc); }
+}
+function renderSesion() {
+  const l = ST.login;
+  $('#sesRol').textContent = l ? ROL_LB[l.rol] : '— sin identificar —';
+  $('#sesNom').textContent = l ? (l.nombre || '—') : '—';
+  $('#sesBase').textContent = l && l.bases && l.bases.length
+    ? l.bases.map(b => b.desc || b.code).join(' · ') : (l ? 'Sin resolver todavía' : '—');
+}
+function abrirLogin() { $('#gateLogin').classList.remove('off'); $('#glErr').style.display = 'none'; }
+function cerrarLogin() { $('#gateLogin').classList.add('off'); }
+let glRolSel = '';
+$('#glRol').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
+  glRolSel = b.dataset.rol;
+  $$('#glRol button').forEach(x => x.classList.toggle('on', x === b)); });
+$('#glEntrar').onclick = () => {
+  const nombre = $('#glNombre').value.trim(), legajo = $('#glLegajo').value.trim();
+  if (!glRolSel) return mostrarErrGl('Elegí primero quién sos.');
+  if (!legajo) return mostrarErrGl('Ingresá tu número de legajo.');
+  const r = resolverLogin(glRolSel, legajo);
+  if (r.ok) {
+    ST.login = { rol: glRolSel, legajo, nombre: r.nombre || nombre, bases: r.bases };
+    LS.set('pq_login', ST.login);
+    cerrarLogin(); renderSesion(); renderInicio();
+    toast('Hola, ' + (r.nombre || nombre).split(' ')[0] + ' · ' + r.bases[0].desc);
+  } else if (r.motivo === 'pendiente') {
+    ST.login = { rol: glRolSel, legajo, nombre: nombre || '', bases: null };
+    LS.set('pq_login', ST.login);
+    cerrarLogin(); renderSesion(); renderInicio();
+    toast('Guardado. Apenas se cargue el archivo con tu legajo, resolvemos tu base.', 4200);
+  } else mostrarErrGl(r.motivo);
+};
+function mostrarErrGl(m) { $('#glErrMsg').textContent = m; $('#glErr').style.display = 'block'; }
+$('#glOmitir').onclick = () => { ST.login = null; LS.set('pq_login', null); cerrarLogin(); renderSesion(); };
+$('#btnCambiarUser').onclick = () => { ST.login = null; LS.set('pq_login', null); renderSesion(); abrirLogin(); };
 
 /* ══════════════ FACETAS Y BÚSQUEDA ══════════════ */
 const FAC = { tipo: [], marca: [], maquina: [], unidad: [] };
@@ -1207,14 +1468,18 @@ function badgeFor(cod) {
 
 /* ══════════════ CONTEOS ══════════════ */
 const MOTIVOS = ["No encontrado", "Mal ubicado", "Movimiento pendiente", "Material dañado", "Error de sistema", "Otro"];
-function openConteo(r) {
+function openConteo(r, baseCtx) {
   /* aviso anti-pisada: si ya se contó hoy y está activado el bloqueo, pide confirmación */
   if (ST.cfg.bloq && ST.hoySet && ST.hoySet.has(r.cod)) {
     const y = ST.conteos.find(c => c.cod === r.cod);
     if (!confirm('Este producto ya se contó hoy' + (y && y.oper ? ' (' + y.oper + ')' : '') +
       '.\nSistema ' + nfmt(y.sistema) + ' → contado ' + nfmt(y.contado) + '.\n\n¿Volver a contarlo?')) return;
   }
-  ST.target = r; ST.targetSec = r.C > 0 || r.A === 0 ? 'C' : 'A';
+  ST.target = r;
+  /* Si viene de "Mi base"/"Buscar mi base", NO es Haedo: no corresponde el
+     selector Almacén Central / Planta Alta — ahí se cuenta contra ESA base. */
+  if (baseCtx) { ST.targetMode = 'base'; ST.targetBase = baseCtx; }
+  else { ST.targetMode = 'haedo'; ST.targetSec = r.C > 0 || r.A === 0 ? 'C' : 'A'; }
   ST.motivo = ''; $('#kObs').value = '';
   const prev = ST.conteos.find(c => c.cod === r.cod);
   if (prev) { ST.motivo = prev.motivo || ''; $('#kObs').value = prev.obs || ''; }
@@ -1225,6 +1490,15 @@ function openConteo(r) {
 }
 function paintSegs() {
   const r = ST.target;
+  if (ST.targetMode === 'base') {
+    const b = ST.targetBase, pd = r.porDep && r.porDep[b.code];
+    $('#kSegs').innerHTML = '<div class="seg on" style="grid-column:1 / -1;cursor:default">' +
+      esc(b.desc || b.code) + '<small>Sistema: ' + nfmt(pd ? pd.cant : 0) + '</small></div>';
+    $('#kUbi').innerHTML = '<p class="eyebrow" style="margin:0 0 6px">Ubicación</p>' +
+      '<div class="ubi none" style="background:var(--surface-2)">' +
+      esc((pd && pd.ubi) || 'Sin ubicación asignada') + '</div>';
+    return;
+  }
   $('#kSegs').innerHTML = ['C','A'].map(k =>
     '<button class="seg' + (ST.targetSec === k ? ' on' : '') + '" data-k="' + k + '">' +
     esc(SEC[k].corto) + '<small>Sistema: ' + nfmt(r[k]) + '</small></button>').join('');
@@ -1237,9 +1511,13 @@ function paintSegs() {
 $('#kMot').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
   ST.motivo = (ST.motivo === b.dataset.m) ? '' : b.dataset.m;
   $$('#kMot button').forEach(x => x.classList.toggle('on', x.dataset.m === ST.motivo)); });
-$('#kSegs').addEventListener('click', e => { const b = e.target.closest('.seg'); if (!b) return;
+$('#kSegs').addEventListener('click', e => { if (ST.targetMode === 'base') return;
+  const b = e.target.closest('.seg'); if (!b) return;
   ST.targetSec = b.dataset.k; $('#cnt').value = String(sysVal()); paintSegs(); paintDif(); });
-const sysVal = () => ST.target ? (ST.target[ST.targetSec] || 0) : 0;
+const sysVal = () => { if (!ST.target) return 0;
+  if (ST.targetMode === 'base') { const pd = ST.target.porDep && ST.target.porDep[ST.targetBase.code];
+    return pd ? pd.cant : 0; }
+  return ST.target[ST.targetSec] || 0; };
 function paintDif() {
   const c = numOf($('#cnt').value) || 0, s = sysVal(), d = c - s, el = $('#kDif');
   el.className = 'dif ' + (d === 0 ? 'z' : d > 0 ? 'p' : 'n');
@@ -1255,9 +1533,16 @@ $('#kPlus').onclick = () => { $('#cnt').value = String((numOf($('#cnt').value) |
 $('#kMinus').onclick = () => { $('#cnt').value = String(Math.max(0, (numOf($('#cnt').value) || 0) - 1)); paintDif(); };
 $('#kSave').onclick = async () => {
   const r = ST.target; if (!r) return;
-  const c = numOf($('#cnt').value) || 0, s = sysVal(), k = ST.targetSec;
-  const ub = (k === 'C' ? r.uC : r.uA).map(x => x[0] || 's/u').join(' | ');
-  const reg = { cod: r.cod, desc: r.desc, tipo: r.tipo, marca: r.marca, sec: k, secLb: SEC[k].lb,
+  const c = numOf($('#cnt').value) || 0, s = sysVal();
+  let k, secLb, ub;
+  if (ST.targetMode === 'base') {
+    k = ST.targetBase.code; secLb = ST.targetBase.desc || ST.targetBase.code;
+    const pd = r.porDep && r.porDep[k]; ub = (pd && pd.ubi) || 's/u';
+  } else {
+    k = ST.targetSec; secLb = SEC[k].lb;
+    ub = (k === 'C' ? r.uC : r.uA).map(x => x[0] || 's/u').join(' | ');
+  }
+  const reg = { cod: r.cod, desc: r.desc, tipo: r.tipo, marca: r.marca, sec: k, secLb,
     ubi: ub, sistema: s, contado: c, dif: c - s, ts: Date.now(), oper: ($('#oper').value || '').trim(),
     motivo: (c - s) === 0 ? '' : (ST.motivo || ''), obs: (c - s) === 0 ? '' : ($('#kObs').value || '').trim() };
   const i = ST.conteos.findIndex(x => x.cod === r.cod && x.sec === k);
@@ -1275,7 +1560,7 @@ function renderConteos() {
     const st = c.dif === 0 ? '' : c.dif > 0 ? 'color:var(--s1)' : 'color:var(--crit)';
     return '<div class="crow"><div class="i"><b>' + esc(c.cod) + '</b>' +
       '<span>' + esc(c.desc || '') + '</span>' +
-      '<span>' + esc(SEC[c.sec].corto) + (c.ubi ? ' · ' + esc(c.ubi) : '') +
+      '<span>' + esc(c.secLb || (SEC[c.sec] && SEC[c.sec].corto) || c.sec) + (c.ubi ? ' · ' + esc(c.ubi) : '') +
         (c.motivo ? ' · ' + esc(c.motivo) : '') + '</span>' +
       '<span>Sistema ' + nfmt(c.sistema) + ' → contado ' + nfmt(c.contado) + '</span></div>' +
       '<div class="d" style="' + st + '">' + (c.dif > 0 ? '+' : '') + nfmt(c.dif) + '</div>' +
@@ -1869,6 +2154,10 @@ $('#ubiRes').addEventListener('click', e => { const b = e.target.closest('.rec')
    ══════════════════════════════════════════════════════════════════════ */
 function openBase() {
   ST.baseVista = null;
+  /* si ya sabemos quién sos y tenés una sola base, se entra directo — sin buscar nada */
+  if (ST.login && ST.login.bases && ST.login.bases.length === 1) {
+    openSheet('#shBase'); abrirDetalleBase(ST.login.bases[0].code); return;
+  }
   $('#baseBuscar').style.display = 'block'; $('#baseDetalle').style.display = 'none';
   $('#baseBack').style.display = 'none';
   $('#baseQ').value = ''; paintBase('');
@@ -1876,9 +2165,19 @@ function openBase() {
 }
 function paintBase(term) {
   const box = $('#baseRes');
-  if (!ST.fillRate) { box.innerHTML = '<div class="al c3"><div class="m">📋 Todavía no cargaste los técnicos por base.</div>' +
-    '<div class="rc">Andá a Datos → Técnicos por base y elegí el Fill Rate.xlsx.</div></div>'; return; }
   const t = norm(term);
+  /* supervisor con varias bases (o cualquier login con bases): las mostramos
+     de entrada, sin que haga falta escribir nada */
+  if (!t && ST.login && ST.login.bases && ST.login.bases.length > 1) {
+    box.innerHTML = '<p class="eyebrow" style="margin:0 0 8px">Tus bases</p>' +
+      ST.login.bases.map(b => '<button class="rec" data-code="' + esc(b.code) + '">' +
+        '<span class="i"><b>' + esc(b.desc || b.code) + '</b></span>' +
+        '<span class="q">' + esc(b.code) + '</span></button>').join('') +
+      '<p class="note" style="margin-top:12px">O buscá otra base por nombre o técnico.</p>';
+    return;
+  }
+  if (!ST.fillRate) { box.innerHTML = '<div class="al c3"><div class="m">📋 Todavía no cargaste los técnicos por base.</div>' +
+    '<div class="rc">Andá a Datos → Cargar/actualizar stock y elegí el Fill Rate.xlsx.</div></div>'; return; }
   if (t.length < 2) { box.innerHTML = '<p class="note">Escribí al menos 2 letras.</p>'; return; }
   const porTec = [];
   for (const [key, arr] of ST.fillRate.tecIndex) if (key.indexOf(t) >= 0) for (const it of arr) porTec.push(it);
@@ -1903,8 +2202,11 @@ $('#baseRes').addEventListener('click', e => { const b = e.target.closest('.rec'
   abrirDetalleBase(b.dataset.code); });
 function abrirDetalleBase(code) {
   ST.baseVista = code;
-  const info = ST.fillRate.depIndex.get(code);
+  const info = ST.fillRate && ST.fillRate.depIndex.get(code);
   const tecnicos = info ? Array.from(info.tecnicos.keys()) : [];
+  const desc = (info && info.desc) ||
+    (ST.login && ST.login.bases && (ST.login.bases.find(b => b.code === code) || {}).desc) || code;
+  const retorno = info && info.retornoDesc;
   const items = [];
   for (const r of ST.rows) { const pd = r.porDep && r.porDep[code];
     if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot }); }
@@ -1913,22 +2215,32 @@ function abrirDetalleBase(code) {
   const box = $('#baseDetalle'); box.style.display = 'block';
   box.innerHTML =
     '<p class="eyebrow" style="margin:0 0 4px">Base</p>' +
-    '<h2 style="font-size:17px;margin-bottom:2px">' + esc((info && info.desc) || code) + '</h2>' +
+    '<h2 style="font-size:17px;margin-bottom:2px">' + esc(desc) + '</h2>' +
     '<p class="note" style="margin:0 0 12px">Código ' + esc(code) + (tecnicos.length ?
       ' · ' + tecnicos.join(', ') : '') + '</p>' +
+    (retorno ? '<p class="note" style="margin:0 0 12px">📍 Las devoluciones de esta base van a <b>' +
+      esc(retorno) + '</b>.</p>' : '') +
     '<div class="kv"><span>Productos con stock</span><b class="num">' + items.length.toLocaleString('es-AR') + '</b></div>' +
     '<div class="kv"><span>Unidades en total</span><b class="num">' + nfmt(items.reduce((a, x) => a + x.cant, 0)) + '</b></div>' +
-    '<p class="eyebrow" style="margin:14px 0 6px">Stock actual</p>' +
-    (items.length ? items.slice(0, 200).map(it => '<button class="rec" data-cod="' + esc(it.r.cod) + '">' +
-      '<span class="i"><b>' + esc(it.r.cod) + '</b><span>' + esc(it.r.desc || '') + '</span></span>' +
+    '<p class="eyebrow" style="margin:14px 0 6px">Stock actual — tocá para ver la ficha o contar</p>' +
+    (items.length ? items.slice(0, 200).map(it => '<div class="rec" style="cursor:default" data-cod="' + esc(it.r.cod) + '">' +
+      '<span class="i" data-act="ficha"><b>' + esc(it.r.cod) + '</b><span>' + esc(it.r.desc || '') + '</span></span>' +
       (it.rot != null && it.rot > 3 ? '<span class="bayer" style="background:var(--tint-crit);color:var(--crit);border-color:var(--crit);margin-right:6px">' +
         it.rot.toFixed(0) + 'm</span>' : '') +
-      '<span class="q num">' + nfmt(it.cant) + '</span></button>').join('')
+      '<span class="q num" data-act="ficha" style="margin-right:8px">' + nfmt(it.cant) + '</span>' +
+      '<button class="mini pri" data-act="contar" style="height:34px;padding:0 12px;font-size:12.5px">Contar</button></div>').join('')
       : '<p class="note">No hay stock cargado en esta base en el archivo actual.</p>') +
     (items.length > 200 ? '<p class="note">Se muestran los primeros 200.</p>' : '');
+  box.dataset.code = code; box.dataset.desc = desc;
 }
-$('#baseDetalle').addEventListener('click', e => { const b = e.target.closest('.rec'); if (!b) return;
-  const r = ST.byCod.get(b.dataset.cod); if (r) { closeSheet('#shBase'); openFicha(r); } });
+$('#baseDetalle').addEventListener('click', e => {
+  const cnt = e.target.closest('[data-act="contar"]');
+  const row = e.target.closest('[data-cod]'); if (!row) return;
+  const r = ST.byCod.get(row.dataset.cod); if (!r) return;
+  const box = $('#baseDetalle');
+  if (cnt) { closeSheet('#shBase'); openConteo(r, { code: box.dataset.code, desc: box.dataset.desc }); }
+  else { closeSheet('#shBase'); openFicha(r); }
+});
 $('#baseBack').addEventListener('click', () => {
   $('#baseDetalle').style.display = 'none'; $('#baseBuscar').style.display = 'block'; $('#baseBack').style.display = 'none'; });
 
@@ -2033,11 +2345,12 @@ function computeAlertas(force) {
       const base = ST.fillRate && ST.fillRate.depIndex.get(code);
       const baseDesc = (base && base.desc) || info.desc || code;
       const tecnicos = base ? Array.from(base.tecnicos.keys()) : [];
+      const retorno = (base && base.retornoDesc) || 'Permaquim Haedo';
       const grave = info.rot >= 6;
       A.push({ n: grave ? 1 : 2, r, tg: 'Devolución pendiente',
         m: baseDesc + (tecnicos.length ? ' · ' + tecnicos.join(', ') : '') + ' · ' +
            nfmt(info.cant) + ' u. · ' + info.rot.toFixed(1) + ' meses sin rotar',
-        rc: 'Material inmovilizado en la base — coordinar devolución a Permaquim Haedo.' });
+        rc: 'Material inmovilizado — devolver a ' + retorno + '.' });
     }
   }
   A.sort((a, b) => a.n - b.n || (b.r.C + b.r.A) - (a.r.C + a.r.A));
@@ -2234,6 +2547,10 @@ function rutaInicial() {
   ST.mapUser = (await DB.get('mapUser')) || {};
   ST.dirHandle = (await DB.get('dirHandle')) || null;
   ST.fillRate = (await DB.get('fillrate')) || null; renderFillRate();
+  ST.personal = (await DB.get('personal')) || null; renderPersonal();
+  ST.login = LS.get('pq_login', null); renderSesion();
+  if (ST.login && !ST.login.bases) reresolverLogin();
+  if (ST.login) cerrarLogin(); else abrirLogin();
   loadPrefs(); ST.hist = null; renderHist(); renderConteos(); redNote();
 
   if (window.PQ_DATA && window.PQ_DATA.rows && window.PQ_DATA.rows.length) {

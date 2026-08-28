@@ -1,6 +1,6 @@
 {
-  "name": "Stock en Planta",
-  "short_name": "Stock",
+  "name": "Stock Permaquim",
+  "short_name": "Stock Permaquim",
   "description": "Aplicación inteligente para consulta de stock, ubicaciones y control de inventario.",
   "id": "/stock-en-planta/",
   "start_url": "./index.html",

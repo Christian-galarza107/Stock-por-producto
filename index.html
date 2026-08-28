@@ -394,6 +394,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <button data-qa="buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM20 20l-3.5-3.5"/></svg>Buscar producto</button>
       <button data-qa="escanear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3M4 12h16"/></svg>Escanear código</button>
       <button data-qa="ubicacion"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Buscar ubicación</button>
+      <button data-qa="mibase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/></svg>Mi base</button>
       <button data-qa="conteo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM5 7h14v13H5zM8 12h8M8 16h5"/></svg>Iniciar conteo</button>
       <button class="wide" data-qa="alertas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3zM12 10v4M12 17.5v.5"/></svg>Ver alertas<span id="qaAl" style="margin-left:auto;font-size:12px;color:var(--ink-muted)"></span></button>
     </div>
@@ -493,20 +494,6 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <div class="kv"><span>Actualizado</span><b id="dsWhen">—</b></div>
     </div>
 
-    <div class="panel" id="pnlPub">
-      <h2>Publicar copia para el celular</h2>
-      <p class="sub">Genera un <b>HTML nuevo con el stock ya adentro</b>. Se manda por mail o se sube a OneDrive: el operador lo abre y ya tiene los datos, sin cargar ningún Excel.</p>
-      <label class="chk"><input type="checkbox" id="pubSolo" checked>
-        <span>Incluir sólo productos con stock <small style="display:block;color:var(--ink-muted);font-size:12px">Achica mucho el archivo</small></span></label>
-      <label class="chk"><input type="checkbox" id="pubHaedo">
-        <span>Sólo lo que tiene stock en Haedo <small style="display:block;color:var(--ink-muted);font-size:12px">Para el operador de planta</small></span></label>
-      <button class="btn pri" id="btnPub" disabled>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16v12H4z"/><path d="M9 20h6M12 16v4"/></svg>
-        Generar HTML con los datos</button>
-      <button class="btn" id="btnPubShare" disabled>Generar y compartir</button>
-      <p class="note" id="pubNote">Cargá primero el Excel de stock.</p>
-    </div>
-
     <div class="panel">
       <h2>Cargar / actualizar stock</h2>
       <p class="sub">Elegí <b>Stock por Producto Permaquim.xlsx</b>. Son ~37.000 filas: conviene hacerlo en la PC.</p>
@@ -519,6 +506,18 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
         <span>Actualizar desde la carpeta de red</span></button>
       <button class="btn gh" id="btnRedChg" style="display:none">Cambiar carpeta de red</button>
       <p class="note" id="redNote"></p>
+    </div>
+
+    <div class="panel">
+      <h2>Técnicos por base</h2>
+      <p class="sub" id="frSub">Se usa solo para saber en qué base trabaja cada técnico, así podés buscar «Buscar mi base» por nombre. No se toca ningún otro dato de Fill Rate.</p>
+      <div class="kv"><span>Archivo</span><b id="frFile">—</b></div>
+      <div class="kv"><span>Bases identificadas</span><b id="frDeps" class="num">—</b></div>
+      <div class="kv"><span>Técnicos identificados</span><b id="frTecs" class="num">—</b></div>
+      <label class="btn pri" for="fileFR" style="margin-top:10px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 17V5M7 10l5-5 5 5M4 20h16"/></svg>
+        Elegir Fill Rate.xlsx</label>
+      <input id="fileFR" type="file" accept=".xlsx,.xlsm,.xlsb,.xls" class="sr">
     </div>
 
     <div class="panel" id="pnlInst">
@@ -538,19 +537,20 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <button class="btn gh" id="btnBuscarUpd" style="margin-top:10px">Buscar actualizaciones</button>
     </div>
 
-    <div class="panel">
-      <h2>Preferencias</h2>
-      <label class="chk"><input type="checkbox" id="cfgSup">
-        <span>Modo supervisor <small style="display:block;color:var(--ink-muted);font-size:12px">Agrega el resumen de gestión y la precisión de inventario arriba de Alertas</small></span></label>
-      <label class="chk"><input type="checkbox" id="cfgBloq">
-        <span>Bloquear lo ya contado hoy <small style="display:block;color:var(--ink-muted);font-size:12px">Pide confirmación antes de recontar un ítem del día</small></span></label>
-    </div>
-
-    <div class="panel">
-      <h2>Mapeo de columnas</h2>
-      <p class="sub">Detección por nombre de encabezado, con la letra como respaldo. Verificá las muestras si el ERP cambia el reporte.</p>
-      <div id="mapList"><p class="note">Se completa cuando cargues un archivo.</p></div>
-      <button class="btn gh" id="btnMapReset" style="margin-top:10px">Volver a detectar automáticamente</button>
+    <button class="sechd" id="btnAvanz" style="width:100%;border:0;background:transparent;padding:6px 2px;
+      display:flex;align-items:center;justify-content:space-between;margin:8px 0 4px">
+      <h2 style="font-size:13.5px;color:var(--ink-muted)">⚙️ Opciones avanzadas</h2>
+      <span id="avanzArrow" style="color:var(--ink-muted);font-size:13px">Mostrar ▾</span>
+    </button>
+    <div id="avanzBox" style="display:none">
+      <div class="panel">
+        <h2>Preferencias</h2>
+        <p class="sub">Ajustes para quien coordina el depósito, no para el uso diario de conteo.</p>
+        <label class="chk"><input type="checkbox" id="cfgSup">
+          <span>Modo supervisor <small style="display:block;color:var(--ink-muted);font-size:12px">Agrega, arriba de Alertas, un resumen gerencial: total de SKUs, precisión de inventario (% de conteos sin diferencia), el ranking de mayores diferencias y los productos más consultados. Pide un PIN porque muestra el desempeño de los conteos del día.</small></span></label>
+        <label class="chk"><input type="checkbox" id="cfgBloq">
+          <span>Bloquear lo ya contado hoy <small style="display:block;color:var(--ink-muted);font-size:12px">Antes de recontar un producto que ya registraste hoy, pide confirmar — para no pisar por error el conteo de otro turno.</small></span></label>
+      </div>
     </div>
     <p class="foot" id="footTxt">Permaquim · Stock en Planta · Coordinación de Abastecimiento</p>
   </main>
@@ -608,6 +608,19 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
     <p class="note" style="margin:0 0 8px">Escribí <b>00B-005-009</b> o <b>00B005009</b>. También sirve sólo el sector (<b>00B</b>) o sector+estante (<b>00B-005</b>).</p>
     <input class="fsearch" id="ubiQ" type="search" placeholder="00B-005-009" autocomplete="off" autocapitalize="characters">
     <div id="ubiRes"></div>
+  </div>
+</div></div>
+
+<div class="sheet" id="shBase"><div class="bk" data-close></div><div class="bd">
+  <div class="hh"><button class="cl" id="baseBack" style="display:none" aria-label="Volver">←</button>
+    <h2 style="flex:1">Mi base</h2><button class="cl" data-close aria-label="Cerrar">&times;</button></div>
+  <div class="cn">
+    <div id="baseBuscar">
+      <p class="note" style="margin:0 0 8px">Escribí tu nombre, apellido, o el nombre de la base (ej. <b>Molla</b> o <b>Santa Fe</b>).</p>
+      <input class="fsearch" id="baseQ" type="search" placeholder="Nombre, apellido o base…" autocomplete="off">
+      <div id="baseRes"></div>
+    </div>
+    <div id="baseDetalle" style="display:none"></div>
   </div>
 </div></div>
 
@@ -707,7 +720,7 @@ const ST = {
   target: null, targetSec: 'C', tpl: null, lastBuf: null, lastName: '',
   /* V2 */ fav: [], recientes: [], vistas: {}, busq: [], vocab: [], byCod: null,
   alertas: [], alFiltro: 'todas', alShown: 0, cfg: { sup: false, bloq: false },
-  fkRow: null, scanStream: null, scanTimer: null
+  fkRow: null, scanStream: null, scanTimer: null, fillRate: null, baseVista: null
 };
 
 /* ══════════════ MAPEO DE COLUMNAS ══════════════
@@ -848,7 +861,7 @@ function parseWorkbook(wb, fileName) {
       o = { cod, desc: T(rf, map.desc), tipo: T(rf, map.tipo), marca: T(rf, map.marca),
             seg: T(rf, map.segmento), det: T(rf, map.detseg), maq: T(rf, map.maquina),
             un: T(rf, map.unidad), mat: T(rf, map.material), rot: N(rr, rf, map.rot),
-            C: 0, A: 0, tot: 0, uC: [], uA: [], otros: [] };
+            C: 0, A: 0, tot: 0, uC: [], uA: [], otros: [], porDep: {} };
       byCod.set(cod, o);
     }
     if (!o.desc) o.desc = T(rf, map.desc);
@@ -859,10 +872,20 @@ function parseWorkbook(wb, fileName) {
     } else if (esHaedo(T(rf, map.dep), depDesc) && esAlta(secDesc)) {
       o.A += q; if (q > 0) o.uA.push([ubi, q]);
     } else if (q > 0) {
+      const rotRow = N(rr, rf, map.rot);
       const lugar = (depDesc || 'Sin depósito').replace(/^Permaquim\s*-?\s*/i, '') +
         (secDesc && !/^unico$/i.test(secDesc) && !/^disponible$/i.test(secDesc) ? ' · ' + secDesc : '');
       const ex = o.otros.find(x => x[0] === lugar);
-      if (ex) ex[1] += q; else o.otros.push([lugar, q, ubi]);
+      if (ex) { ex[1] += q; if (rotRow != null) ex[3] = ex[3] == null ? rotRow : Math.max(ex[3], rotRow); }
+      else o.otros.push([lugar, q, ubi, rotRow]);
+      /* además del texto de exhibición, se guarda por CÓDIGO de depósito real
+         (no por el texto armado) — así "Mi base" y la alerta de devolución
+         pueden identificar la base exacta sin depender del formato del texto. */
+      const depCodRow = T(rf, map.dep) || '(sin código)';
+      if (!o.porDep[depCodRow]) o.porDep[depCodRow] = { desc: depDesc, cant: 0, rot: null };
+      const pd = o.porDep[depCodRow];
+      pd.cant += q;
+      if (rotRow != null) pd.rot = pd.rot == null ? rotRow : Math.max(pd.rot, rotRow);
     }
   }
   if (!byCod.size) throw new Error('No se encontró ningún código de producto. Revisá el mapeo de columnas.');
@@ -900,6 +923,88 @@ function sampleFor(rows) {
   s.atrib = s.estante = s.ubic = u;
   return s;
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   V2 · MÓDULO — TÉCNICOS POR BASE (cruce liviano con Fill Rate)
+   Se usa Fill Rate SOLO para dos cosas: Depósito Entrega (código + descripción)
+   y Apellido y Nombre del técnico. Nada más de Fill Rate entra a la app.
+   ══════════════════════════════════════════════════════════════════════ */
+function parseFillRatePersonal(wb, fileName) {
+  let sheet = wb.SheetNames[0], bs = -1;
+  for (const name of wb.SheetNames) {
+    const ws = wb.Sheets[name]; if (!ws || !ws['!ref']) continue;
+    const head = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, blankrows: false }).slice(0, 8)
+      .map(r => (r || []).map(norm));
+    let hits = 0;
+    for (const row of head) { if (row.some(x => /deposito entrega/.test(x))) hits++;
+      if (row.some(x => /apellido y nombre/.test(x))) hits++; }
+    if (hits > bs) { bs = hits; sheet = name; }
+  }
+  const ws = wb.Sheets[sheet];
+  if (!ws || !ws['!ref']) throw new Error('La hoja está vacía.');
+  const fmt = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, blankrows: false, defval: '' });
+  if (!fmt.length) throw new Error('No se leyeron filas.');
+
+  let hr = 0, best = -1;
+  for (let r = 0; r < Math.min(8, fmt.length); r++) {
+    const row = (fmt[r] || []).map(norm);
+    let hits = 0;
+    if (row.some(x => /deposito entrega/.test(x))) hits++;
+    if (row.some(x => /apellido y nombre/.test(x))) hits++;
+    if (hits > best) { best = hits; hr = r; }
+  }
+  const header = (fmt[hr] || []).map(norm);
+  let iDep = header.findIndex(x => /deposito entrega/.test(x));
+  let iDesc = iDep >= 0 ? iDep + 1 : colIdx('F');
+  let iTec = header.findIndex(x => /apellido y nombre/.test(x));
+  if (iDep < 0) iDep = colIdx('E');
+  if (iTec < 0) iTec = colIdx('J');
+
+  const filas = fmt.slice(hr + 1);
+  const depIndex = new Map();     // código depósito -> {desc, tecnicos:Map(nombre->apariciones)}
+  let leidas = 0;
+  for (const r of filas) {
+    const code = (r[iDep] || '').trim(); if (!code) continue;
+    leidas++;
+    const desc = (r[iDesc] || '').trim();
+    const tec = (r[iTec] || '').trim();
+    if (!depIndex.has(code)) depIndex.set(code, { desc: '', tecnicos: new Map() });
+    const e = depIndex.get(code);
+    if (desc && !e.desc) e.desc = desc;
+    if (tec) e.tecnicos.set(tec, (e.tecnicos.get(tec) || 0) + 1);
+  }
+  const tecIndex = new Map();     // nombre normalizado -> [{code, desc, nombre}]
+  for (const [code, info] of depIndex) for (const [tec] of info.tecnicos) {
+    const key = norm(tec);
+    if (!tecIndex.has(key)) tecIndex.set(key, []);
+    tecIndex.get(key).push({ code, desc: info.desc, nombre: tec });
+  }
+  if (!depIndex.size) throw new Error('No se encontró "Depósito Entrega" ni "Apellido y Nombre" en el archivo.');
+  return { depIndex, tecIndex, file: fileName, rows: leidas, deps: depIndex.size,
+    tecs: tecIndex.size, when: Date.now() };
+}
+function renderFillRate() {
+  const fr = ST.fillRate;
+  $('#frFile').textContent = fr ? fr.file : '—';
+  $('#frDeps').textContent = fr ? fr.deps.toLocaleString('es-AR') : '—';
+  $('#frTecs').textContent = fr ? fr.tecs.toLocaleString('es-AR') : '—';
+  $('#frSub').innerHTML = fr
+    ? 'Cargado el ' + dfmt(new Date(fr.when)) + '. Se usa sólo para «Mi base» — el resto de Fill Rate no se toca.'
+    : 'Se usa solo para saber en qué base trabaja cada técnico, así podés buscar «Mi base» por nombre. No se toca ningún otro dato de Fill Rate.';
+}
+$('#fileFR').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  loading(true, 'Leyendo Fill Rate', f.name);
+  try {
+    const buf = await f.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array', cellDates: false, cellNF: false, cellStyles: false });
+    const fr = parseFillRatePersonal(wb, f.name);
+    ST.fillRate = fr;
+    await DB.set('fillrate', fr);
+    renderFillRate(); loading(false);
+    toast(fr.deps + ' bases · ' + fr.tecs + ' técnicos identificados');
+  } catch (err) { loading(false); alert('No se pudo leer el archivo.\n\n' + (err.message || err)); }
+});
 
 /* ══════════════ FACETAS Y BÚSQUEDA ══════════════ */
 const FAC = { tipo: [], marca: [], maquina: [], unidad: [] };
@@ -1304,117 +1409,31 @@ $('#btnShare').onclick = async () => {
   dl(xlsxBlob(), name); toast('Este navegador no comparte archivos: se descargó', 3200);
 };
 
-/* ══════════════ PUBLICAR COPIA HTML CON DATOS ══════════════
-   Toma la plantilla original del propio archivo y le inyecta el dataset
-   en el bloque <script id="pqData">. El resultado es un HTML autónomo
-   que se manda por mail / OneDrive y abre con los datos ya cargados.
-   ═════════════════════════════════════════════════════════════ */
-function buildPublished() {
-  if (!ST.tpl || !ST.rows.length) throw new Error('No hay datos para publicar.');
-  const soloStock = $('#pubSolo').checked, soloHaedo = $('#pubHaedo').checked;
-  let rows = ST.rows;
-  if (soloHaedo) rows = rows.filter(r => r.C > 0 || r.A > 0);
-  else if (soloStock) rows = rows.filter(r => r.tot > 0);
-  if (!rows.length) throw new Error('Con esos filtros no queda ningún producto.');
-  /* se descarta _s: se reconstruye al abrir, para no duplicar peso */
-  const slim = rows.map(r => ({ cod:r.cod, desc:r.desc, tipo:r.tipo, marca:r.marca, seg:r.seg,
-    det:r.det, maq:r.maq, un:r.un, mat:r.mat, rot:r.rot, C:r.C, A:r.A, tot:r.tot,
-    uC:r.uC, uA:r.uA, otros: soloHaedo ? [] : r.otros }));
-  const payload = { meta: Object.assign({}, ST.meta, { rows: slim.length, publicado: Date.now(),
-    alcance: soloHaedo ? 'Sólo con stock en Haedo' : soloStock ? 'Sólo con stock' : 'Todo' }), rows: slim };
-  const json = JSON.stringify(payload).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, '');
-  const open = '<script id="pqData">', close = '<\/script>';
-  const i = ST.tpl.indexOf(open);
-  if (i < 0) throw new Error('No encuentro el bloque de datos en la plantilla.');
-  const j = ST.tpl.indexOf(close, i);
-  const html = '<!DOCTYPE html>\n' + ST.tpl.slice(0, i + open.length) +
-    'window.PQ_DATA=' + json + ';' + ST.tpl.slice(j);
-  return { html, n: slim.length };
-}
-function pubName() { const d = ST.meta.when ? new Date(ST.meta.when) : new Date();
-  return 'Stock_en_Planta_' + d.getFullYear() + p2(d.getMonth()+1) + p2(d.getDate()) + '.html'; }
-$('#btnPub').onclick = () => {
-  try { loading(true, 'Armando el archivo', 'Puede tardar unos segundos…');
-    setTimeout(() => { try { const { html, n } = buildPublished();
-      const b = new Blob([html], { type: 'text/html;charset=utf-8' });
-      dl(b, pubName()); loading(false);
-      toast(n.toLocaleString('es-AR') + ' productos · ' + (b.size / 1048576).toFixed(1) + ' MB', 4200);
-    } catch (e) { loading(false); alert(e.message); } }, 60);
-  } catch (e) { loading(false); alert(e.message); }
-};
-$('#btnPubShare').onclick = async () => {
-  try {
-    loading(true, 'Armando el archivo', 'Puede tardar unos segundos…');
-    await new Promise(r => setTimeout(r, 60));
-    const { html } = buildPublished(); loading(false);
-    const name = pubName();
-    let file; try { file = new File([html], name, { type: 'text/html' }); } catch (e) {}
-    if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: 'Stock en Planta — Permaquim',
-        text: 'Stock actualizado al ' + (ST.meta.when ? dfmt(new Date(ST.meta.when)) : '') }); return; }
-      catch (e) { if (e && e.name === 'AbortError') return; }
-    }
-    dl(new Blob([html], { type: 'text/html;charset=utf-8' }), name);
-    toast('Este navegador no comparte archivos: se descargó', 3200);
-  } catch (e) { loading(false); alert(e.message); }
-};
-function pubState() {
-  const ok = ST.rows.length > 0 && !!ST.tpl;
-  $('#btnPub').disabled = $('#btnPubShare').disabled = !ok;
-  $('#pubNote').innerHTML = ok
-    ? 'Quien reciba el archivo lo abre y ve el stock al <b>' + dfmt(new Date(ST.meta.when)) +
-      '</b>. Para actualizarlo, volvés acá, cargás el Excel nuevo y generás otra copia.'
-    : 'Cargá primero el Excel de stock.';
-}
+/* Nota: la función que generaba la "copia HTML para el celular" se sacó de la UI
+   — la app en sí ES la aplicación de celular, no hace falta esa exportación. */
 
-/* ══════════════ VISTA DATOS Y MAPEO ══════════════ */
+/* ══════════════ VISTA DATOS ══════════════ */
 function renderDatos() {
   const m = ST.meta;
   $('#dsSub').textContent = ST.rows.length
-    ? (m.publicado ? 'Copia publicada: los datos vienen adentro del archivo.'
-                   : 'Los datos quedan guardados en este dispositivo.')
+    ? 'Los datos quedan guardados en este dispositivo.'
     : 'Todavía no cargaste el stock.';
   $('#dsFile').textContent = m.file || '—';
   $('#dsRaw').textContent = m.raw ? m.raw.toLocaleString('es-AR') : '—';
-  $('#dsRows').textContent = m.rows ? m.rows.toLocaleString('es-AR') + (m.alcance ? ' (' + m.alcance + ')' : '') : '—';
+  $('#dsRows').textContent = m.rows ? m.rows.toLocaleString('es-AR') : '—';
   $('#dsWhen').textContent = m.when ? dfmt(new Date(m.when)) : '—';
   $('#footTxt').innerHTML = 'Permaquim · Stock en Planta · Coordinación de Abastecimiento<br>' +
     (m.when ? 'Datos al ' + dfmt(new Date(m.when)) + ' · Fuente: ' + esc(m.file || '') : 'Sin datos') +
     ' · v' + APP_VER + ' · Documento interno';
-  pubState();
+  renderFillRate();
 }
-function renderMapa() {
-  const box = $('#mapList');
-  if (!ST.meta.map) { box.innerHTML = '<p class="note">Se completa cuando cargues un archivo.</p>'; return; }
-  const heads = ST.meta.heads || [], n = Math.max(ST.meta.ncols || 40, heads.length);
-  box.innerHTML = CAMPOS.map(c => {
-    const i = ST.meta.map[c.k], sm = (ST.meta.sample && ST.meta.sample[c.k]) || [], bad = i == null || i < 0;
-    const opts = ['<option value="-1"' + (bad ? ' selected' : '') + '>— sin usar —</option>'].concat(
-      Array.from({ length: n }, (_, j) => '<option value="' + j + '"' + (j === i ? ' selected' : '') + '>' +
-        idxCol(j) + (heads[j] ? ' · ' + esc(String(heads[j]).slice(0, 28)) : '') + '</option>')).join('');
-    return '<div style="padding:11px 0;border-bottom:1px solid var(--grid)">' +
-      '<div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline">' +
-      '<b style="font-size:13.5px">' + esc(c.lb) + '</b><span class="pill ' + (bad ? 'crit' : 'ok') + '">' +
-      (bad ? '✕ no detectada' : '✓ ' + idxCol(i)) + '</span></div>' +
-      '<select data-k="' + c.k + '" style="width:100%;height:44px;margin-top:7px;border-radius:10px;' +
-      'border:1.5px solid var(--border);background:var(--surface-2);padding:0 10px;font-size:14px">' + opts + '</select>' +
-      '<p class="note" style="margin-top:6px">' + esc(ST.meta.how[c.k] || '') +
-      (sm.length ? ' · muestra: <b>' + sm.map(esc).join('</b>, <b>') + '</b>' : '') + '</p></div>';
-  }).join('');
-  box.querySelectorAll('select').forEach(s => s.onchange = async () => {
-    ST.mapUser[s.dataset.k] = +s.value; await DB.set('mapUser', ST.mapUser);
-    if (!(await reparse())) toast('Guardado. Volvé a cargar el archivo para aplicarlo.'); else toast('Mapeo aplicado');
-  });
-}
-$('#btnMapReset').onclick = async () => { ST.mapUser = {}; await DB.del('mapUser');
-  await reparse(); renderMapa(); toast('Detección automática restablecida'); };
 
 /* ══════════════ CARGA ══════════════ */
 async function applyData(res, persist) {
   ST.rows = res.rows; ST.meta = res.meta; ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' };
   ST._alFresh = false;   /* nuevo stock cargado → las alertas quedaron viejas */
   buildIndex();                       /* V2: índice de búsqueda + vocabulario */
-  buildFacets(); renderChips(); renderDatos(); renderMapa(); doSearch();
+  buildFacets(); renderChips(); renderDatos(); doSearch();
   renderInicio(); renderAlertas();
   $('#hdSub').textContent = ST.meta.rows.toLocaleString('es-AR') + ' productos · ' +
     new Date(ST.meta.when).toLocaleDateString('es-AR');
@@ -1565,8 +1584,25 @@ function loadPrefs() {
   $('#cfgSup').checked = ST.cfg.sup; $('#cfgBloq').checked = ST.cfg.bloq;
 }
 function saveCfg() { LS.set('pq_cfg', ST.cfg); }
-$('#cfgSup').onchange = e => { ST.cfg.sup = e.target.checked; saveCfg(); renderSup(); toast(e.target.checked ? 'Modo supervisor activado' : 'Modo supervisor desactivado'); };
+const PIN_SUPERVISOR = '1803';
+$('#cfgSup').onchange = e => {
+  if (e.target.checked) {
+    const pin = prompt('Ingresá el PIN para activar el modo supervisor:');
+    if (pin !== PIN_SUPERVISOR) {
+      e.target.checked = false;
+      if (pin !== null) toast('PIN incorrecto');
+      return;
+    }
+  }
+  ST.cfg.sup = e.target.checked; saveCfg(); renderSup();
+  toast(e.target.checked ? 'Modo supervisor activado' : 'Modo supervisor desactivado');
+};
 $('#cfgBloq').onchange = e => { ST.cfg.bloq = e.target.checked; saveCfg(); };
+$('#btnAvanz').onclick = () => {
+  const on = $('#avanzBox').style.display !== 'none';
+  $('#avanzBox').style.display = on ? 'none' : 'block';
+  $('#avanzArrow').textContent = on ? 'Mostrar ▾' : 'Ocultar ▴';
+};
 
 function verProducto(cod) {                       /* registra consulta */
   ST.recientes = [cod].concat(ST.recientes.filter(c => c !== cod)).slice(0, 15);
@@ -1703,6 +1739,7 @@ $('#vInicio').addEventListener('click', e => {
   if (a === 'buscar') { go('vBuscar'); setTimeout(() => $('#q').focus(), 150); }
   else if (a === 'escanear') openScan();
   else if (a === 'ubicacion') openUbi();
+  else if (a === 'mibase') openBase();
   else if (a === 'conteo') { go('vBuscar'); toast('Buscá el producto y tocá Contar', 3000); setTimeout(() => $('#q').focus(), 150); }
   else if (a === 'alertas') go('vAlertas');
 });
@@ -1761,7 +1798,7 @@ function openFicha(r) {
       kv('Material', r.mat) + kv('Segmento', r.seg) + kv('Detalle segm.', r.det) +
       kv('Meses sin rot.', r.rot == null ? '' : nfmt(r.rot)) + '</dl>' +
     (r.otros.length ? '<p class="eyebrow" style="margin:16px 0 6px">Otros depósitos</p><div class="otros" style="border:0;padding:0">' +
-      r.otros.map(o => fila(o[0], o[1])).join('') + '</div>' : '') +
+      r.otros.map(o => fila(o[0], o[1], (o[3] != null && o[3] > 3) ? '⚠ Devolución' : null)).join('') + '</div>' : '') +
     '<div class="acts">' +
       '<button class="btn pri full" data-fk="contar">＋ Contar</button>' +
       '<button class="btn" data-fk="copiar">📋 Copiar código</button>' +
@@ -1771,7 +1808,9 @@ function openFicha(r) {
     '</div><div style="height:8px"></div>';
   openSheet('#shFicha');
 }
-const fila = (t, q) => '<div class="r"><span>' + esc(t) + '</span><b class="num">' + nfmt(q) + '</b></div>';
+const fila = (t, q, tag) => '<div class="r"><span>' + esc(t) +
+  (tag ? ' <b style="color:var(--crit);font-weight:700;font-size:11px">' + esc(tag) + '</b>' : '') +
+  '</span><b class="num">' + nfmt(q) + '</b></div>';
 $('#fkBody').addEventListener('click', async e => {
   const b = e.target.closest('[data-fk]'); if (!b) return;
   const r = ST.fkRow, a = b.dataset.fk;
@@ -1822,6 +1861,76 @@ function paintUbi() {
 }
 $('#ubiRes').addEventListener('click', e => { const b = e.target.closest('.rec'); if (!b) return;
   const r = ST.byCod.get(b.dataset.cod); if (r) { closeSheet('#shUbi'); openFicha(r); } });
+
+/* ══════════════════════════════════════════════════════════════════════
+   V2 · MÓDULO 5.1 — MI BASE (buscar por técnico o por depósito)
+   "Molla" → encuentra al técnico → resuelve su base (Santa Fe) → stock ahí.
+   Tolera que haya varios técnicos en la misma base.
+   ══════════════════════════════════════════════════════════════════════ */
+function openBase() {
+  ST.baseVista = null;
+  $('#baseBuscar').style.display = 'block'; $('#baseDetalle').style.display = 'none';
+  $('#baseBack').style.display = 'none';
+  $('#baseQ').value = ''; paintBase('');
+  openSheet('#shBase'); setTimeout(() => $('#baseQ').focus(), 140);
+}
+function paintBase(term) {
+  const box = $('#baseRes');
+  if (!ST.fillRate) { box.innerHTML = '<div class="al c3"><div class="m">📋 Todavía no cargaste los técnicos por base.</div>' +
+    '<div class="rc">Andá a Datos → Técnicos por base y elegí el Fill Rate.xlsx.</div></div>'; return; }
+  const t = norm(term);
+  if (t.length < 2) { box.innerHTML = '<p class="note">Escribí al menos 2 letras.</p>'; return; }
+  const porTec = [];
+  for (const [key, arr] of ST.fillRate.tecIndex) if (key.indexOf(t) >= 0) for (const it of arr) porTec.push(it);
+  const porDep = [];
+  for (const [code, info] of ST.fillRate.depIndex)
+    if (norm(info.desc).indexOf(t) >= 0 || norm(code).indexOf(t) >= 0)
+      porDep.push({ code, desc: info.desc, tecnicos: Array.from(info.tecnicos.keys()) });
+  /* de-duplicar bases repetidas entre ambos resultados */
+  const vistos = new Set(); const out = [];
+  for (const it of porTec) if (!vistos.has(it.code)) { vistos.add(it.code);
+    out.push({ code: it.code, desc: it.desc, tecnicos: Array.from((ST.fillRate.depIndex.get(it.code) || {}).tecnicos || []).map(x => x[0]),
+      porNombre: it.nombre }); }
+  for (const it of porDep) if (!vistos.has(it.code)) { vistos.add(it.code); out.push(it); }
+  if (!out.length) { box.innerHTML = '<p class="note">No encontré ningún técnico ni base con ese nombre.</p>'; return; }
+  box.innerHTML = out.slice(0, 30).map(b => '<button class="rec" data-code="' + esc(b.code) + '">' +
+    '<span class="i"><b>' + esc(b.desc || b.code) + '</b>' +
+    '<span>' + esc(b.tecnicos.join(', ')) + '</span></span>' +
+    '<span class="q">' + esc(b.code) + '</span></button>').join('');
+}
+$('#baseQ').addEventListener('input', e => paintBase(e.target.value));
+$('#baseRes').addEventListener('click', e => { const b = e.target.closest('.rec'); if (!b) return;
+  abrirDetalleBase(b.dataset.code); });
+function abrirDetalleBase(code) {
+  ST.baseVista = code;
+  const info = ST.fillRate.depIndex.get(code);
+  const tecnicos = info ? Array.from(info.tecnicos.keys()) : [];
+  const items = [];
+  for (const r of ST.rows) { const pd = r.porDep && r.porDep[code];
+    if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot }); }
+  items.sort((a, b) => b.cant - a.cant);
+  $('#baseBuscar').style.display = 'none'; $('#baseBack').style.display = 'flex';
+  const box = $('#baseDetalle'); box.style.display = 'block';
+  box.innerHTML =
+    '<p class="eyebrow" style="margin:0 0 4px">Base</p>' +
+    '<h2 style="font-size:17px;margin-bottom:2px">' + esc((info && info.desc) || code) + '</h2>' +
+    '<p class="note" style="margin:0 0 12px">Código ' + esc(code) + (tecnicos.length ?
+      ' · ' + tecnicos.join(', ') : '') + '</p>' +
+    '<div class="kv"><span>Productos con stock</span><b class="num">' + items.length.toLocaleString('es-AR') + '</b></div>' +
+    '<div class="kv"><span>Unidades en total</span><b class="num">' + nfmt(items.reduce((a, x) => a + x.cant, 0)) + '</b></div>' +
+    '<p class="eyebrow" style="margin:14px 0 6px">Stock actual</p>' +
+    (items.length ? items.slice(0, 200).map(it => '<button class="rec" data-cod="' + esc(it.r.cod) + '">' +
+      '<span class="i"><b>' + esc(it.r.cod) + '</b><span>' + esc(it.r.desc || '') + '</span></span>' +
+      (it.rot != null && it.rot > 3 ? '<span class="bayer" style="background:var(--tint-crit);color:var(--crit);border-color:var(--crit);margin-right:6px">' +
+        it.rot.toFixed(0) + 'm</span>' : '') +
+      '<span class="q num">' + nfmt(it.cant) + '</span></button>').join('')
+      : '<p class="note">No hay stock cargado en esta base en el archivo actual.</p>') +
+    (items.length > 200 ? '<p class="note">Se muestran los primeros 200.</p>' : '');
+}
+$('#baseDetalle').addEventListener('click', e => { const b = e.target.closest('.rec'); if (!b) return;
+  const r = ST.byCod.get(b.dataset.cod); if (r) { closeSheet('#shBase'); openFicha(r); } });
+$('#baseBack').addEventListener('click', () => {
+  $('#baseDetalle').style.display = 'none'; $('#baseBuscar').style.display = 'block'; $('#baseBack').style.display = 'none'; });
 
 /* ══════════════════════════════════════════════════════════════════════
    V2 · MÓDULO 6 — ESCÁNER (BarcodeDetector nativo)
@@ -1912,6 +2021,24 @@ function computeAlertas(force) {
       rc: 'Asignar sector-estante-ubicación en el sistema.' }); continue; }
     if (r.rot != null && r.rot >= 24 && h > 0) { A.push({ n: 3, r, tg: 'Sin rotación', m: nfmt(r.rot) + ' meses sin movimiento · ' + nfmt(h) + ' en planta.',
       rc: 'Verificar físicamente y confirmar si conviene mantener inventario.' }); continue; }
+  }
+  /* Material inmovilizado: stock en cualquier depósito que NO sea Almacén Central
+     ni Planta Alta (Haedo), con más de 3 meses sin rotar. Se le avisa a la base
+     — con el/los técnicos si Fill Rate está cargado — que hay que devolverlo. */
+  for (const r of ST.rows) {
+    if (!r.porDep) continue;
+    for (const code in r.porDep) {
+      const info = r.porDep[code];
+      if (!(info.cant > 0) || info.rot == null || info.rot <= 3) continue;
+      const base = ST.fillRate && ST.fillRate.depIndex.get(code);
+      const baseDesc = (base && base.desc) || info.desc || code;
+      const tecnicos = base ? Array.from(base.tecnicos.keys()) : [];
+      const grave = info.rot >= 6;
+      A.push({ n: grave ? 1 : 2, r, tg: 'Devolución pendiente',
+        m: baseDesc + (tecnicos.length ? ' · ' + tecnicos.join(', ') : '') + ' · ' +
+           nfmt(info.cant) + ' u. · ' + info.rot.toFixed(1) + ' meses sin rotar',
+        rc: 'Material inmovilizado en la base — coordinar devolución a Permaquim Haedo.' });
+    }
   }
   A.sort((a, b) => a.n - b.n || (b.r.C + b.r.A) - (a.r.C + a.r.A));
   ST.alertas = A; ST._alFresh = true;
@@ -2106,17 +2233,17 @@ function rutaInicial() {
   loadMem(); saveMem();
   ST.mapUser = (await DB.get('mapUser')) || {};
   ST.dirHandle = (await DB.get('dirHandle')) || null;
+  ST.fillRate = (await DB.get('fillrate')) || null; renderFillRate();
   loadPrefs(); ST.hist = null; renderHist(); renderConteos(); redNote();
 
   if (window.PQ_DATA && window.PQ_DATA.rows && window.PQ_DATA.rows.length) {
     /* copia publicada: los datos vienen embebidos, no se pisan con los del dispositivo */
     await applyData({ rows: window.PQ_DATA.rows, meta: window.PQ_DATA.meta }, false);
-    $('#pnlPub').style.display = 'none';
     go('vInicio'); initSW(); pintarPWA(); rutaInicial(); return;
   }
   const rows = await DB.get('rows'), meta = await DB.get('meta');
   if (rows && rows.length && meta) await applyData({ rows, meta }, false);
-  else { renderDatos(); renderMapa(); doSearch(); renderInicio(); renderAlertas(); }
+  else { renderDatos(); doSearch(); renderInicio(); renderAlertas(); }
   go('vInicio');
   initSW(); pintarPWA(); rutaInicial();          /* capa PWA: no altera ningún dato guardado */
 })();

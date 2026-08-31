@@ -159,7 +159,9 @@ mark{background:var(--tint-warn);color:inherit;border-radius:3px;padding:0 1px}
 .hero .sub2{font-size:13px;color:var(--ink-muted);margin-top:3px}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}
 .kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);
-  padding:10px 10px 11px;box-shadow:var(--shadow);min-height:74px;display:flex;flex-direction:column;justify-content:center}
+  padding:10px 10px 11px;box-shadow:var(--shadow);min-height:74px;display:flex;flex-direction:column;justify-content:center;
+  cursor:pointer;text-align:left;font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+.kpi:active{transform:translateY(1px)}
 .kpi .n{font-family:var(--f-tit);font-size:22px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
 .kpi .l{font-size:10.5px;font-weight:600;letter-spacing:.03em;color:var(--ink-muted);margin-top:5px;line-height:1.25}
 .kpi.ok .n{color:var(--ok)} .kpi.crit .n{color:var(--crit)} .kpi.warn .n{color:var(--warn)}
@@ -368,7 +370,17 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
   align-items:flex-start;justify-content:center;overflow-y:auto;padding:calc(env(safe-area-inset-top) + 22px) 16px 30px}
 #gateLogin.off{display:none}
 .gl-card{width:100%;max-width:420px}
-.gl-iso{height:44px;color:#fff;display:block;margin:0 auto 14px}
+/* Logo como lockup horizontal (ícono + "Permaquim"), igual a la referencia
+   de la empresa: tile blanco, sin recortes (overflow visible), ícono y
+   texto en azul de marca. Centrado con un wrapper flex, no con auto en
+   un elemento inline. */
+.gl-isowrap{display:flex;justify-content:center;margin:0 0 18px}
+.gl-isobox{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;
+  border-radius:16px;overflow:visible;background:#fff;
+  box-shadow:0 12px 30px -16px rgba(0,0,0,.55);border:1px solid rgba(15,19,48,.06)}
+.gl-iso{width:34px;height:34px;color:#20258A;display:block;overflow:visible;flex:none}
+.gl-word{font-family:var(--f-tit);font-weight:800;font-size:23px;color:#20258A;
+  letter-spacing:-.01em;white-space:nowrap}
 #gateLogin h1{color:#fff;text-align:center;font-size:21px;margin-bottom:4px}
 .gl-sub{color:rgba(255,255,255,.75);text-align:center;font-size:13.5px;margin:0 0 6px}
 .gl-rol{display:flex;flex-direction:column;gap:9px}
@@ -393,6 +405,18 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 .tabs button.on::before{left:16%;right:16%}
 .bdg{right:calc(50% - 20px);min-width:16px;height:16px;line-height:16px;font-size:9.5px}
 @media (max-width:340px){.tabs button{font-size:8.5px}.tabs button svg{width:19px;height:19px}}
+/* ── MODO TÉCNICO · sólo su base: se ocultan las pestañas generales ───── */
+body.rol-tec .tabs{grid-template-columns:repeat(2,1fr)}
+body.rol-tec .tabs button[data-view="vBuscar"],
+body.rol-tec .tabs button[data-view="vConteos"],
+body.rol-tec .tabs button[data-view="vAlertas"]{display:none}
+body.rol-tec .tabs button{font-size:11.5px}
+.devol{border:1.5px solid var(--crit);background:var(--tint-crit);border-radius:var(--r-md);
+  padding:12px 13px;margin:0 0 14px}
+.devol b{font-family:var(--f-tit);font-size:14px;display:block;margin-bottom:3px;color:var(--crit)}
+.devol .ln{font-size:13px;color:var(--ink-2);margin-top:6px;line-height:1.5}
+.devol .nd{display:inline-block;font-family:var(--f-num);font-size:12px;font-weight:700;
+  background:var(--crit);color:#fff;border-radius:var(--r-pill);padding:2px 9px;margin-top:8px}
 </style>
 </head>
 <body>
@@ -400,27 +424,30 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 <!-- ═══ LOGIN · identificación previa a entrar ═══ -->
 <div id="gateLogin">
   <div class="gl-card">
-    <svg class="gl-iso" viewBox="0 0 109.6 100" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M51.1 98.8C41.1 97 34.7 92.9 28.2 84.1C27.2 82.8 26.1 81.7 25.6 81.7C24 81.7 20.3 80.2 17.4 78.3C15.7 77.3 14.1 76.3 13.8 76.2C11.7 75.5 7 70.2 4 65.1C-1.7 55.5 -1.3 42 4.8 32.3C8.2 27.1 9.3 25.8 13.8 22.4C16.1 20.6 19.3 18.1 20.8 16.8C22.4 15.5 24.9 13.4 26.5 12.1C28.1 10.8 30.3 9 31.4 8C32.5 7 33.8 6 34.2 5.8C34.6 5.5 35.3 5 35.9 4.5C36.4 4.1 38.4 2.9 40.4 1.8L44.1 0L55.6 0L67.1 -0L69.7 1.2C75.9 4.1 79.3 7.1 83.8 13.4C85.3 15.4 86.7 16.9 87.7 17.4C98.2 22.3 100.5 24.1 104.9 30.3C109.5 36.7 109.4 36 109.4 49.3L109.4 61L107.8 64C106.9 65.7 106.1 67.1 105.9 67.1C105.8 67.1 105.2 67.9 104.7 68.8C103.5 70.9 99.8 74.6 96.3 77.3C86.1 84.9 80.7 89 78.6 90.9C75.9 93.3 69 97 65.3 98C62.8 98.6 53.3 99.2 51.1 98.8ZM63 91.2C67.2 90 76.5 84 75.5 83.1C75.3 82.9 73.6 82.5 71.7 82.2C61.3 80.3 51.7 72.9 47.4 63.5C46.7 62 46.2 60.6 44.7 55.3C44.4 54.4 44.3 51.3 44.4 48.5C44.5 42.4 44.4 42.2 40.7 45C31.3 51.9 27.5 63.8 31.4 74.4C36 87.2 50.5 94.9 63 91.2ZM81.1 73.9C82.3 71.7 82.3 61.5 81.1 57.9C80 54.3 79.6 54.3 74.2 59.3C73.2 60.2 70.2 62.9 67.5 65.2C64.7 67.7 62.6 69.8 62.6 70.3C62.6 70.8 63.5 71.5 65.6 72.5C71.3 75 72 75.2 77.3 75.3C80.3 75.3 80.4 75.3 81.1 73.9ZM22.9 65.5C23.1 58.7 23.1 58.6 24.8 54.6C27.2 48.9 27.2 48.8 25.7 45.6C22.7 39.5 21.6 34 22.2 28.8C22.6 25.5 22.1 25.3 19.2 27.4C11.2 33.2 7.6 39.9 7.6 49.1C7.5 57.4 10 63.1 15.9 68.6C18.9 71.3 21.9 73.2 22.5 72.7C22.6 72.5 22.8 69.3 22.9 65.5ZM96.6 67.4C101.6 62.4 103.4 57.5 103.4 49.3C103.4 39.9 100.8 34.5 93.5 28.7C89.6 25.6 88.8 25.6 89.2 29C89.7 33.7 87.5 43.8 85.6 46.1C84.6 47.4 84.6 48.2 85.8 50.5C88.5 55.5 89.5 59.5 89.5 66.5C89.5 69.5 89.6 72.1 89.8 72.3C90.2 72.7 94 70 96.6 67.4ZM57.1 60.8C58.6 57.4 58.9 56.6 59.4 53C60.3 47 57.9 36.1 55.6 36.1C53.3 36.1 50.7 46.8 51.6 52.4C53 61 55.4 64.8 57.1 60.8ZM71.6 51.8C87 39.4 84.7 16.7 67 8C62.8 5.9 59.7 5.3 53.9 5.6C49.3 5.8 48.9 5.9 44.7 7.9C40.4 10 34.6 14.7 35.4 15.5C35.7 15.7 37.3 16.1 39 16.4C42.4 17.1 43.5 17.5 48.6 19.9C59.6 25.2 67.3 37.6 67.1 50C67 54.7 67 54.8 67.5 54.8C67.8 54.8 69.6 53.5 71.6 51.8ZM33.7 41.2C34.4 40.8 36.2 39.3 37.7 37.9C39.2 36.5 42.2 33.9 44.4 32.2C46.6 30.4 48.4 28.8 48.4 28.5C48.4 26.7 40.9 23.8 35.2 23.4L31.1 23.2L30.4 24.6C28.9 27.4 29.7 39.2 31.6 41.4C32.2 42.2 32.2 42.2 33.7 41.2Z"/></svg>
+    <div class="gl-isowrap"><div class="gl-isobox"><svg class="gl-iso" viewBox="-1.5 -1.5 112.6 103" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M51.1 98.8C41.1 97 34.7 92.9 28.2 84.1C27.2 82.8 26.1 81.7 25.6 81.7C24 81.7 20.3 80.2 17.4 78.3C15.7 77.3 14.1 76.3 13.8 76.2C11.7 75.5 7 70.2 4 65.1C-1.7 55.5 -1.3 42 4.8 32.3C8.2 27.1 9.3 25.8 13.8 22.4C16.1 20.6 19.3 18.1 20.8 16.8C22.4 15.5 24.9 13.4 26.5 12.1C28.1 10.8 30.3 9 31.4 8C32.5 7 33.8 6 34.2 5.8C34.6 5.5 35.3 5 35.9 4.5C36.4 4.1 38.4 2.9 40.4 1.8L44.1 0L55.6 0L67.1 -0L69.7 1.2C75.9 4.1 79.3 7.1 83.8 13.4C85.3 15.4 86.7 16.9 87.7 17.4C98.2 22.3 100.5 24.1 104.9 30.3C109.5 36.7 109.4 36 109.4 49.3L109.4 61L107.8 64C106.9 65.7 106.1 67.1 105.9 67.1C105.8 67.1 105.2 67.9 104.7 68.8C103.5 70.9 99.8 74.6 96.3 77.3C86.1 84.9 80.7 89 78.6 90.9C75.9 93.3 69 97 65.3 98C62.8 98.6 53.3 99.2 51.1 98.8ZM63 91.2C67.2 90 76.5 84 75.5 83.1C75.3 82.9 73.6 82.5 71.7 82.2C61.3 80.3 51.7 72.9 47.4 63.5C46.7 62 46.2 60.6 44.7 55.3C44.4 54.4 44.3 51.3 44.4 48.5C44.5 42.4 44.4 42.2 40.7 45C31.3 51.9 27.5 63.8 31.4 74.4C36 87.2 50.5 94.9 63 91.2ZM81.1 73.9C82.3 71.7 82.3 61.5 81.1 57.9C80 54.3 79.6 54.3 74.2 59.3C73.2 60.2 70.2 62.9 67.5 65.2C64.7 67.7 62.6 69.8 62.6 70.3C62.6 70.8 63.5 71.5 65.6 72.5C71.3 75 72 75.2 77.3 75.3C80.3 75.3 80.4 75.3 81.1 73.9ZM22.9 65.5C23.1 58.7 23.1 58.6 24.8 54.6C27.2 48.9 27.2 48.8 25.7 45.6C22.7 39.5 21.6 34 22.2 28.8C22.6 25.5 22.1 25.3 19.2 27.4C11.2 33.2 7.6 39.9 7.6 49.1C7.5 57.4 10 63.1 15.9 68.6C18.9 71.3 21.9 73.2 22.5 72.7C22.6 72.5 22.8 69.3 22.9 65.5ZM96.6 67.4C101.6 62.4 103.4 57.5 103.4 49.3C103.4 39.9 100.8 34.5 93.5 28.7C89.6 25.6 88.8 25.6 89.2 29C89.7 33.7 87.5 43.8 85.6 46.1C84.6 47.4 84.6 48.2 85.8 50.5C88.5 55.5 89.5 59.5 89.5 66.5C89.5 69.5 89.6 72.1 89.8 72.3C90.2 72.7 94 70 96.6 67.4ZM57.1 60.8C58.6 57.4 58.9 56.6 59.4 53C60.3 47 57.9 36.1 55.6 36.1C53.3 36.1 50.7 46.8 51.6 52.4C53 61 55.4 64.8 57.1 60.8ZM71.6 51.8C87 39.4 84.7 16.7 67 8C62.8 5.9 59.7 5.3 53.9 5.6C49.3 5.8 48.9 5.9 44.7 7.9C40.4 10 34.6 14.7 35.4 15.5C35.7 15.7 37.3 16.1 39 16.4C42.4 17.1 43.5 17.5 48.6 19.9C59.6 25.2 67.3 37.6 67.1 50C67 54.7 67 54.8 67.5 54.8C67.8 54.8 69.6 53.5 71.6 51.8ZM33.7 41.2C34.4 40.8 36.2 39.3 37.7 37.9C39.2 36.5 42.2 33.9 44.4 32.2C46.6 30.4 48.4 28.8 48.4 28.5C48.4 26.7 40.9 23.8 35.2 23.4L31.1 23.2L30.4 24.6C28.9 27.4 29.7 39.2 31.6 41.4C32.2 42.2 32.2 42.2 33.7 41.2Z"/></svg><span class="gl-word">Permaquim</span></div></div>
     <h1>Stock Permaquim</h1>
     <p class="gl-sub">Identificate para ver el stock de tu base.</p>
 
-    <p class="eyebrow" style="margin:18px 0 8px">¿Quién sos?</p>
+    <p class="eyebrow" style="margin:18px 0 8px">Indicá tu responsabilidad</p>
     <div class="gl-rol" id="glRol">
       <button data-rol="tecnico"><span class="ic">🔧</span>Técnico Permaquim</button>
       <button data-rol="supervisor"><span class="ic">🧑‍💼</span>Supervisor Permaquim</button>
       <button data-rol="responsable"><span class="ic">📦</span>Responsable de Stock</button>
+      <button data-rol="nacional"><span class="ic">🌐</span>Planificación</button>
     </div>
 
-    <label class="lb" style="margin-top:16px">Nombre</label>
-    <input class="txt" id="glNombre" type="text" placeholder="Tu nombre y apellido" autocomplete="name">
-    <label class="lb">Número de legajo</label>
-    <input class="txt" id="glLegajo" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Ej.: 253">
+    <div id="glDatos" style="display:none">
+      <label class="lb" style="margin-top:16px">Nombre completo</label>
+      <input class="txt" id="glNombre" type="text" placeholder="Nombre y apellido" autocomplete="name">
+      <label class="lb">Número de legajo</label>
+      <input class="txt" id="glLegajo" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Ej.: 253">
 
-    <div id="glErr" class="al c1" style="display:none;margin:4px 0 10px"><div class="m" id="glErrMsg"></div></div>
+      <div id="glErr" class="al c1" style="display:none;margin:4px 0 10px"><div class="m" id="glErrMsg"></div></div>
 
-    <button class="btn pri" id="glEntrar" style="min-height:56px;font-size:16px">Ingresar</button>
-    <button class="btn gh" id="glOmitir">Continuar sin identificarme</button>
-    <p class="note" id="glNote" style="text-align:center">El legajo se cruza contra los datos ya cargados en el teléfono.</p>
+      <button class="btn pri" id="glEntrar" style="min-height:56px;font-size:16px">Ingresar</button>
+      <p class="note" id="glNote" style="text-align:center">El legajo se cruza contra los datos ya cargados en el teléfono.</p>
+    </div>
+    <div id="glErr0" class="al c1" style="display:none;margin:10px 0 0"><div class="m" id="glErr0Msg"></div></div>
   </div>
 </div>
 
@@ -439,7 +466,8 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
     <div class="hi" id="saludo">Hola</div>
     <div class="sub2" id="heroSub">Sin datos cargados</div>
   </div>
-  <main style="padding-top:0">
+  <main id="miStock" style="padding-top:0;display:none"></main>
+  <main id="inicioGral" style="padding-top:0">
     <div class="kpis" id="kpis"></div>
     <div class="sechd"><h2>¿Qué necesitás hacer?</h2></div>
     <div class="qa">
@@ -519,6 +547,9 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <div id="histBox"><p class="note">Ningún historial cargado.</p></div>
       <button class="btn gh" id="btnHistClr" style="margin-top:10px;display:none">Descartar historial</button>
     </div>
+    <div class="al c3" id="cntFiltroBanner" style="display:none;align-items:center;gap:8px;margin-bottom:10px">
+      <div class="m" style="flex:1">Mostrando sólo los conteos con diferencia.</div>
+      <button class="mini gh" id="cntFiltroQuitar">Ver todos</button></div>
     <div id="cntList"></div>
   </main>
 </section>
@@ -559,24 +590,16 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <button class="btn gh" id="btnRedChg" style="display:none">Cambiar carpeta de red</button>
       <p class="note" id="redNote"></p>
 
-      <div style="border-top:1px solid var(--grid);margin:14px 0 12px"></div>
-      <p class="sub" id="frSub" style="margin-bottom:8px">Técnicos por base (Fill Rate) — se usa sólo para saber en qué base trabaja cada técnico y a qué nodo devuelve. No se toca ningún otro dato.</p>
-      <div class="kv"><span>Archivo</span><b id="frFile">—</b></div>
-      <div class="kv"><span>Bases identificadas</span><b id="frDeps" class="num">—</b></div>
-      <div class="kv"><span>Técnicos identificados</span><b id="frTecs" class="num">—</b></div>
-      <label class="btn" for="fileFR" style="margin-top:10px">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 17V5M7 10l5-5 5 5M4 20h16"/></svg>
-        Elegir Fill Rate.xlsx</label>
-      <input id="fileFR" type="file" accept=".xlsx,.xlsm,.xlsb,.xls" class="sr">
+    </div>
 
-      <div style="border-top:1px solid var(--grid);margin:14px 0 12px"></div>
-      <p class="sub" id="perSub" style="margin-bottom:8px">Legajos de supervisores y técnicos — para identificar quién sos al entrar a la app y quién supervisa a quién.</p>
-      <div class="kv"><span>Archivo</span><b id="perFile">—</b></div>
-      <div class="kv"><span>Personas identificadas</span><b id="perN" class="num">—</b></div>
-      <label class="btn" for="filePER" style="margin-top:10px">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 17V5M7 10l5-5 5 5M4 20h16"/></svg>
-        Elegir Supervisores y técnicos.xlsx</label>
-      <input id="filePER" type="file" accept=".xlsx,.xlsm,.xlsb,.xls" class="sr">
+    <div class="panel">
+      <h2>Directorio y depósitos</h2>
+      <p class="sub">Quién trabaja en cada base y a qué depósito devuelve cada nodo. Estos datos vienen
+        <b>incluidos en la app</b> — no hay botón de carga acá. Los actualiza Christian regenerando el
+        archivo cuando cambia algo en ST - Depósitos Argentina o Supervisores y técnicos.</p>
+      <div class="kv"><span>Depósitos registrados</span><b id="orgDeps" class="num">—</b></div>
+      <div class="kv"><span>Personas en el directorio</span><b id="orgPer" class="num">—</b></div>
+      <div class="kv"><span>Directorio actualizado</span><b id="orgWhen">—</b></div>
     </div>
 
     <div class="panel">
@@ -624,7 +647,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 </section>
 
 <nav class="tabs" role="tablist">
-  <button class="on" data-view="vInicio" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7M6 10v10h12V10"/></svg>Inicio</button>
+  <button class="on" data-view="vInicio" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7M6 10v10h12V10"/></svg><span id="tabInicioLb">Inicio</span></button>
   <button data-view="vBuscar" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM20 20l-3.5-3.5"/></svg>Buscar</button>
   <button data-view="vConteos" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM5 7h14v13H5zM8 12h8M8 16h5"/></svg>Conteos<span class="bdg" id="bdgCnt" style="display:none">0</span></button>
   <button data-view="vAlertas" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3zM12 10v4M12 17.5v.5"/></svg>Alertas<span class="bdg" id="bdgAl" style="display:none">0</span></button>
@@ -712,6 +735,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 <div id="load"><div class="bx"><div class="spin"></div><b id="loadT">Procesando</b><p id="loadP"></p></div></div>
 
 <script id="pqData">window.PQ_DATA=null;/*__DATA__*/</script>
+<script id="pqOrg">window.PQ_ORG={"deps":{"1":{"desc":"Central","ab":{"tipo":"PLANIFICACION","label":"Planificación"}},"2":{"desc":"Fiscal Puerto Bs As","ab":null},"3":{"desc":"Fiscal - Ezeiza","ab":null},"4":{"desc":"Máquinas en Leasing/Préstamo","ab":null},"5":{"desc":"Empleados","ab":null},"6":{"desc":"La Guardiana","ab":null},"7":{"desc":"Terminal Panamericana S A","ab":{"tipo":"PLANIFICACION","label":"Planificación"}},"11":{"desc":"Zona Franca","ab":null},"12":{"desc":"Cotoras Tomas Jose","ab":null},"13":{"desc":"Sistemas","ab":null},"17":{"desc":"Operaciones","ab":null},"28":{"desc":"DCM TECNOLOGIA","ab":null},"29":{"desc":"ARMORLITTE SA","ab":null},"30":{"desc":"METALURGICA SINARCH","ab":null},"31":{"desc":"Axum Sistemas Inteligentes SRL","ab":null},"32":{"desc":"Repuestos en Tránsito - Axum","ab":null},"89":{"desc":"DAMIAN IÑIGUEZ","ab":null},"100":{"desc":"Laboratorio CES (Seguridad eléctrica)","ab":null},"3420":{"desc":"ENVASES POLIVERSAL SA","ab":null},"ABASTESTING":{"desc":"Abastesting S.A","ab":null},"ALFA":{"desc":"Cenci Ariel Edgardo","ab":null},"ALUPRAN":{"desc":"Tratamientos de Dureza","ab":null},"ARUNCO":{"desc":"Arunco Industrial S.R.L. (hidraulica)","ab":null},"B01":{"desc":"Salta","ab":{"tipo":"NODO04","label":"Nodo Logístico 04 — Tucumán"}},"B02":{"desc":"Jujuy","ab":{"tipo":"NODO04","label":"Nodo Logístico 04 — Tucumán"}},"B03":{"desc":"Tucuman","ab":{"tipo":"NODO04","label":"Nodo Logístico 04 — Tucumán"}},"B04":{"desc":"Santiago Del Estero","ab":{"tipo":"NODO04","label":"Nodo Logístico 04 — Tucumán"}},"B05":{"desc":"Mendoza Capital","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"B06":{"desc":"San Juan","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"B07":{"desc":"Neuquen","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B08":{"desc":"Comodoro Rivadavia","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B09":{"desc":"San Nicolas","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B10":{"desc":"Posadas","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"B11":{"desc":"Chaco","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"B12":{"desc":"Cordoba","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"B15":{"desc":"Banco Nación","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"B16":{"desc":"Barco Casino","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"B17":{"desc":"Catamarca","ab":{"tipo":"NODO04","label":"Nodo Logístico 04 — Tucumán"}},"B18":{"desc":"Brinks","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B19":{"desc":"Casa de Moneda","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B20":{"desc":"Hipodromo Tesoro","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B22":{"desc":"Rio Cuarto 2","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"B24":{"desc":"Prosegur NAZCA","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B26":{"desc":"Santa Fe","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"B27":{"desc":"Bahia Blanca","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B28":{"desc":"Mar del Plata","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B29":{"desc":"Junin","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B30":{"desc":"Olavarria","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B31":{"desc":"Rio Cuarto","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"B32":{"desc":"Técnico M5","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"B34":{"desc":"La Pampa","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B35":{"desc":"Rio Grande","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B36":{"desc":"La Rioja","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"B37":{"desc":"San Luis","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"B38":{"desc":"Formosa","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"B39":{"desc":"Santa Teresita","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B40":{"desc":"Bariloche","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B41":{"desc":"Prosegur Hornos","ab":null},"B42":{"desc":"Concordia","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"B43":{"desc":"Venado Tuerto","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"B44":{"desc":"Casa de Moneda Don Torcuato","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B45":{"desc":"Trelew","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B46":{"desc":"Calafate","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B47":{"desc":"Tandil","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"B48":{"desc":"Mendoza - San Rafael","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"BITS3D":{"desc":"Armado de Placas - Sanchez Hernan Maximiliano","ab":null},"BSB":{"desc":"Transporte Barsamini SA","ab":null},"C100":{"desc":"Christian Aromando","ab":null},"CABA01":{"desc":"Cap Fed 01","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"CABA02":{"desc":"Cap Fed 02","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"CABA03":{"desc":"Cap Fed 03","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"CABA04":{"desc":"Cap Fed 04","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"CABA05":{"desc":"Cap Fed 05","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"CABA06":{"desc":"Cap Fed 06","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"CABA07":{"desc":"Cap Fed 07","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"CABA08":{"desc":"DUCIT - Cap Fed 08","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"CABA09":{"desc":"Cap Fed 09","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"CABA10":{"desc":"Cap Fed 10","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"CABA11":{"desc":"Cap Fed 11","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"CABA12":{"desc":"Cap Fed 12","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"CABA13":{"desc":"Cap Fed 13","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"CABA14":{"desc":"Cap Fed 14","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"CALDEN OIL":{"desc":"CALDEN OIL","ab":null},"CBA01":{"desc":"Cordoba 01","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"CBA02":{"desc":"Cordoba 02","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"CBA03":{"desc":"Cordoba 03","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"CBA04":{"desc":"Cordoba 04","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"CBA05":{"desc":"Cordoba 05","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"CBA06":{"desc":"Cordoba 06","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"CBA07":{"desc":"Cordoba 07","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"CBA08":{"desc":"Cordoba 08","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"CBA09":{"desc":"Cordoba 09","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"CBA10":{"desc":"Cordoba 10 - Villa María","ab":{"tipo":"NODO02","label":"Nodo Logístico 02 — Córdoba"}},"CH01":{"desc":"Permaquim Chile","ab":null},"CHILE":{"desc":"Permaquim Chile","ab":null},"COLTMATIC":{"desc":"Coltmatic S.R.L ( torneria de presicion)","ab":null},"COMERCIAL":{"desc":"Comercial","ab":null},"DAUD":{"desc":"AUDITORIA OPERACIONES","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"DDM":{"desc":"Lopez  Diego Martin","ab":null},"DES01":{"desc":"Desarrollo 01","ab":null},"DES02":{"desc":"Desarrollo 02","ab":null},"DES03":{"desc":"Desarrollo 03","ab":null},"DES04":{"desc":"Desarrollo 04","ab":null},"EXPO":{"desc":"PORTE MAILLOT S.A. (Expo YPF)","ab":null},"EXPO RED YPF":{"desc":"EXPO RED YPF","ab":null},"EXPO RETAIL":{"desc":"Feria Retail - Centro de convenciones Buenos Aires","ab":null},"EXPO1":{"desc":"HOTEL MADERO","ab":null},"EXPORED":{"desc":"EXPORED","ab":null},"FAMN":{"desc":"Fundición AMN","ab":null},"FLEXOFILM":{"desc":"Flexofilm Avellaneda SA","ab":null},"GLICA":{"desc":"Glica SA","ab":null},"HERDAM":{"desc":"Stagno Carmen - HER DAM","ab":null},"I3D":{"desc":"Producción por Impresión 3D","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"IGNIS":{"desc":"IGNISMOTOREDUCTORES SA","ab":null},"INGEMEC":{"desc":"Casal Carlos Jose","ab":null},"JGAME 01":{"desc":"Juegos Game 01","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"KIOSKOS":{"desc":"Taller de KIOSKOS en TP","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"LAB01":{"desc":"Laboratorio 01","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"LLEO":{"desc":"Lonera Leo","ab":null},"LUPI":{"desc":"HIDRAULICA LUPI","ab":null},"MAE":{"desc":"Producción","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"MAL-TRIMEC":{"desc":"MAL-TRIMEC","ab":null},"MARR":{"desc":"MARRIOT BUENOS AIRES","ab":null},"MEDITERRANEA":{"desc":"Mediterranea Software","ab":null},"METAS":{"desc":"Metales AS","ab":null},"MICAUT":{"desc":"AUTOMACIÓN MICROMECANICA S.A.IC","ab":null},"MICRO01":{"desc":"Ducit","ab":null},"M-MF":{"desc":"Metalúrgica Mario Fernandez","ab":null},"NODO01":{"desc":"Nodo Logístico 01 - Microcentro","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"NODO02":{"desc":"Nodo Logístico 02 - Cordoba","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"NODO03":{"desc":"Nodo Logístico 03 - Rosario","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"NODO04":{"desc":"Nodo Logístico 04 - Tucuman","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"PARO":{"desc":"HIERROS PAROTTA SA","ab":null},"PLANIFICACIÓN":{"desc":"Permaquim Planificación","ab":null},"PLW":{"desc":"PLW Group","ab":null},"POLI":{"desc":"Balatti Magdalena OL (Poligoma)","ab":null},"POLTER":{"desc":"POLTER","ab":null},"REBUMPING":{"desc":"Rebumping","ab":null},"RLINK":{"desc":"Red Link","ab":null},"ROGDA":{"desc":"German Romano","ab":null},"ROS01":{"desc":"Rosario 01","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"ROS02":{"desc":"Rosario 02","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"ROS03":{"desc":"Rosario 03","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"ROS04":{"desc":"Rosario 04","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"ROS05":{"desc":"Rosario 05","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"ROS06":{"desc":"Rosario 06","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"ROS07":{"desc":"Rosario 07","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"ROS08":{"desc":"Rosario 08","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"ROS09":{"desc":"Rosario 09","ab":{"tipo":"NODO03","label":"Nodo Logístico 03 — Rosario"}},"RURAL":{"desc":"La Rural S.A. - Expo Retail","ab":null},"SAGSE":{"desc":"Feria SAGSE - Hotel Hilton","ab":null},"SE1":{"desc":"CES S.A.","ab":null},"SE2":{"desc":"IADEV","ab":null},"SE3":{"desc":"Shitsuke","ab":null},"SEG ELC":{"desc":"PLW Group","ab":null},"SEI":{"desc":"ElectroInnovacion SA - Circuitos Impresos SEI","ab":null},"SINARCH SRL":{"desc":"METALURGICA SINARCH SRL","ab":null},"STANFOR":{"desc":"STANFOR","ab":null},"TACO":{"desc":"Baroni  Diego Fernando","ab":null},"TALLER":{"desc":"Taller","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"TECMEC":{"desc":"TECNOLOGIA DE MECANIZADOS SRL","ab":null},"TORN":{"desc":"TORNERÍA - Gualdieri Miguel Franco y Diniro Daniel V S.H","ab":null},"TP":{"desc":"Taller TP","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"TRIMAKER":{"desc":"Proveedor Impresoras 3D - Palatinum SA","ab":null},"TUC 01":{"desc":"Tucuman 01","ab":{"tipo":"NODO04","label":"Nodo Logístico 04 — Tucumán"}},"TUC 02":{"desc":"Tucuman 02","ab":{"tipo":"NODO04","label":"Nodo Logístico 04 — Tucumán"}},"TUC 03":{"desc":"Tucuman 03","ab":{"tipo":"NODO04","label":"Nodo Logístico 04 — Tucumán"}},"TUC 04":{"desc":"Tucuman 04","ab":{"tipo":"NODO04","label":"Nodo Logístico 04 — Tucumán"}},"VREP":{"desc":"Deposito Virtual Reparaciones","ab":null},"ZIELTECK SA":{"desc":"ZIELTECK SA","ab":null},"ZN01":{"desc":"Zona Norte 01","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZN02":{"desc":"Zona Norte 02","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZN04":{"desc":"Zona Norte 04","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZN06":{"desc":"Zona Norte 06","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZN07":{"desc":"Zona Norte 07","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZN08":{"desc":"Zona Norte 08","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZN09":{"desc":"Zona Norte 09","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZO02":{"desc":"Zona Oeste 02","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZO03":{"desc":"Zona Oeste 03","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZO07":{"desc":"Zona Oeste 07","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZO08":{"desc":"Zona Oeste 08","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZO09":{"desc":"Zona Oeste 09","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZO10":{"desc":"Zona Oeste 10","ab":{"tipo":"HAEDO","label":"Central Haedo"}},"ZS01":{"desc":"Zona Sur 01","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"ZS02":{"desc":"Zona Sur 02","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"ZS05":{"desc":"Zona Sur 05","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"ZS06":{"desc":"Zona Sur 06","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"ZS07":{"desc":"Zona Sur 07","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"ZS09":{"desc":"Zona Sur 09","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"ZS10":{"desc":"Zona Sur 10","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"ZS11":{"desc":"Zona Sur 11","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"ZS12":{"desc":"Zona Sur 12","ab":{"tipo":"NODO01","label":"Nodo Logístico 01 — Microcentro"}},"ZZ":{"desc":"Mercaderia Reparada Entregada a Clientes","ab":null}},"personal":{"460":{"nombre":"Pogonza Dario Nicolas","cat":"TEC","dep":"TALLER"},"549":{"nombre":"Mendez Gonzalo","cat":"TEC","dep":"TALLER"},"618":{"nombre":"Ojeda Alejo Matias","cat":"TEC","dep":"TALLER"},"482":{"nombre":"Musante Agustin","cat":"TEC","dep":"KIOSKOS"},"526":{"nombre":"Rodriguez Joaquin Andres","cat":"TEC","dep":"TP"},"574":{"nombre":"Tapia Martin Ignacio","cat":"TEC","dep":"TP"},"341":{"nombre":"Duarte, Ismael","cat":"TEC","dep":"JGAME 01"},"577":{"nombre":"Pepe Juan Martin","cat":"TEC","dep":"JGAME 01"},"582":{"nombre":"Sigueti Ramon Nicolas","cat":"TEC","dep":"B17"},"361":{"nombre":"Pernas, Alfredo Daniel","cat":"TEC","dep":"B11"},"383":{"nombre":"Viola, Marcos Ivan","cat":"TEC","dep":"B11"},"447":{"nombre":"Nagore Leonardo Francisco","cat":"TEC","dep":"B11"},"631":{"nombre":"Elortegui Federico Orlando","cat":"TEC","dep":"B11"},"640":{"nombre":"Leonardini Federico","cat":"TEC","dep":"B38"},"378":{"nombre":"Gomez, Hector Martín","cat":"TEC","dep":"B02"},"528":{"nombre":"Quiroz Jorge Hernan","cat":"TEC","dep":"B02"},"359":{"nombre":"Alarcon, Lucas Sebastian","cat":"TEC","dep":"B10"},"512":{"nombre":"Gonzalez Cristian David","cat":"TEC","dep":"B10"},"145":{"nombre":"Artigas, Ariel Antonio","cat":"TEC","dep":"B01"},"311":{"nombre":"Arriaga, Fernando Walter","cat":"TEC","dep":"B01"},"450":{"nombre":"Guitian Nahuel Agustín","cat":"TEC","dep":"B01"},"457":{"nombre":"Fernandez Ruben Angel","cat":"TEC","dep":"B04"},"184":{"nombre":"Ontivero, Daniel Edgardo","cat":"TEC","dep":"TUC 01"},"297":{"nombre":"Acuña, Dario Emanuel","cat":"TEC","dep":"TUC 02"},"446":{"nombre":"Diaz Guzman Juan David","cat":"TEC","dep":"TUC 03"},"345":{"nombre":"Rodriguez Zelaya, Gaston","cat":"TEC","dep":"TUC 04"},"590":{"nombre":"Cornu Alfredo Andrés","cat":"TEC","dep":"B42"},"591":{"nombre":"Mover Kevin","cat":"TEC","dep":"B42"},"55":{"nombre":"Arquiel, Ruben Jose Maria","cat":"TEC","dep":"B26"},"253":{"nombre":"Molla, Gabriel Alberto","cat":"TEC","dep":"B26"},"513":{"nombre":"Toledo Goettig Anibal Santiago","cat":"TEC","dep":"B26"},"520":{"nombre":"Bugnon Valentin Pablo","cat":"TEC","dep":"B26"},"543":{"nombre":"Ledesma Felix Ezequiel","cat":"TEC","dep":"B26"},"76":{"nombre":"Zago, Cesar Marcos","cat":"TEC","dep":"ROS01"},"75":{"nombre":"Lescano, Manuel Alejandro","cat":"TEC","dep":"ROS02"},"331":{"nombre":"Sifontes Cotua, Arturo José","cat":"TEC","dep":"ROS03"},"354":{"nombre":"Gavilan, Raul Alejandro","cat":"TEC","dep":"ROS05"},"567":{"nombre":"Ayala Jonatan","cat":"TEC","dep":"ROS07"},"626":{"nombre":"Piedrabuena Uriel Alejandro","cat":"TEC","dep":"ROS08"},"639":{"nombre":"Strottmann Matias Antonio","cat":"TEC","dep":"ROS09"},"142":{"nombre":"Gomez, Matias Ezequiel","cat":"TEC","dep":"B18"},"449":{"nombre":"Oscar Javier Eduardo","cat":"TEC","dep":"B18"},"499":{"nombre":"Zerpa Paolo Ramon","cat":"","dep":"B18"},"531":{"nombre":"Gamarra Cabrera Julio Andres","cat":"TEC","dep":"B18"},"600":{"nombre":"Gonzalez Matias Ezequiel","cat":"TEC","dep":"B18"},"370":{"nombre":"Rodriguez, Adolfo Omar","cat":"TEC","dep":"B19"},"386":{"nombre":"Sequeira, Victor Hugo","cat":"TEC","dep":"B19"},"389":{"nombre":"Vera, Emiliano Jorge","cat":"TEC","dep":"B19"},"409":{"nombre":"GALEANO JUAN MANUEL","cat":"TEC","dep":"B19"},"448":{"nombre":"Torres Marcelo Javier","cat":"TEC","dep":"B19"},"14":{"nombre":"Gomez, Rodolfo José","cat":"SUP","dep":"B24","misBases":["B24"]},"27":{"nombre":"Antonelli, Miguel Alberto","cat":"TEC","dep":"B24"},"250":{"nombre":"Rosenffel, German Adolfo","cat":"TEC","dep":"B24"},"595":{"nombre":"Brito Lucas Nahuel","cat":"TEC","dep":"B24"},"428":{"nombre":"Segovia Pablo Gustavo","cat":"TEC","dep":"B25"},"62":{"nombre":"Fernandez, Julian Matias","cat":"TEC","dep":"B16"},"223":{"nombre":"Curbelo, Alejandro Nicolas","cat":"TEC","dep":"B16"},"255":{"nombre":"Sanabria, Adrian Antonio","cat":"TEC","dep":"B20"},"323":{"nombre":"Herrera, Eduardo Javier","cat":"TEC","dep":"B20"},"518":{"nombre":"Vargas Maximiliano Alfonso","cat":"TEC","dep":"ZS01"},"94":{"nombre":"Fernandez, Carlos Fabian","cat":"TEC","dep":"ZS02"},"263":{"nombre":"Vergara, Sergio Rafael","cat":"TEC","dep":"ZS03"},"70":{"nombre":"Forte, Diego Juan","cat":"TEC","dep":"ZS05"},"279":{"nombre":"Lepore, Juan Pablo","cat":"TEC","dep":"ZS07"},"373":{"nombre":"Derrico, Matías Pedro","cat":"TEC","dep":"ZS09"},"400":{"nombre":"Farias Diego Hernan","cat":"TEC","dep":"ZS10"},"144":{"nombre":"Zamorano, Jose Eduardo","cat":"TEC","dep":"CBA02"},"463":{"nombre":"Abregu Gustavo Leandro","cat":"TEC","dep":"CBA03"},"467":{"nombre":"Medina Juan Pablo","cat":"TEC","dep":"CBA05"},"519":{"nombre":"Asan Jose Carlos","cat":"TEC","dep":"CBA06"},"521":{"nombre":"Garcia Jesus Rodrigo","cat":"TEC","dep":"CBA07"},"592":{"nombre":"Fernandez Lautaro Benjamín","cat":"TEC","dep":"CBA08"},"377":{"nombre":"Mojica, Ezequiel Miguel","cat":"TEC","dep":"B36"},"106":{"nombre":"Guzzetta, Mauro Alfredo","cat":"TEC","dep":"B48"},"30":{"nombre":"Fazio, Leonardo German","cat":"TEC","dep":"B05"},"113":{"nombre":"Belot, Sebastian Alberto","cat":"TEC","dep":"B05"},"322":{"nombre":"Kaminski, Kevin Aaron","cat":"TEC","dep":"B05"},"544":{"nombre":"Guzman German Daniel","cat":"TEC","dep":"B05"},"622":{"nombre":"Soriano Rizzo Diego Ruben","cat":"TEC","dep":"B05"},"485":{"nombre":"Almeyra Matias Santiago","cat":"TEC","dep":"B31"},"615":{"nombre":"Blanco Hasan David","cat":"TEC","dep":"B22"},"491":{"nombre":"Brusa Steve Gerald","cat":"TEC","dep":"B06"},"366":{"nombre":"Alvarez, Diego Arnaldo","cat":"TEC","dep":"B37"},"51":{"nombre":"Soto, Luis Horacio","cat":"TEC","dep":"LAB01"},"422":{"nombre":"Chaile Amado Ramon","cat":"TEC","dep":"LAB02"},"99":{"nombre":"Pioli, Matias Mario Jose","cat":"SUP","dep":"CABA02","misBases":["B15","CABA01","CABA02","CABA03","CABA04","CABA05","CABA06","CABA07","CABA08","CABA09","CABA10","CABA11","CABA12","CABA13","CABA14"]},"88":{"nombre":"Bazan, Esteban David","cat":"SUP","dep":"CABA03","misBases":["CABA03"]},"170":{"nombre":"Herman, Luis Matias","cat":"SUP","dep":"CBA09","misBases":["B05","B06","B22","B31","B36","B37","B48","CBA01","CBA02","CBA03","CBA04","CBA05","CBA06","CBA07","CBA08","CBA09"]},"118":{"nombre":"Lopez, Sebastian Rodolfo","cat":"SUP","dep":"LAB01","misBases":["LAB01","LAB02"]},"332":{"nombre":"Pintucci, Ignacio Martín","cat":"TEC","dep":"LAB01"},"395":{"nombre":"Perlotti Nicolás Nahuel","cat":"TEC","dep":"LAB01"},"104":{"nombre":"Gallardo, Eduardo Jeremias","cat":"SUP","dep":"B16","misBases":["B16","B20","ZS01","ZS02","ZS05","ZS06","ZS07","ZS09","ZS10","ZS11","ZS12"]},"105":{"nombre":"Egel, Hernan Manuel","cat":"SUP","dep":"B19","misBases":["B18","B19","B24","B32","B44"]},"119":{"nombre":"Spada, Jose Daniel","cat":"TEC","dep":"B28"},"291":{"nombre":"Petro, Jose Ignacio","cat":"SUP","dep":"B33","misBases":["B09","B29","B33","B43","ZN01","ZN02","ZN04","ZN06","ZN07","ZN08","ZN09","ZO02","ZO03","ZO07","ZO08","ZO09","ZO10"]},"277":{"nombre":"Berlincourt, Guillermo Andres","cat":"SUP","dep":"B26","misBases":["B01","B02","B03","B04","B05","B06","B10","B11","B17","B22","B26","B31","B36","B37","B38","B42","B48","CBA01","CBA02","CBA03","CBA04","CBA05","CBA06","CBA07","CBA08","CBA09","ROS01","ROS02","ROS03","ROS04","ROS05","ROS06","ROS07","ROS08","ROS09","TUC 01","TUC 02","TUC 03","TUC 04"]},"415":{"nombre":"Cortez Juan Gabriel","cat":"TEC","dep":"B32"},"71":{"nombre":"Cabrera, Hector Martin","cat":"SUP","dep":"B03","misBases":["B01","B02","B03","B04","B10","B11","B17","B38","TUC 01","TUC 02","TUC 03","TUC 04"]},"149":{"nombre":"Chinique Rodriguez, Yoslan","cat":"SUP","dep":"ROS06","misBases":["B26","B42","ROS01","ROS02","ROS03","ROS04","ROS05","ROS06","ROS07","ROS08","ROS09"]},"621":{"nombre":"Fernandez Francisco Ezequiel","cat":"TEC","dep":"TALLER"},"116":{"nombre":"Bernadzki, María Florencia","cat":"SUP","dep":null,"misBases":["B09","B15","B16","B18","B19","B20","B24","B29","B32","B33","B43","B44","CABA01","CABA02","CABA03","CABA04","CABA05","CABA06","CABA07","CABA08","CABA09","CABA10","CABA11","CABA12","CABA13","CABA14","LAB01","LAB02","ZN01","ZN02","ZN04","ZN06","ZN07","ZN08","ZN09","ZO02","ZO03","ZO07","ZO08","ZO09","ZO10","ZS01","ZS02","ZS05","ZS06","ZS07","ZS09","ZS10","ZS11","ZS12"]},"1005":{"nombre":"Reparaciones en el Exterior, Expo Temporal","cat":"SUP","dep":null,"misBases":[]},"548":{"nombre":"Poggi Matias","cat":"TEC","dep":"B29"},"614":{"nombre":"Monzon Leonel Jesus Dario","cat":"TEC","dep":"B09"},"658":{"nombre":"Maidana Lautaro Fabricio","cat":"TEC","dep":"ZN02"},"1002":{"nombre":"Teran, Gustavo Eduardo","cat":"TEC","dep":"ZN04"},"164":{"nombre":"Villarreal, Roberto Ruben","cat":"TEC","dep":"ZN06"},"525":{"nombre":"Montaño Chira Adrian Adalid","cat":"TEC","dep":"ZN08"},"630":{"nombre":"Fernandez Rodrigo Andres","cat":"TEC","dep":"ZN09"},"565":{"nombre":"Neuvirt Gabriel Dario","cat":"TEC","dep":"ZO07"},"566":{"nombre":"Coronel  Maximiliano Oscar","cat":"TEC","dep":"ZO08"},"445":{"nombre":"Agüero Adolfo Rafael","cat":"TEC","dep":"ZO09"},"214":{"nombre":"Machado, Andres Alberto","cat":"TEC","dep":"ZO10"},"251":{"nombre":"Cacciola, Federico Julian","cat":"TEC","dep":"CABA01"},"82":{"nombre":"Lujan, Noelia Daiana","cat":"TEC","dep":"CABA04"},"207":{"nombre":"Suarez, Fernando Gabriel","cat":"TEC","dep":"CABA05"},"306":{"nombre":"Bracho Cardoza, Fernando Jose","cat":"TEC","dep":"CABA06"},"500":{"nombre":"Samaniego Lucas Hernan","cat":"TEC","dep":"CABA07"},"40":{"nombre":"Cordova Salina, Marcelo Ariel","cat":"TEC","dep":"CABA08"},"475":{"nombre":"Diozquez Facundo Nicolas","cat":"TEC","dep":"CABA09"},"552":{"nombre":"Massante Marco Lucas","cat":"TEC","dep":"CABA11"},"66":{"nombre":"Ocampo, Alberto Javier","cat":"TEC","dep":"CABA12"},"502":{"nombre":"Gonzalez Francisco Alejandro","cat":"TEC","dep":"B19"},"239":{"nombre":"Cingolani, Daniel Ivan","cat":"TEC","dep":"B27"},"294":{"nombre":"Fernandes, Carlos Andres","cat":"TEC","dep":"B27"},"633":{"nombre":"Caceres Belen Rocio","cat":"TEC","dep":"B40"},"534":{"nombre":"Videla Pablo Exequiel","cat":"TEC","dep":"B46"},"281":{"nombre":"Quispe, Nicolas Leandro Damian","cat":"TEC","dep":"B08"},"439":{"nombre":"Lang Kevin Gabriel Damian","cat":"TEC","dep":"B34"},"471":{"nombre":"Mendiondo Andres Mariano","cat":"TEC","dep":"B28"},"563":{"nombre":"Galdamez Nicolas","cat":"TEC","dep":"B28"},"424":{"nombre":"Cardoso Eduardo Nicolas","cat":"TEC","dep":"B07"},"425":{"nombre":"Gutierrez Tomas Agustin","cat":"TEC","dep":"B07"},"665":{"nombre":"Leyva Ivan Exequiel","cat":"TEC","dep":"B07"},"198":{"nombre":"Icazatti, Leonardo Ivan","cat":"TEC","dep":"B30"},"347":{"nombre":"Acosta, Esteban German","cat":"TEC","dep":"B35"},"122":{"nombre":"Scaine, Alberto","cat":"TEC","dep":"B39"},"537":{"nombre":"Gonzalez Lombardi Christian Ruben","cat":"TEC","dep":"B47"},"546":{"nombre":"Juarez Augusto Cesar","cat":"TEC","dep":"B45"},"126":{"nombre":"Falk, Norberto Alexander","cat":"TEC","dep":"TALLER"},"56":{"nombre":"Zoroastro, Esteban","cat":"SUP","dep":null,"misBases":["DAUD","TALLER"]},"495":{"nombre":"Sassola, Adrián Leonel","cat":"SUP","dep":null,"misBases":["KIOSKOS","MAE","TALLER","TP"]},"50":{"nombre":"Oddo, José Luis","cat":"SUP","dep":null,"misBases":["B01","B02","B03","B04","B05","B06","B09","B10","B11","B15","B16","B17","B18","B19","B20","B22","B24","B26","B28","B29","B31","B32","B33","B36","B37","B38","B42","B43","B44","B48","CABA01","CABA02","CABA03","CABA04","CABA05","CABA06","CABA07","CABA08","CABA09","CABA10","CABA11","CABA12","CABA13","CABA14","CBA01","CBA02","CBA03","CBA04","CBA05","CBA06","CBA07","CBA08","CBA09","LAB01","LAB02","ROS01","ROS02","ROS03","ROS04","ROS05","ROS06","ROS07","ROS08","ROS09","TALLER","TUC 01","TUC 02","TUC 03","TUC 04","ZN01","ZN02","ZN04","ZN06","ZN07","ZN08","ZN09","ZO02","ZO03","ZO07","ZO08","ZO09","ZO10","ZS01","ZS02","ZS05","ZS06","ZS07","ZS09","ZS10","ZS11","ZS12"]}},"planificacion":{"616":"Diogo Mendez","559":"Christian Galarza","613":"Mauro Muratore","246":"Matias Morel","452":"Walter Mattioz"},"huerfanos":["B25","B33","LAB02","ZS03"],"generado":"2026-08-31"}</script>
 <script>/* SheetJS xlsx 0.18.5 — embebido, sin CDN */
 /*! xlsx.js (C) 2013-present SheetJS -- http://sheetjs.com */
 var DO_NOT_EXPORT_CODEPAGE=true;var cptable={version:"1.15.0"};cptable[437]=function(){var e="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ ",r=[],t={};for(var a=0;a!=e.length;++a){if(e.charCodeAt(a)!==65533)t[e.charAt(a)]=a;r[a]=e.charAt(a)}return{enc:t,dec:r}}();cptable[620]=function(){var e="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÇüéâäàąçêëèïîćÄĄĘęłôöĆûùŚÖÜ¢Ł¥śƒŹŻóÓńŃźż¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ ",r=[],t={};for(var a=0;a!=e.length;++a){if(e.charCodeAt(a)!==65533)t[e.charAt(a)]=a;r[a]=e.charAt(a)}return{enc:t,dec:r}}();cptable[737]=function(){var e="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρσςτυφχψ░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀ωάέήϊίόύϋώΆΈΉΊΌΎΏ±≥≤ΪΫ÷≈°∙·√ⁿ²■ ",r=[],t={};for(var a=0;a!=e.length;++a){if(e.charCodeAt(a)!==65533)t[e.charAt(a)]=a;r[a]=e.charAt(a)}return{enc:t,dec:r}}();cptable[850]=function(){var e="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜø£Ø×ƒáíóúñÑªº¿®¬½¼¡«»░▒▓│┤ÁÂÀ©╣║╗╝¢¥┐└┴┬├─┼ãÃ╚╔╩╦╠═╬¤ðÐÊËÈıÍÎÏ┘┌█▄¦Ì▀ÓßÔÒõÕµþÞÚÛÙýÝ¯´­±‗¾¶§÷¸°¨·¹³²■ ",r=[],t={};for(var a=0;a!=e.length;++a){if(e.charCodeAt(a)!==65533)t[e.charAt(a)]=a;r[a]=e.charAt(a)}return{enc:t,dec:r}}();cptable[852]=function(){var e="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÇüéâäůćçłëŐőîŹÄĆÉĹĺôöĽľŚśÖÜŤťŁ×čáíóúĄąŽžĘę¬źČş«»░▒▓│┤ÁÂĚŞ╣║╗╝Żż┐└┴┬├─┼Ăă╚╔╩╦╠═╬¤đĐĎËďŇÍÎě┘┌█▄ŢŮ▀ÓßÔŃńňŠšŔÚŕŰýÝţ´­˝˛ˇ˘§÷¸°¨˙űŘř■ ",r=[],t={};for(var a=0;a!=e.length;++a){if(e.charCodeAt(a)!==65533)t[e.charAt(a)]=a;r[a]=e.charAt(a)}return{enc:t,dec:r}}();cptable[857]=function(){var e="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÇüéâäàåçêëèïîıÄÅÉæÆôöòûùİÖÜø£ØŞşáíóúñÑĞğ¿®¬½¼¡«»░▒▓│┤ÁÂÀ©╣║╗╝¢¥┐└┴┬├─┼ãÃ╚╔╩╦╠═╬¤ºªÊËÈ�ÍÎÏ┘┌█▄¦Ì▀ÓßÔÒõÕµ�×ÚÛÙìÿ¯´­±�¾¶§÷¸°¨·¹³²■ ",r=[],t={};for(var a=0;a!=e.length;++a){if(e.charCodeAt(a)!==65533)t[e.charAt(a)]=a;r[a]=e.charAt(a)}return{enc:t,dec:r}}();cptable[861]=function(){var e="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÇüéâäàåçêëèÐðÞÄÅÉæÆôöþûÝýÖÜø£Ø₧ƒáíóúÁÍÓÚ¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ ",r=[],t={};for(var a=0;a!=e.length;++a){if(e.charCodeAt(a)!==65533)t[e.charAt(a)]=a;r[a]=e.charAt(a)}return{enc:t,dec:r}}();cptable[865]=function(){var e="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜø£Ø₧ƒáíóúñÑªº¿⌐¬½¼¡«¤░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ ",r=[],t={};for(var a=0;a!=e.length;++a){if(e.charCodeAt(a)!==65533)t[e.charAt(a)]=a;r[a]=e.charAt(a)}return{enc:t,dec:r}}();cptable[866]=function(){var e="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмноп░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀рстуфхцчшщъыьэюяЁёЄєЇїЎў°∙·√№¤■ ",r=[],t={};for(var a=0;a!=e.length;++a){if(e.charCodeAt(a)!==65533)t[e.charAt(a)]=a;r[a]=e.charAt(a)}return{enc:t,dec:r}}();cptable[874]=function(){var e="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~€����…�����������‘’“”•–—�������� กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุู����฿เแโใไๅๆ็่้๊๋์ํ๎๏๐๑๒๓๔๕๖๗๘๙๚๛����",r=[],t={};for(var a=0;a!=e.length;++a){if(e.charCodeAt(a)!==65533)t[e.charAt(a)]=a;r[a]=e.charAt(a)}return{enc:t,dec:r}}();cptable[895]=function(){var e="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ČüéďäĎŤčěĚĹÍľǪÄÁÉžŽôöÓůÚýÖÜŠĽÝŘťáíóúňŇŮÔšřŕŔ¼§«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ ",r=[],t={};for(var a=0;a!=e.length;++a){if(e.charCodeAt(a)!==65533)t[e.charAt(a)]=a;r[a]=e.charAt(a)}return{enc:t,dec:r}}();cptable[932]=function(){var e=[],r={},t=[],a;t[0]="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~���������������������������������｡｢｣､･ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝﾞﾟ��������������������������������".split("");for(a=0;a!=t[0].length;++a)if(t[0][a].charCodeAt(0)!==65533){r[t[0][a]]=0+a;e[0+a]=t[0][a]}t[129]="����������������������������������������������������������������　、。，．・：；？！゛゜´｀¨＾￣＿ヽヾゝゞ〃仝々〆〇ー―‐／＼～∥｜…‥‘’“”（）〔〕［］｛｝〈〉《》「」『』【】＋－±×�÷＝≠＜＞≦≧∞∴♂♀°′″℃￥＄￠￡％＃＆＊＠§☆★○●◎◇◆□■△▲▽▼※〒→←↑↓〓�����������∈∋⊆⊇⊂⊃∪∩��������∧∨￢⇒⇔∀∃�����������∠⊥⌒∂∇≡≒≪≫√∽∝∵∫∬�������Å‰♯♭♪†‡¶����◯���".split("");for(a=0;a!=t[129].length;++a)if(t[129][a].charCodeAt(0)!==65533){r[t[129][a]]=33024+a;e[33024+a]=t[129][a]}t[130]="�������������������������������������������������������������������������������０１２３４５６７８９�������ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ�������ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ����ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをん��������������".split("");for(a=0;a!=t[130].length;++a)if(t[130][a].charCodeAt(0)!==65533){r[t[130][a]]=33280+a;e[33280+a]=t[130][a]}t[131]="����������������������������������������������������������������ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミ�ムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶ��������ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ��������αβγδεζηθικλμνξοπρστυφχψω�����������������������������������������".split("");for(a=0;a!=t[131].length;++a)if(t[131][a].charCodeAt(0)!==65533){r[t[131][a]]=33536+a;e[33536+a]=t[131][a]}t[132]="����������������������������������������������������������������АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ���������������абвгдеёжзийклмн�опрстуфхцчшщъыьэюя�������������─│┌┐┘└├┬┤┴┼━┃┏┓┛┗┣┳┫┻╋┠┯┨┷┿┝┰┥┸╂�����������������������������������������������������������������".split("");for(a=0;a!=t[132].length;++a)if(t[132][a].charCodeAt(0)!==65533){r[t[132][a]]=33792+a;e[33792+a]=t[132][a]}t[135]="����������������������������������������������������������������①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ�㍉㌔㌢㍍㌘㌧㌃㌶㍑㍗㌍㌦㌣㌫㍊㌻㎜㎝㎞㎎㎏㏄㎡��������㍻�〝〟№㏍℡㊤㊥㊦㊧㊨㈱㈲㈹㍾㍽㍼≒≡∫∮∑√⊥∠∟⊿∵∩∪���������������������������������������������������������������������������������������������������".split("");for(a=0;a!=t[135].length;++a)if(t[135][a].charCodeAt(0)!==65533){r[t[135][a]]=34560+a;e[34560+a]=t[135][a]}t[136]="���������������������������������������������������������������������������������������������������������������������������������������������������������������亜唖娃阿哀愛挨姶逢葵茜穐悪握渥旭葦芦鯵梓圧斡扱宛姐虻飴絢綾鮎或粟袷安庵按暗案闇鞍杏以伊位依偉囲夷委威尉惟意慰易椅為畏異移維緯胃萎衣謂違遺医井亥域育郁磯一壱溢逸稲茨芋鰯允印咽員因姻引飲淫胤蔭���".split("");for(a=0;a!=t[136].length;++a)if(t[136][a].charCodeAt(0)!==65533){r[t[136][a]]=34816+a;e[34816+a]=t[136][a]}t[137]="����������������������������������������������������������������院陰隠韻吋右宇烏羽迂雨卯鵜窺丑碓臼渦嘘唄欝蔚鰻姥厩浦瓜閏噂云運雲荏餌叡営嬰影映曳栄永泳洩瑛盈穎頴英衛詠鋭液疫益駅悦謁越閲榎厭円�園堰奄宴延怨掩援沿演炎焔煙燕猿縁艶苑薗遠鉛鴛塩於汚甥凹央奥往応押旺横欧殴王翁襖鴬鴎黄岡沖荻億屋憶臆桶牡乙俺卸恩温穏音下化仮何伽価佳加可嘉夏嫁家寡科暇果架歌河火珂禍禾稼箇花苛茄荷華菓蝦課嘩貨迦過霞蚊俄峨我牙画臥芽蛾賀雅餓駕介会解回塊壊廻快怪悔恢懐戒拐改���".split("");for(a=0;a!=t[137].length;++a)if(t[137][a].charCodeAt(0)!==65533){r[t[137][a]]=35072+a;e[35072+a]=t[137][a]}t[138]="����������������������������������������������������������������魁晦械海灰界皆絵芥蟹開階貝凱劾外咳害崖慨概涯碍蓋街該鎧骸浬馨蛙垣柿蛎鈎劃嚇各廓拡撹格核殻獲確穫覚角赫較郭閣隔革学岳楽額顎掛笠樫�橿梶鰍潟割喝恰括活渇滑葛褐轄且鰹叶椛樺鞄株兜竃蒲釜鎌噛鴨栢茅萱粥刈苅瓦乾侃冠寒刊勘勧巻喚堪姦完官寛干幹患感慣憾換敢柑桓棺款歓汗漢澗潅環甘監看竿管簡緩缶翰肝艦莞観諌貫還鑑間閑関陥韓館舘丸含岸巌玩癌眼岩翫贋雁頑顔願企伎危喜器基奇嬉寄岐希幾忌揮机旗既期棋棄���".split("");for(a=0;a!=t[138].length;++a)if(t[138][a].charCodeAt(0)!==65533){r[t[138][a]]=35328+a;e[35328+a]=t[138][a]}t[139]="����������������������������������������������������������������機帰毅気汽畿祈季稀紀徽規記貴起軌輝飢騎鬼亀偽儀妓宜戯技擬欺犠疑祇義蟻誼議掬菊鞠吉吃喫桔橘詰砧杵黍却客脚虐逆丘久仇休及吸宮弓急救�朽求汲泣灸球究窮笈級糾給旧牛去居巨拒拠挙渠虚許距鋸漁禦魚亨享京供侠僑兇競共凶協匡卿叫喬境峡強彊怯恐恭挟教橋況狂狭矯胸脅興蕎郷鏡響饗驚仰凝尭暁業局曲極玉桐粁僅勤均巾錦斤欣欽琴禁禽筋緊芹菌衿襟謹近金吟銀九倶句区狗玖矩苦躯駆駈駒具愚虞喰空偶寓遇隅串櫛釧屑屈���".split("");for(a=0;a!=t[139].length;++a)if(t[139][a].charCodeAt(0)!==65533){r[t[139][a]]=35584+a;e[35584+a]=t[139][a]}t[140]="����������������������������������������������������������������掘窟沓靴轡窪熊隈粂栗繰桑鍬勲君薫訓群軍郡卦袈祁係傾刑兄啓圭珪型契形径恵慶慧憩掲携敬景桂渓畦稽系経継繋罫茎荊蛍計詣警軽頚鶏芸迎鯨�劇戟撃激隙桁傑欠決潔穴結血訣月件倹倦健兼券剣喧圏堅嫌建憲懸拳捲検権牽犬献研硯絹県肩見謙賢軒遣鍵険顕験鹸元原厳幻弦減源玄現絃舷言諺限乎個古呼固姑孤己庫弧戸故枯湖狐糊袴股胡菰虎誇跨鈷雇顧鼓五互伍午呉吾娯後御悟梧檎瑚碁語誤護醐乞鯉交佼侯候倖光公功効勾厚口向���".split("");for(a=0;a!=t[140].length;++a)if(t[140][a].charCodeAt(0)!==65533){r[t[140][a]]=35840+a;e[35840+a]=t[140][a]}t[141]="����������������������������������������������������������������后喉坑垢好孔孝宏工巧巷幸広庚康弘恒慌抗拘控攻昂晃更杭校梗構江洪浩港溝甲皇硬稿糠紅紘絞綱耕考肯肱腔膏航荒行衡講貢購郊酵鉱砿鋼閤降�項香高鴻剛劫号合壕拷濠豪轟麹克刻告国穀酷鵠黒獄漉腰甑忽惚骨狛込此頃今困坤墾婚恨懇昏昆根梱混痕紺艮魂些佐叉唆嵯左差査沙瑳砂詐鎖裟坐座挫債催再最哉塞妻宰彩才採栽歳済災采犀砕砦祭斎細菜裁載際剤在材罪財冴坂阪堺榊肴咲崎埼碕鷺作削咋搾昨朔柵窄策索錯桜鮭笹匙冊刷���".split("");for(a=0;a!=t[141].length;++a)if(t[141][a].charCodeAt(0)!==65533){r[t[141][a]]=36096+a;e[36096+a]=t[141][a]}t[142]="����������������������������������������������������������������察拶撮擦札殺薩雑皐鯖捌錆鮫皿晒三傘参山惨撒散桟燦珊産算纂蚕讃賛酸餐斬暫残仕仔伺使刺司史嗣四士始姉姿子屍市師志思指支孜斯施旨枝止�死氏獅祉私糸紙紫肢脂至視詞詩試誌諮資賜雌飼歯事似侍児字寺慈持時次滋治爾璽痔磁示而耳自蒔辞汐鹿式識鴫竺軸宍雫七叱執失嫉室悉湿漆疾質実蔀篠偲柴芝屡蕊縞舎写射捨赦斜煮社紗者謝車遮蛇邪借勺尺杓灼爵酌釈錫若寂弱惹主取守手朱殊狩珠種腫趣酒首儒受呪寿授樹綬需囚収周���".split("");for(a=0;a!=t[142].length;++a)if(t[142][a].charCodeAt(0)!==65533){r[t[142][a]]=36352+a;e[36352+a]=t[142][a]}t[143]="����������������������������������������������������������������宗就州修愁拾洲秀秋終繍習臭舟蒐衆襲讐蹴輯週酋酬集醜什住充十従戎柔汁渋獣縦重銃叔夙宿淑祝縮粛塾熟出術述俊峻春瞬竣舜駿准循旬楯殉淳�準潤盾純巡遵醇順処初所暑曙渚庶緒署書薯藷諸助叙女序徐恕鋤除傷償勝匠升召哨商唱嘗奨妾娼宵将小少尚庄床廠彰承抄招掌捷昇昌昭晶松梢樟樵沼消渉湘焼焦照症省硝礁祥称章笑粧紹肖菖蒋蕉衝裳訟証詔詳象賞醤鉦鍾鐘障鞘上丈丞乗冗剰城場壌嬢常情擾条杖浄状畳穣蒸譲醸錠嘱埴飾���".split("");for(a=0;a!=t[143].length;++a)if(t[143][a].charCodeAt(0)!==65533){r[t[143][a]]=36608+a;e[36608+a]=t[143][a]}t[144]="����������������������������������������������������������������拭植殖燭織職色触食蝕辱尻伸信侵唇娠寝審心慎振新晋森榛浸深申疹真神秦紳臣芯薪親診身辛進針震人仁刃塵壬尋甚尽腎訊迅陣靭笥諏須酢図厨�逗吹垂帥推水炊睡粋翠衰遂酔錐錘随瑞髄崇嵩数枢趨雛据杉椙菅頗雀裾澄摺寸世瀬畝是凄制勢姓征性成政整星晴棲栖正清牲生盛精聖声製西誠誓請逝醒青静斉税脆隻席惜戚斥昔析石積籍績脊責赤跡蹟碩切拙接摂折設窃節説雪絶舌蝉仙先千占宣専尖川戦扇撰栓栴泉浅洗染潜煎煽旋穿箭線���".split("");for(a=0;a!=t[144].length;++a)if(t[144][a].charCodeAt(0)!==65533){r[t[144][a]]=36864+a;e[36864+a]=t[144][a]}t[145]="����������������������������������������������������������������繊羨腺舛船薦詮賎践選遷銭銑閃鮮前善漸然全禅繕膳糎噌塑岨措曾曽楚狙疏疎礎祖租粗素組蘇訴阻遡鼠僧創双叢倉喪壮奏爽宋層匝惣想捜掃挿掻�操早曹巣槍槽漕燥争痩相窓糟総綜聡草荘葬蒼藻装走送遭鎗霜騒像増憎臓蔵贈造促側則即息捉束測足速俗属賊族続卒袖其揃存孫尊損村遜他多太汰詑唾堕妥惰打柁舵楕陀駄騨体堆対耐岱帯待怠態戴替泰滞胎腿苔袋貸退逮隊黛鯛代台大第醍題鷹滝瀧卓啄宅托択拓沢濯琢託鐸濁諾茸凧蛸只���".split("");for(a=0;a!=t[145].length;++a)if(t[145][a].charCodeAt(0)!==65533){r[t[145][a]]=37120+a;e[37120+a]=t[145][a]}t[146]="����������������������������������������������������������������叩但達辰奪脱巽竪辿棚谷狸鱈樽誰丹単嘆坦担探旦歎淡湛炭短端箪綻耽胆蛋誕鍛団壇弾断暖檀段男談値知地弛恥智池痴稚置致蜘遅馳築畜竹筑蓄�逐秩窒茶嫡着中仲宙忠抽昼柱注虫衷註酎鋳駐樗瀦猪苧著貯丁兆凋喋寵帖帳庁弔張彫徴懲挑暢朝潮牒町眺聴脹腸蝶調諜超跳銚長頂鳥勅捗直朕沈珍賃鎮陳津墜椎槌追鎚痛通塚栂掴槻佃漬柘辻蔦綴鍔椿潰坪壷嬬紬爪吊釣鶴亭低停偵剃貞呈堤定帝底庭廷弟悌抵挺提梯汀碇禎程締艇訂諦蹄逓���".split("");for(a=0;a!=t[146].length;++a)if(t[146][a].charCodeAt(0)!==65533){r[t[146][a]]=37376+a;e[37376+a]=t[146][a]}t[147]="����������������������������������������������������������������邸鄭釘鼎泥摘擢敵滴的笛適鏑溺哲徹撤轍迭鉄典填天展店添纏甜貼転顛点伝殿澱田電兎吐堵塗妬屠徒斗杜渡登菟賭途都鍍砥砺努度土奴怒倒党冬�凍刀唐塔塘套宕島嶋悼投搭東桃梼棟盗淘湯涛灯燈当痘祷等答筒糖統到董蕩藤討謄豆踏逃透鐙陶頭騰闘働動同堂導憧撞洞瞳童胴萄道銅峠鴇匿得徳涜特督禿篤毒独読栃橡凸突椴届鳶苫寅酉瀞噸屯惇敦沌豚遁頓呑曇鈍奈那内乍凪薙謎灘捺鍋楢馴縄畷南楠軟難汝二尼弐迩匂賑肉虹廿日乳入���".split("");for(a=0;a!=t[147].length;++a)if(t[147][a].charCodeAt(0)!==65533){r[t[147][a]]=37632+a;e[37632+a]=t[147][a]}t[148]="����������������������������������������������������������������如尿韮任妊忍認濡禰祢寧葱猫熱年念捻撚燃粘乃廼之埜嚢悩濃納能脳膿農覗蚤巴把播覇杷波派琶破婆罵芭馬俳廃拝排敗杯盃牌背肺輩配倍培媒梅�楳煤狽買売賠陪這蝿秤矧萩伯剥博拍柏泊白箔粕舶薄迫曝漠爆縛莫駁麦函箱硲箸肇筈櫨幡肌畑畠八鉢溌発醗髪伐罰抜筏閥鳩噺塙蛤隼伴判半反叛帆搬斑板氾汎版犯班畔繁般藩販範釆煩頒飯挽晩番盤磐蕃蛮匪卑否妃庇彼悲扉批披斐比泌疲皮碑秘緋罷肥被誹費避非飛樋簸備尾微枇毘琵眉美���".split("");for(a=0;a!=t[148].length;++a)if(t[148][a].charCodeAt(0)!==65533){r[t[148][a]]=37888+a;e[37888+a]=t[148][a]}t[149]="����������������������������������������������������������������鼻柊稗匹疋髭彦膝菱肘弼必畢筆逼桧姫媛紐百謬俵彪標氷漂瓢票表評豹廟描病秒苗錨鋲蒜蛭鰭品彬斌浜瀕貧賓頻敏瓶不付埠夫婦富冨布府怖扶敷�斧普浮父符腐膚芙譜負賦赴阜附侮撫武舞葡蕪部封楓風葺蕗伏副復幅服福腹複覆淵弗払沸仏物鮒分吻噴墳憤扮焚奮粉糞紛雰文聞丙併兵塀幣平弊柄並蔽閉陛米頁僻壁癖碧別瞥蔑箆偏変片篇編辺返遍便勉娩弁鞭保舗鋪圃捕歩甫補輔穂募墓慕戊暮母簿菩倣俸包呆報奉宝峰峯崩庖抱捧放方朋���".split("");for(a=0;a!=t[149].length;++a)if(t[149][a].charCodeAt(0)!==65533){r[t[149][a]]=38144+a;e[38144+a]=t[149][a]}t[150]="����������������������������������������������������������������法泡烹砲縫胞芳萌蓬蜂褒訪豊邦鋒飽鳳鵬乏亡傍剖坊妨帽忘忙房暴望某棒冒紡肪膨謀貌貿鉾防吠頬北僕卜墨撲朴牧睦穆釦勃没殆堀幌奔本翻凡盆�摩磨魔麻埋妹昧枚毎哩槙幕膜枕鮪柾鱒桝亦俣又抹末沫迄侭繭麿万慢満漫蔓味未魅巳箕岬密蜜湊蓑稔脈妙粍民眠務夢無牟矛霧鵡椋婿娘冥名命明盟迷銘鳴姪牝滅免棉綿緬面麺摸模茂妄孟毛猛盲網耗蒙儲木黙目杢勿餅尤戻籾貰問悶紋門匁也冶夜爺耶野弥矢厄役約薬訳躍靖柳薮鑓愉愈油癒���".split("");for(a=0;a!=t[150].length;++a)if(t[150][a].charCodeAt(0)!==65533){r[t[150][a]]=38400+a;e[38400+a]=t[150][a]}t[151]="����������������������������������������������������������������諭輸唯佑優勇友宥幽悠憂揖有柚湧涌猶猷由祐裕誘遊邑郵雄融夕予余与誉輿預傭幼妖容庸揚揺擁曜楊様洋溶熔用窯羊耀葉蓉要謡踊遥陽養慾抑欲�沃浴翌翼淀羅螺裸来莱頼雷洛絡落酪乱卵嵐欄濫藍蘭覧利吏履李梨理璃痢裏裡里離陸律率立葎掠略劉流溜琉留硫粒隆竜龍侶慮旅虜了亮僚両凌寮料梁涼猟療瞭稜糧良諒遼量陵領力緑倫厘林淋燐琳臨輪隣鱗麟瑠塁涙累類令伶例冷励嶺怜玲礼苓鈴隷零霊麗齢暦歴列劣烈裂廉恋憐漣煉簾練聯���".split("");for(a=0;a!=t[151].length;++a)if(t[151][a].charCodeAt(0)!==65533){r[t[151][a]]=38656+a;e[38656+a]=t[151][a]}t[152]="����������������������������������������������������������������蓮連錬呂魯櫓炉賂路露労婁廊弄朗楼榔浪漏牢狼篭老聾蝋郎六麓禄肋録論倭和話歪賄脇惑枠鷲亙亘鰐詫藁蕨椀湾碗腕��������������������������������������������弌丐丕个丱丶丼丿乂乖乘亂亅豫亊舒弍于亞亟亠亢亰亳亶从仍仄仆仂仗仞仭仟价伉佚估佛佝佗佇佶侈侏侘佻佩佰侑佯來侖儘俔俟俎俘俛俑俚俐俤俥倚倨倔倪倥倅伜俶倡倩倬俾俯們倆偃假會偕偐偈做偖偬偸傀傚傅傴傲���".split("");for(a=0;a!=t[152].length;++a)if(t[152][a].charCodeAt(0)!==65533){r[t[152][a]]=38912+a;e[38912+a]=t[152][a]}t[153]="����������������������������������������������������������������僉僊傳僂僖僞僥僭僣僮價僵儉儁儂儖儕儔儚儡儺儷儼儻儿兀兒兌兔兢竸兩兪兮冀冂囘册冉冏冑冓冕冖冤冦冢冩冪冫决冱冲冰况冽凅凉凛几處凩凭�凰凵凾刄刋刔刎刧刪刮刳刹剏剄剋剌剞剔剪剴剩剳剿剽劍劔劒剱劈劑辨辧劬劭劼劵勁勍勗勞勣勦飭勠勳勵勸勹匆匈甸匍匐匏匕匚匣匯匱匳匸區卆卅丗卉卍凖卞卩卮夘卻卷厂厖厠厦厥厮厰厶參簒雙叟曼燮叮叨叭叺吁吽呀听吭吼吮吶吩吝呎咏呵咎呟呱呷呰咒呻咀呶咄咐咆哇咢咸咥咬哄哈咨���".split("");for(a=0;a!=t[153].length;++a)if(t[153][a].charCodeAt(0)!==65533){r[t[153][a]]=39168+a;e[39168+a]=t[153][a]}t[154]="����������������������������������������������������������������咫哂咤咾咼哘哥哦唏唔哽哮哭哺哢唹啀啣啌售啜啅啖啗唸唳啝喙喀咯喊喟啻啾喘喞單啼喃喩喇喨嗚嗅嗟嗄嗜嗤嗔嘔嗷嘖嗾嗽嘛嗹噎噐營嘴嘶嘲嘸�噫噤嘯噬噪嚆嚀嚊嚠嚔嚏嚥嚮嚶嚴囂嚼囁囃囀囈囎囑囓囗囮囹圀囿圄圉圈國圍圓團圖嗇圜圦圷圸坎圻址坏坩埀垈坡坿垉垓垠垳垤垪垰埃埆埔埒埓堊埖埣堋堙堝塲堡塢塋塰毀塒堽塹墅墹墟墫墺壞墻墸墮壅壓壑壗壙壘壥壜壤壟壯壺壹壻壼壽夂夊夐夛梦夥夬夭夲夸夾竒奕奐奎奚奘奢奠奧奬奩���".split("");for(a=0;a!=t[154].length;++a)if(t[154][a].charCodeAt(0)!==65533){r[t[154][a]]=39424+a;e[39424+a]=t[154][a]}t[155]="����������������������������������������������������������������奸妁妝佞侫妣妲姆姨姜妍姙姚娥娟娑娜娉娚婀婬婉娵娶婢婪媚媼媾嫋嫂媽嫣嫗嫦嫩嫖嫺嫻嬌嬋嬖嬲嫐嬪嬶嬾孃孅孀孑孕孚孛孥孩孰孳孵學斈孺宀�它宦宸寃寇寉寔寐寤實寢寞寥寫寰寶寳尅將專對尓尠尢尨尸尹屁屆屎屓屐屏孱屬屮乢屶屹岌岑岔妛岫岻岶岼岷峅岾峇峙峩峽峺峭嶌峪崋崕崗嵜崟崛崑崔崢崚崙崘嵌嵒嵎嵋嵬嵳嵶嶇嶄嶂嶢嶝嶬嶮嶽嶐嶷嶼巉巍巓巒巖巛巫已巵帋帚帙帑帛帶帷幄幃幀幎幗幔幟幢幤幇幵并幺麼广庠廁廂廈廐廏���".split("");for(a=0;a!=t[155].length;++a)if(t[155][a].charCodeAt(0)!==65533){r[t[155][a]]=39680+a;e[39680+a]=t[155][a]}t[156]="����������������������������������������������������������������廖廣廝廚廛廢廡廨廩廬廱廳廰廴廸廾弃弉彝彜弋弑弖弩弭弸彁彈彌彎弯彑彖彗彙彡彭彳彷徃徂彿徊很徑徇從徙徘徠徨徭徼忖忻忤忸忱忝悳忿怡恠�怙怐怩怎怱怛怕怫怦怏怺恚恁恪恷恟恊恆恍恣恃恤恂恬恫恙悁悍惧悃悚悄悛悖悗悒悧悋惡悸惠惓悴忰悽惆悵惘慍愕愆惶惷愀惴惺愃愡惻惱愍愎慇愾愨愧慊愿愼愬愴愽慂慄慳慷慘慙慚慫慴慯慥慱慟慝慓慵憙憖憇憬憔憚憊憑憫憮懌懊應懷懈懃懆憺懋罹懍懦懣懶懺懴懿懽懼懾戀戈戉戍戌戔戛���".split("");for(a=0;a!=t[156].length;++a)if(t[156][a].charCodeAt(0)!==65533){r[t[156][a]]=39936+a;e[39936+a]=t[156][a]}t[157]="����������������������������������������������������������������戞戡截戮戰戲戳扁扎扞扣扛扠扨扼抂抉找抒抓抖拔抃抔拗拑抻拏拿拆擔拈拜拌拊拂拇抛拉挌拮拱挧挂挈拯拵捐挾捍搜捏掖掎掀掫捶掣掏掉掟掵捫�捩掾揩揀揆揣揉插揶揄搖搴搆搓搦搶攝搗搨搏摧摯摶摎攪撕撓撥撩撈撼據擒擅擇撻擘擂擱擧舉擠擡抬擣擯攬擶擴擲擺攀擽攘攜攅攤攣攫攴攵攷收攸畋效敖敕敍敘敞敝敲數斂斃變斛斟斫斷旃旆旁旄旌旒旛旙无旡旱杲昊昃旻杳昵昶昴昜晏晄晉晁晞晝晤晧晨晟晢晰暃暈暎暉暄暘暝曁暹曉暾暼���".split("");for(a=0;a!=t[157].length;++a)if(t[157][a].charCodeAt(0)!==65533){r[t[157][a]]=40192+a;e[40192+a]=t[157][a]}t[158]="����������������������������������������������������������������曄暸曖曚曠昿曦曩曰曵曷朏朖朞朦朧霸朮朿朶杁朸朷杆杞杠杙杣杤枉杰枩杼杪枌枋枦枡枅枷柯枴柬枳柩枸柤柞柝柢柮枹柎柆柧檜栞框栩桀桍栲桎�梳栫桙档桷桿梟梏梭梔條梛梃檮梹桴梵梠梺椏梍桾椁棊椈棘椢椦棡椌棍棔棧棕椶椒椄棗棣椥棹棠棯椨椪椚椣椡棆楹楷楜楸楫楔楾楮椹楴椽楙椰楡楞楝榁楪榲榮槐榿槁槓榾槎寨槊槝榻槃榧樮榑榠榜榕榴槞槨樂樛槿權槹槲槧樅榱樞槭樔槫樊樒櫁樣樓橄樌橲樶橸橇橢橙橦橈樸樢檐檍檠檄檢檣���".split("");for(a=0;a!=t[158].length;++a)if(t[158][a].charCodeAt(0)!==65533){r[t[158][a]]=40448+a;e[40448+a]=t[158][a]}t[159]="����������������������������������������������������������������檗蘗檻櫃櫂檸檳檬櫞櫑櫟檪櫚櫪櫻欅蘖櫺欒欖鬱欟欸欷盜欹飮歇歃歉歐歙歔歛歟歡歸歹歿殀殄殃殍殘殕殞殤殪殫殯殲殱殳殷殼毆毋毓毟毬毫毳毯�麾氈氓气氛氤氣汞汕汢汪沂沍沚沁沛汾汨汳沒沐泄泱泓沽泗泅泝沮沱沾沺泛泯泙泪洟衍洶洫洽洸洙洵洳洒洌浣涓浤浚浹浙涎涕濤涅淹渕渊涵淇淦涸淆淬淞淌淨淒淅淺淙淤淕淪淮渭湮渮渙湲湟渾渣湫渫湶湍渟湃渺湎渤滿渝游溂溪溘滉溷滓溽溯滄溲滔滕溏溥滂溟潁漑灌滬滸滾漿滲漱滯漲滌���".split("");for(a=0;a!=t[159].length;++a)if(t[159][a].charCodeAt(0)!==65533){r[t[159][a]]=40704+a;e[40704+a]=t[159][a]}t[224]="����������������������������������������������������������������漾漓滷澆潺潸澁澀潯潛濳潭澂潼潘澎澑濂潦澳澣澡澤澹濆澪濟濕濬濔濘濱濮濛瀉瀋濺瀑瀁瀏濾瀛瀚潴瀝瀘瀟瀰瀾瀲灑灣炙炒炯烱炬炸炳炮烟烋烝�烙焉烽焜焙煥煕熈煦煢煌煖煬熏燻熄熕熨熬燗熹熾燒燉燔燎燠燬燧燵燼燹燿爍爐爛爨爭爬爰爲爻爼爿牀牆牋牘牴牾犂犁犇犒犖犢犧犹犲狃狆狄狎狒狢狠狡狹狷倏猗猊猜猖猝猴猯猩猥猾獎獏默獗獪獨獰獸獵獻獺珈玳珎玻珀珥珮珞璢琅瑯琥珸琲琺瑕琿瑟瑙瑁瑜瑩瑰瑣瑪瑶瑾璋璞璧瓊瓏瓔珱���".split("");for(a=0;a!=t[224].length;++a)if(t[224][a].charCodeAt(0)!==65533){r[t[224][a]]=57344+a;e[57344+a]=t[224][a]}t[225]="����������������������������������������������������������������瓠瓣瓧瓩瓮瓲瓰瓱瓸瓷甄甃甅甌甎甍甕甓甞甦甬甼畄畍畊畉畛畆畚畩畤畧畫畭畸當疆疇畴疊疉疂疔疚疝疥疣痂疳痃疵疽疸疼疱痍痊痒痙痣痞痾痿�痼瘁痰痺痲痳瘋瘍瘉瘟瘧瘠瘡瘢瘤瘴瘰瘻癇癈癆癜癘癡癢癨癩癪癧癬癰癲癶癸發皀皃皈皋皎皖皓皙皚皰皴皸皹皺盂盍盖盒盞盡盥盧盪蘯盻眈眇眄眩眤眞眥眦眛眷眸睇睚睨睫睛睥睿睾睹瞎瞋瞑瞠瞞瞰瞶瞹瞿瞼瞽瞻矇矍矗矚矜矣矮矼砌砒礦砠礪硅碎硴碆硼碚碌碣碵碪碯磑磆磋磔碾碼磅磊磬���".split("");for(a=0;a!=t[225].length;++a)if(t[225][a].charCodeAt(0)!==65533){r[t[225][a]]=57600+a;e[57600+a]=t[225][a]}t[226]="����������������������������������������������������������������磧磚磽磴礇礒礑礙礬礫祀祠祗祟祚祕祓祺祿禊禝禧齋禪禮禳禹禺秉秕秧秬秡秣稈稍稘稙稠稟禀稱稻稾稷穃穗穉穡穢穩龝穰穹穽窈窗窕窘窖窩竈窰�窶竅竄窿邃竇竊竍竏竕竓站竚竝竡竢竦竭竰笂笏笊笆笳笘笙笞笵笨笶筐筺笄筍笋筌筅筵筥筴筧筰筱筬筮箝箘箟箍箜箚箋箒箏筝箙篋篁篌篏箴篆篝篩簑簔篦篥籠簀簇簓篳篷簗簍篶簣簧簪簟簷簫簽籌籃籔籏籀籐籘籟籤籖籥籬籵粃粐粤粭粢粫粡粨粳粲粱粮粹粽糀糅糂糘糒糜糢鬻糯糲糴糶糺紆���".split("");for(a=0;a!=t[226].length;++a)if(t[226][a].charCodeAt(0)!==65533){r[t[226][a]]=57856+a;e[57856+a]=t[226][a]}t[227]="����������������������������������������������������������������紂紜紕紊絅絋紮紲紿紵絆絳絖絎絲絨絮絏絣經綉絛綏絽綛綺綮綣綵緇綽綫總綢綯緜綸綟綰緘緝緤緞緻緲緡縅縊縣縡縒縱縟縉縋縢繆繦縻縵縹繃縷�縲縺繧繝繖繞繙繚繹繪繩繼繻纃緕繽辮繿纈纉續纒纐纓纔纖纎纛纜缸缺罅罌罍罎罐网罕罔罘罟罠罨罩罧罸羂羆羃羈羇羌羔羞羝羚羣羯羲羹羮羶羸譱翅翆翊翕翔翡翦翩翳翹飜耆耄耋耒耘耙耜耡耨耿耻聊聆聒聘聚聟聢聨聳聲聰聶聹聽聿肄肆肅肛肓肚肭冐肬胛胥胙胝胄胚胖脉胯胱脛脩脣脯腋���".split("");for(a=0;a!=t[227].length;++a)if(t[227][a].charCodeAt(0)!==65533){r[t[227][a]]=58112+a;e[58112+a]=t[227][a]}t[228]="����������������������������������������������������������������隋腆脾腓腑胼腱腮腥腦腴膃膈膊膀膂膠膕膤膣腟膓膩膰膵膾膸膽臀臂膺臉臍臑臙臘臈臚臟臠臧臺臻臾舁舂舅與舊舍舐舖舩舫舸舳艀艙艘艝艚艟艤�艢艨艪艫舮艱艷艸艾芍芒芫芟芻芬苡苣苟苒苴苳苺莓范苻苹苞茆苜茉苙茵茴茖茲茱荀茹荐荅茯茫茗茘莅莚莪莟莢莖茣莎莇莊荼莵荳荵莠莉莨菴萓菫菎菽萃菘萋菁菷萇菠菲萍萢萠莽萸蔆菻葭萪萼蕚蒄葷葫蒭葮蒂葩葆萬葯葹萵蓊葢蒹蒿蒟蓙蓍蒻蓚蓐蓁蓆蓖蒡蔡蓿蓴蔗蔘蔬蔟蔕蔔蓼蕀蕣蕘蕈���".split("");for(a=0;a!=t[228].length;++a)if(t[228][a].charCodeAt(0)!==65533){r[t[228][a]]=58368+a;e[58368+a]=t[228][a]}t[229]="����������������������������������������������������������������蕁蘂蕋蕕薀薤薈薑薊薨蕭薔薛藪薇薜蕷蕾薐藉薺藏薹藐藕藝藥藜藹蘊蘓蘋藾藺蘆蘢蘚蘰蘿虍乕虔號虧虱蚓蚣蚩蚪蚋蚌蚶蚯蛄蛆蚰蛉蠣蚫蛔蛞蛩蛬�蛟蛛蛯蜒蜆蜈蜀蜃蛻蜑蜉蜍蛹蜊蜴蜿蜷蜻蜥蜩蜚蝠蝟蝸蝌蝎蝴蝗蝨蝮蝙蝓蝣蝪蠅螢螟螂螯蟋螽蟀蟐雖螫蟄螳蟇蟆螻蟯蟲蟠蠏蠍蟾蟶蟷蠎蟒蠑蠖蠕蠢蠡蠱蠶蠹蠧蠻衄衂衒衙衞衢衫袁衾袞衵衽袵衲袂袗袒袮袙袢袍袤袰袿袱裃裄裔裘裙裝裹褂裼裴裨裲褄褌褊褓襃褞褥褪褫襁襄褻褶褸襌褝襠襞���".split("");for(a=0;a!=t[229].length;++a)if(t[229][a].charCodeAt(0)!==65533){r[t[229][a]]=58624+a;e[58624+a]=t[229][a]}t[230]="����������������������������������������������������������������襦襤襭襪襯襴襷襾覃覈覊覓覘覡覩覦覬覯覲覺覽覿觀觚觜觝觧觴觸訃訖訐訌訛訝訥訶詁詛詒詆詈詼詭詬詢誅誂誄誨誡誑誥誦誚誣諄諍諂諚諫諳諧�諤諱謔諠諢諷諞諛謌謇謚諡謖謐謗謠謳鞫謦謫謾謨譁譌譏譎證譖譛譚譫譟譬譯譴譽讀讌讎讒讓讖讙讚谺豁谿豈豌豎豐豕豢豬豸豺貂貉貅貊貍貎貔豼貘戝貭貪貽貲貳貮貶賈賁賤賣賚賽賺賻贄贅贊贇贏贍贐齎贓賍贔贖赧赭赱赳趁趙跂趾趺跏跚跖跌跛跋跪跫跟跣跼踈踉跿踝踞踐踟蹂踵踰踴蹊���".split("");for(a=0;a!=t[230].length;++a)if(t[230][a].charCodeAt(0)!==65533){r[t[230][a]]=58880+a;e[58880+a]=t[230][a]}t[231]="����������������������������������������������������������������蹇蹉蹌蹐蹈蹙蹤蹠踪蹣蹕蹶蹲蹼躁躇躅躄躋躊躓躑躔躙躪躡躬躰軆躱躾軅軈軋軛軣軼軻軫軾輊輅輕輒輙輓輜輟輛輌輦輳輻輹轅轂輾轌轉轆轎轗轜�轢轣轤辜辟辣辭辯辷迚迥迢迪迯邇迴逅迹迺逑逕逡逍逞逖逋逧逶逵逹迸遏遐遑遒逎遉逾遖遘遞遨遯遶隨遲邂遽邁邀邊邉邏邨邯邱邵郢郤扈郛鄂鄒鄙鄲鄰酊酖酘酣酥酩酳酲醋醉醂醢醫醯醪醵醴醺釀釁釉釋釐釖釟釡釛釼釵釶鈞釿鈔鈬鈕鈑鉞鉗鉅鉉鉤鉈銕鈿鉋鉐銜銖銓銛鉚鋏銹銷鋩錏鋺鍄錮���".split("");for(a=0;a!=t[231].length;++a)if(t[231][a].charCodeAt(0)!==65533){r[t[231][a]]=59136+a;e[59136+a]=t[231][a]}t[232]="����������������������������������������������������������������錙錢錚錣錺錵錻鍜鍠鍼鍮鍖鎰鎬鎭鎔鎹鏖鏗鏨鏥鏘鏃鏝鏐鏈鏤鐚鐔鐓鐃鐇鐐鐶鐫鐵鐡鐺鑁鑒鑄鑛鑠鑢鑞鑪鈩鑰鑵鑷鑽鑚鑼鑾钁鑿閂閇閊閔閖閘閙�閠閨閧閭閼閻閹閾闊濶闃闍闌闕闔闖關闡闥闢阡阨阮阯陂陌陏陋陷陜陞陝陟陦陲陬隍隘隕隗險隧隱隲隰隴隶隸隹雎雋雉雍襍雜霍雕雹霄霆霈霓霎霑霏霖霙霤霪霰霹霽霾靄靆靈靂靉靜靠靤靦靨勒靫靱靹鞅靼鞁靺鞆鞋鞏鞐鞜鞨鞦鞣鞳鞴韃韆韈韋韜韭齏韲竟韶韵頏頌頸頤頡頷頽顆顏顋顫顯顰���".split("");for(a=0;a!=t[232].length;++a)if(t[232][a].charCodeAt(0)!==65533){r[t[232][a]]=59392+a;e[59392+a]=t[232][a]}t[233]="����������������������������������������������������������������顱顴顳颪颯颱颶飄飃飆飩飫餃餉餒餔餘餡餝餞餤餠餬餮餽餾饂饉饅饐饋饑饒饌饕馗馘馥馭馮馼駟駛駝駘駑駭駮駱駲駻駸騁騏騅駢騙騫騷驅驂驀驃�騾驕驍驛驗驟驢驥驤驩驫驪骭骰骼髀髏髑髓體髞髟髢髣髦髯髫髮髴髱髷髻鬆鬘鬚鬟鬢鬣鬥鬧鬨鬩鬪鬮鬯鬲魄魃魏魍魎魑魘魴鮓鮃鮑鮖鮗鮟鮠鮨鮴鯀鯊鮹鯆鯏鯑鯒鯣鯢鯤鯔鯡鰺鯲鯱鯰鰕鰔鰉鰓鰌鰆鰈鰒鰊鰄鰮鰛鰥鰤鰡鰰鱇鰲鱆鰾鱚鱠鱧鱶鱸鳧鳬鳰鴉鴈鳫鴃鴆鴪鴦鶯鴣鴟鵄鴕鴒鵁鴿鴾鵆鵈���".split("");for(a=0;a!=t[233].length;++a)if(t[233][a].charCodeAt(0)!==65533){r[t[233][a]]=59648+a;e[59648+a]=t[233][a]}t[234]="����������������������������������������������������������������鵝鵞鵤鵑鵐鵙鵲鶉鶇鶫鵯鵺鶚鶤鶩鶲鷄鷁鶻鶸鶺鷆鷏鷂鷙鷓鷸鷦鷭鷯鷽鸚鸛鸞鹵鹹鹽麁麈麋麌麒麕麑麝麥麩麸麪麭靡黌黎黏黐黔黜點黝黠黥黨黯�黴黶黷黹黻黼黽鼇鼈皷鼕鼡鼬鼾齊齒齔齣齟齠齡齦齧齬齪齷齲齶龕龜龠堯槇遙瑤凜熙�������������������������������������������������������������������������������������������".split("");for(a=0;a!=t[234].length;++a)if(t[234][a].charCodeAt(0)!==65533){r[t[234][a]]=59904+a;e[59904+a]=t[234][a]}t[237]="����������������������������������������������������������������纊褜鍈銈蓜俉炻昱棈鋹曻彅丨仡仼伀伃伹佖侒侊侚侔俍偀倢俿倞偆偰偂傔僴僘兊兤冝冾凬刕劜劦勀勛匀匇匤卲厓厲叝﨎咜咊咩哿喆坙坥垬埈埇﨏�塚增墲夋奓奛奝奣妤妺孖寀甯寘寬尞岦岺峵崧嵓﨑嵂嵭嶸嶹巐弡弴彧德忞恝悅悊惞惕愠惲愑愷愰憘戓抦揵摠撝擎敎昀昕昻昉昮昞昤晥晗晙晴晳暙暠暲暿曺朎朗杦枻桒柀栁桄棏﨓楨﨔榘槢樰橫橆橳橾櫢櫤毖氿汜沆汯泚洄涇浯涖涬淏淸淲淼渹湜渧渼溿澈澵濵瀅瀇瀨炅炫焏焄煜煆煇凞燁燾犱���".split("");for(a=0;a!=t[237].length;++a)if(t[237][a].charCodeAt(0)!==65533){r[t[237][a]]=60672+a;e[60672+a]=t[237][a]}t[238]="����������������������������������������������������������������犾猤猪獷玽珉珖珣珒琇珵琦琪琩琮瑢璉璟甁畯皂皜皞皛皦益睆劯砡硎硤硺礰礼神祥禔福禛竑竧靖竫箞精絈絜綷綠緖繒罇羡羽茁荢荿菇菶葈蒴蕓蕙�蕫﨟薰蘒﨡蠇裵訒訷詹誧誾諟諸諶譓譿賰賴贒赶﨣軏﨤逸遧郞都鄕鄧釚釗釞釭釮釤釥鈆鈐鈊鈺鉀鈼鉎鉙鉑鈹鉧銧鉷鉸鋧鋗鋙鋐﨧鋕鋠鋓錥錡鋻﨨錞鋿錝錂鍰鍗鎤鏆鏞鏸鐱鑅鑈閒隆﨩隝隯霳霻靃靍靏靑靕顗顥飯飼餧館馞驎髙髜魵魲鮏鮱鮻鰀鵰鵫鶴鸙黑��ⅰⅱⅲⅳⅴⅵⅶⅷⅸⅹ￢￤＇＂���".split("");for(a=0;a!=t[238].length;++a)if(t[238][a].charCodeAt(0)!==65533){r[t[238][a]]=60928+a;e[60928+a]=t[238][a]}t[250]="����������������������������������������������������������������ⅰⅱⅲⅳⅴⅵⅶⅷⅸⅹⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ￢￤＇＂㈱№℡∵纊褜鍈銈蓜俉炻昱棈鋹曻彅丨仡仼伀伃伹佖侒侊侚侔俍偀倢俿倞偆偰偂傔僴僘兊�兤冝冾凬刕劜劦勀勛匀匇匤卲厓厲叝﨎咜咊咩哿喆坙坥垬埈埇﨏塚增墲夋奓奛奝奣妤妺孖寀甯寘寬尞岦岺峵崧嵓﨑嵂嵭嶸嶹巐弡弴彧德忞恝悅悊惞惕愠惲愑愷愰憘戓抦揵摠撝擎敎昀昕昻昉昮昞昤晥晗晙晴晳暙暠暲暿曺朎朗杦枻桒柀栁桄棏﨓楨﨔榘槢樰橫橆橳橾櫢櫤毖氿汜沆汯泚洄涇浯���".split("");for(a=0;a!=t[250].length;++a)if(t[250][a].charCodeAt(0)!==65533){r[t[250][a]]=64e3+a;e[64e3+a]=t[250][a]}t[251]="����������������������������������������������������������������涖涬淏淸淲淼渹湜渧渼溿澈澵濵瀅瀇瀨炅炫焏焄煜煆煇凞燁燾犱犾猤猪獷玽珉珖珣珒琇珵琦琪琩琮瑢璉璟甁畯皂皜皞皛皦益睆劯砡硎硤硺礰礼神�祥禔福禛竑竧靖竫箞精絈絜綷綠緖繒罇羡羽茁荢荿菇菶葈蒴蕓蕙蕫﨟薰蘒﨡蠇裵訒訷詹誧誾諟諸諶譓譿賰賴贒赶﨣軏﨤逸遧郞都鄕鄧釚釗釞釭釮釤釥鈆鈐鈊鈺鉀鈼鉎鉙鉑鈹鉧銧鉷鉸鋧鋗鋙鋐﨧鋕鋠鋓錥錡鋻﨨錞鋿錝錂鍰鍗鎤鏆鏞鏸鐱鑅鑈閒隆﨩隝隯霳霻靃靍靏靑靕顗顥飯飼餧館馞驎髙���".split("");for(a=0;a!=t[251].length;++a)if(t[251][a].charCodeAt(0)!==65533){r[t[251][a]]=64256+a;e[64256+a]=t[251][a]}t[252]="����������������������������������������������������������������髜魵魲鮏鮱鮻鰀鵰鵫鶴鸙黑������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������".split("");for(a=0;a!=t[252].length;++a)if(t[252][a].charCodeAt(0)!==65533){r[t[252][a]]=64512+a;e[64512+a]=t[252][a]}return{enc:r,dec:e}}();cptable[936]=function(){var e=[],r={},t=[],a;t[0]="\0\b\t\n\x0B\f\r !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~€�������������������������������������������������������������������������������������������������������������������������������".split("");for(a=0;a!=t[0].length;++a)if(t[0][a].charCodeAt(0)!==65533){r[t[0][a]]=0+a;e[0+a]=t[0][a]}t[129]="����������������������������������������������������������������丂丄丅丆丏丒丗丟丠両丣並丩丮丯丱丳丵丷丼乀乁乂乄乆乊乑乕乗乚乛乢乣乤乥乧乨乪乫乬乭乮乯乲乴乵乶乷乸乹乺乻乼乽乿亀亁亂亃亄亅亇亊�亐亖亗亙亜亝亞亣亪亯亰亱亴亶亷亸亹亼亽亾仈仌仏仐仒仚仛仜仠仢仦仧仩仭仮仯仱仴仸仹仺仼仾伀伂伃伄伅伆伇伈伋伌伒伓伔伕伖伜伝伡伣伨伩伬伭伮伱伳伵伷伹伻伾伿佀佁佂佄佅佇佈佉佊佋佌佒佔佖佡佢佦佨佪佫佭佮佱佲併佷佸佹佺佽侀侁侂侅來侇侊侌侎侐侒侓侕侖侘侙侚侜侞侟価侢�".split("");for(a=0;a!=t[129].length;++a)if(t[129][a].charCodeAt(0)!==65533){r[t[129][a]]=33024+a;e[33024+a]=t[129][a]}t[130]="����������������������������������������������������������������侤侫侭侰侱侲侳侴侶侷侸侹侺侻侼侽侾俀俁係俆俇俈俉俋俌俍俒俓俔俕俖俙俛俠俢俤俥俧俫俬俰俲俴俵俶俷俹俻俼俽俿倀倁倂倃倄倅倆倇倈倉倊�個倎倐們倓倕倖倗倛倝倞倠倢倣値倧倫倯倰倱倲倳倴倵倶倷倸倹倻倽倿偀偁偂偄偅偆偉偊偋偍偐偑偒偓偔偖偗偘偙偛偝偞偟偠偡偢偣偤偦偧偨偩偪偫偭偮偯偰偱偲偳側偵偸偹偺偼偽傁傂傃傄傆傇傉傊傋傌傎傏傐傑傒傓傔傕傖傗傘備傚傛傜傝傞傟傠傡傢傤傦傪傫傭傮傯傰傱傳傴債傶傷傸傹傼�".split("");for(a=0;a!=t[130].length;++a)if(t[130][a].charCodeAt(0)!==65533){r[t[130][a]]=33280+a;e[33280+a]=t[130][a]}t[131]="����������������������������������������������������������������傽傾傿僀僁僂僃僄僅僆僇僈僉僊僋僌働僎僐僑僒僓僔僕僗僘僙僛僜僝僞僟僠僡僢僣僤僥僨僩僪僫僯僰僱僲僴僶僷僸價僺僼僽僾僿儀儁儂儃億儅儈�儉儊儌儍儎儏儐儑儓儔儕儖儗儘儙儚儛儜儝儞償儠儢儣儤儥儦儧儨儩優儫儬儭儮儯儰儱儲儳儴儵儶儷儸儹儺儻儼儽儾兂兇兊兌兎兏児兒兓兗兘兙兛兝兞兟兠兡兣兤兦內兩兪兯兲兺兾兿冃冄円冇冊冋冎冏冐冑冓冔冘冚冝冞冟冡冣冦冧冨冩冪冭冮冴冸冹冺冾冿凁凂凃凅凈凊凍凎凐凒凓凔凕凖凗�".split("");for(a=0;a!=t[131].length;++a)if(t[131][a].charCodeAt(0)!==65533){r[t[131][a]]=33536+a;e[33536+a]=t[131][a]}t[132]="����������������������������������������������������������������凘凙凚凜凞凟凢凣凥処凧凨凩凪凬凮凱凲凴凷凾刄刅刉刋刌刏刐刓刔刕刜刞刟刡刢刣別刦刧刪刬刯刱刲刴刵刼刾剄剅剆則剈剉剋剎剏剒剓剕剗剘�剙剚剛剝剟剠剢剣剤剦剨剫剬剭剮剰剱剳剴創剶剷剸剹剺剻剼剾劀劃劄劅劆劇劉劊劋劌劍劎劏劑劒劔劕劖劗劘劙劚劜劤劥劦劧劮劯劰労劵劶劷劸効劺劻劼劽勀勁勂勄勅勆勈勊勌勍勎勏勑勓勔動勗務勚勛勜勝勞勠勡勢勣勥勦勧勨勩勪勫勬勭勮勯勱勲勳勴勵勶勷勸勻勼勽匁匂匃匄匇匉匊匋匌匎�".split("");for(a=0;a!=t[132].length;++a)if(t[132][a].charCodeAt(0)!==65533){r[t[132][a]]=33792+a;e[33792+a]=t[132][a]}t[133]="����������������������������������������������������������������匑匒匓匔匘匛匜匞匟匢匤匥匧匨匩匫匬匭匯匰匱匲匳匴匵匶匷匸匼匽區卂卄卆卋卌卍卐協単卙卛卝卥卨卪卬卭卲卶卹卻卼卽卾厀厁厃厇厈厊厎厏�厐厑厒厓厔厖厗厙厛厜厞厠厡厤厧厪厫厬厭厯厰厱厲厳厴厵厷厸厹厺厼厽厾叀參叄叅叆叇収叏叐叒叓叕叚叜叝叞叡叢叧叴叺叾叿吀吂吅吇吋吔吘吙吚吜吢吤吥吪吰吳吶吷吺吽吿呁呂呄呅呇呉呌呍呎呏呑呚呝呞呟呠呡呣呥呧呩呪呫呬呭呮呯呰呴呹呺呾呿咁咃咅咇咈咉咊咍咑咓咗咘咜咞咟咠咡�".split("");for(a=0;a!=t[133].length;++a)if(t[133][a].charCodeAt(0)!==65533){r[t[133][a]]=34048+a;e[34048+a]=t[133][a]}t[134]="����������������������������������������������������������������咢咥咮咰咲咵咶咷咹咺咼咾哃哅哊哋哖哘哛哠員哢哣哤哫哬哯哰哱哴哵哶哷哸哹哻哾唀唂唃唄唅唈唊唋唌唍唎唒唓唕唖唗唘唙唚唜唝唞唟唡唥唦�唨唩唫唭唲唴唵唶唸唹唺唻唽啀啂啅啇啈啋啌啍啎問啑啒啓啔啗啘啙啚啛啝啞啟啠啢啣啨啩啫啯啰啱啲啳啴啹啺啽啿喅喆喌喍喎喐喒喓喕喖喗喚喛喞喠喡喢喣喤喥喦喨喩喪喫喬喭單喯喰喲喴営喸喺喼喿嗀嗁嗂嗃嗆嗇嗈嗊嗋嗎嗏嗐嗕嗗嗘嗙嗚嗛嗞嗠嗢嗧嗩嗭嗮嗰嗱嗴嗶嗸嗹嗺嗻嗼嗿嘂嘃嘄嘅�".split("");for(a=0;a!=t[134].length;++a)if(t[134][a].charCodeAt(0)!==65533){r[t[134][a]]=34304+a;e[34304+a]=t[134][a]}t[135]="����������������������������������������������������������������嘆嘇嘊嘋嘍嘐嘑嘒嘓嘔嘕嘖嘗嘙嘚嘜嘝嘠嘡嘢嘥嘦嘨嘩嘪嘫嘮嘯嘰嘳嘵嘷嘸嘺嘼嘽嘾噀噁噂噃噄噅噆噇噈噉噊噋噏噐噑噒噓噕噖噚噛噝噞噟噠噡�噣噥噦噧噭噮噯噰噲噳噴噵噷噸噹噺噽噾噿嚀嚁嚂嚃嚄嚇嚈嚉嚊嚋嚌嚍嚐嚑嚒嚔嚕嚖嚗嚘嚙嚚嚛嚜嚝嚞嚟嚠嚡嚢嚤嚥嚦嚧嚨嚩嚪嚫嚬嚭嚮嚰嚱嚲嚳嚴嚵嚶嚸嚹嚺嚻嚽嚾嚿囀囁囂囃囄囅囆囇囈囉囋囌囍囎囏囐囑囒囓囕囖囘囙囜団囥囦囧囨囩囪囬囮囯囲図囶囷囸囻囼圀圁圂圅圇國圌圍圎圏圐圑�".split("");for(a=0;a!=t[135].length;++a)if(t[135][a].charCodeAt(0)!==65533){r[t[135][a]]=34560+a;e[34560+a]=t[135][a]}t[136]="����������������������������������������������������������������園圓圔圕圖圗團圙圚圛圝圞圠圡圢圤圥圦圧圫圱圲圴圵圶圷圸圼圽圿坁坃坄坅坆坈坉坋坒坓坔坕坖坘坙坢坣坥坧坬坮坰坱坲坴坵坸坹坺坽坾坿垀�垁垇垈垉垊垍垎垏垐垑垔垕垖垗垘垙垚垜垝垞垟垥垨垪垬垯垰垱垳垵垶垷垹垺垻垼垽垾垿埀埁埄埅埆埇埈埉埊埌埍埐埑埓埖埗埛埜埞埡埢埣埥埦埧埨埩埪埫埬埮埰埱埲埳埵埶執埻埼埾埿堁堃堄堅堈堉堊堌堎堏堐堒堓堔堖堗堘堚堛堜堝堟堢堣堥堦堧堨堩堫堬堭堮堯報堲堳場堶堷堸堹堺堻堼堽�".split("");for(a=0;a!=t[136].length;++a)if(t[136][a].charCodeAt(0)!==65533){r[t[136][a]]=34816+a;e[34816+a]=t[136][a]}t[137]="����������������������������������������������������������������堾堿塀塁塂塃塅塆塇塈塉塊塋塎塏塐塒塓塕塖塗塙塚塛塜塝塟塠塡塢塣塤塦塧塨塩塪塭塮塯塰塱塲塳塴塵塶塷塸塹塺塻塼塽塿墂墄墆墇墈墊墋墌�墍墎墏墐墑墔墕墖増墘墛墜墝墠墡墢墣墤墥墦墧墪墫墬墭墮墯墰墱墲墳墴墵墶墷墸墹墺墻墽墾墿壀壂壃壄壆壇壈壉壊壋壌壍壎壏壐壒壓壔壖壗壘壙壚壛壜壝壞壟壠壡壢壣壥壦壧壨壩壪壭壯壱売壴壵壷壸壺壻壼壽壾壿夀夁夃夅夆夈変夊夋夌夎夐夑夒夓夗夘夛夝夞夠夡夢夣夦夨夬夰夲夳夵夶夻�".split("");for(a=0;a!=t[137].length;++a)if(t[137][a].charCodeAt(0)!==65533){r[t[137][a]]=35072+a;e[35072+a]=t[137][a]}t[138]="����������������������������������������������������������������夽夾夿奀奃奅奆奊奌奍奐奒奓奙奛奜奝奞奟奡奣奤奦奧奨奩奪奫奬奭奮奯奰奱奲奵奷奺奻奼奾奿妀妅妉妋妌妎妏妐妑妔妕妘妚妛妜妝妟妠妡妢妦�妧妬妭妰妱妳妴妵妶妷妸妺妼妽妿姀姁姂姃姄姅姇姈姉姌姍姎姏姕姖姙姛姞姟姠姡姢姤姦姧姩姪姫姭姮姯姰姱姲姳姴姵姶姷姸姺姼姽姾娀娂娊娋娍娎娏娐娒娔娕娖娗娙娚娛娝娞娡娢娤娦娧娨娪娫娬娭娮娯娰娳娵娷娸娹娺娻娽娾娿婁婂婃婄婅婇婈婋婌婍婎婏婐婑婒婓婔婖婗婘婙婛婜婝婞婟婠�".split("");for(a=0;a!=t[138].length;++a)if(t[138][a].charCodeAt(0)!==65533){r[t[138][a]]=35328+a;e[35328+a]=t[138][a]}t[139]="����������������������������������������������������������������婡婣婤婥婦婨婩婫婬婭婮婯婰婱婲婳婸婹婻婼婽婾媀媁媂媃媄媅媆媇媈媉媊媋媌媍媎媏媐媑媓媔媕媖媗媘媙媜媝媞媟媠媡媢媣媤媥媦媧媨媩媫媬�媭媮媯媰媱媴媶媷媹媺媻媼媽媿嫀嫃嫄嫅嫆嫇嫈嫊嫋嫍嫎嫏嫐嫑嫓嫕嫗嫙嫚嫛嫝嫞嫟嫢嫤嫥嫧嫨嫪嫬嫭嫮嫯嫰嫲嫳嫴嫵嫶嫷嫸嫹嫺嫻嫼嫽嫾嫿嬀嬁嬂嬃嬄嬅嬆嬇嬈嬊嬋嬌嬍嬎嬏嬐嬑嬒嬓嬔嬕嬘嬙嬚嬛嬜嬝嬞嬟嬠嬡嬢嬣嬤嬥嬦嬧嬨嬩嬪嬫嬬嬭嬮嬯嬰嬱嬳嬵嬶嬸嬹嬺嬻嬼嬽嬾嬿孁孂孃孄孅孆孇�".split("");for(a=0;a!=t[139].length;++a)if(t[139][a].charCodeAt(0)!==65533){r[t[139][a]]=35584+a;e[35584+a]=t[139][a]}t[140]="����������������������������������������������������������������孈孉孊孋孌孍孎孏孒孖孞孠孡孧孨孫孭孮孯孲孴孶孷學孹孻孼孾孿宂宆宊宍宎宐宑宒宔宖実宧宨宩宬宭宮宯宱宲宷宺宻宼寀寁寃寈寉寊寋寍寎寏�寑寔寕寖寗寘寙寚寛寜寠寢寣實寧審寪寫寬寭寯寱寲寳寴寵寶寷寽対尀専尃尅將專尋尌對導尐尒尓尗尙尛尞尟尠尡尣尦尨尩尪尫尭尮尯尰尲尳尵尶尷屃屄屆屇屌屍屒屓屔屖屗屘屚屛屜屝屟屢層屧屨屩屪屫屬屭屰屲屳屴屵屶屷屸屻屼屽屾岀岃岄岅岆岇岉岊岋岎岏岒岓岕岝岞岟岠岡岤岥岦岧岨�".split("");for(a=0;a!=t[140].length;++a)if(t[140][a].charCodeAt(0)!==65533){r[t[140][a]]=35840+a;e[35840+a]=t[140][a]}t[141]="����������������������������������������������������������������岪岮岯岰岲岴岶岹岺岻岼岾峀峂峃峅峆峇峈峉峊峌峍峎峏峐峑峓峔峕峖峗峘峚峛峜峝峞峟峠峢峣峧峩峫峬峮峯峱峲峳峴峵島峷峸峹峺峼峽峾峿崀�崁崄崅崈崉崊崋崌崍崏崐崑崒崓崕崗崘崙崚崜崝崟崠崡崢崣崥崨崪崫崬崯崰崱崲崳崵崶崷崸崹崺崻崼崿嵀嵁嵂嵃嵄嵅嵆嵈嵉嵍嵎嵏嵐嵑嵒嵓嵔嵕嵖嵗嵙嵚嵜嵞嵟嵠嵡嵢嵣嵤嵥嵦嵧嵨嵪嵭嵮嵰嵱嵲嵳嵵嵶嵷嵸嵹嵺嵻嵼嵽嵾嵿嶀嶁嶃嶄嶅嶆嶇嶈嶉嶊嶋嶌嶍嶎嶏嶐嶑嶒嶓嶔嶕嶖嶗嶘嶚嶛嶜嶞嶟嶠�".split("");for(a=0;a!=t[141].length;++a)if(t[141][a].charCodeAt(0)!==65533){r[t[141][a]]=36096+a;e[36096+a]=t[141][a]}t[142]="����������������������������������������������������������������嶡嶢嶣嶤嶥嶦嶧嶨嶩嶪嶫嶬嶭嶮嶯嶰嶱嶲嶳嶴嶵嶶嶸嶹嶺嶻嶼嶽嶾嶿巀巁巂巃巄巆巇巈巉巊巋巌巎巏巐巑巒巓巔巕巖巗巘巙巚巜巟巠巣巤巪巬巭�巰巵巶巸巹巺巻巼巿帀帄帇帉帊帋帍帎帒帓帗帞帟帠帡帢帣帤帥帨帩帪師帬帯帰帲帳帴帵帶帹帺帾帿幀幁幃幆幇幈幉幊幋幍幎幏幐幑幒幓幖幗幘幙幚幜幝幟幠幣幤幥幦幧幨幩幪幫幬幭幮幯幰幱幵幷幹幾庁庂広庅庈庉庌庍庎庒庘庛庝庡庢庣庤庨庩庪庫庬庮庯庰庱庲庴庺庻庼庽庿廀廁廂廃廄廅�".split("");for(a=0;a!=t[142].length;++a)if(t[142][a].charCodeAt(0)!==65533){r[t[142][a]]=36352+a;e[36352+a]=t[142][a]}t[143]="����������������������������������������������������������������廆廇廈廋廌廍廎廏廐廔廕廗廘廙廚廜廝廞廟廠廡廢廣廤廥廦廧廩廫廬廭廮廯廰廱廲廳廵廸廹廻廼廽弅弆弇弉弌弍弎弐弒弔弖弙弚弜弝弞弡弢弣弤�弨弫弬弮弰弲弳弴張弶強弸弻弽弾弿彁彂彃彄彅彆彇彈彉彊彋彌彍彎彏彑彔彙彚彛彜彞彟彠彣彥彧彨彫彮彯彲彴彵彶彸彺彽彾彿徃徆徍徎徏徑従徔徖徚徛徝從徟徠徢徣徤徥徦徧復徫徬徯徰徱徲徳徴徶徸徹徺徻徾徿忀忁忂忇忈忊忋忎忓忔忕忚忛応忞忟忢忣忥忦忨忩忬忯忰忲忳忴忶忷忹忺忼怇�".split("");for(a=0;a!=t[143].length;++a)if(t[143][a].charCodeAt(0)!==65533){r[t[143][a]]=36608+a;e[36608+a]=t[143][a]}t[144]="����������������������������������������������������������������怈怉怋怌怐怑怓怗怘怚怞怟怢怣怤怬怭怮怰怱怲怳怴怶怷怸怹怺怽怾恀恄恅恆恇恈恉恊恌恎恏恑恓恔恖恗恘恛恜恞恟恠恡恥恦恮恱恲恴恵恷恾悀�悁悂悅悆悇悈悊悋悎悏悐悑悓悕悗悘悙悜悞悡悢悤悥悧悩悪悮悰悳悵悶悷悹悺悽悾悿惀惁惂惃惄惇惈惉惌惍惎惏惐惒惓惔惖惗惙惛惞惡惢惣惤惥惪惱惲惵惷惸惻惼惽惾惿愂愃愄愅愇愊愋愌愐愑愒愓愔愖愗愘愙愛愜愝愞愡愢愥愨愩愪愬愭愮愯愰愱愲愳愴愵愶愷愸愹愺愻愼愽愾慀慁慂慃慄慅慆�".split("");for(a=0;a!=t[144].length;++a)if(t[144][a].charCodeAt(0)!==65533){r[t[144][a]]=36864+a;e[36864+a]=t[144][a]}t[145]="����������������������������������������������������������������慇慉態慍慏慐慒慓慔慖慗慘慙慚慛慜慞慟慠慡慣慤慥慦慩慪慫慬慭慮慯慱慲慳慴慶慸慹慺慻慼慽慾慿憀憁憂憃憄憅憆憇憈憉憊憌憍憏憐憑憒憓憕�憖憗憘憙憚憛憜憞憟憠憡憢憣憤憥憦憪憫憭憮憯憰憱憲憳憴憵憶憸憹憺憻憼憽憿懀懁懃懄懅懆懇應懌懍懎懏懐懓懕懖懗懘懙懚懛懜懝懞懟懠懡懢懣懤懥懧懨懩懪懫懬懭懮懯懰懱懲懳懴懶懷懸懹懺懻懼懽懾戀戁戂戃戄戅戇戉戓戔戙戜戝戞戠戣戦戧戨戩戫戭戯戰戱戲戵戶戸戹戺戻戼扂扄扅扆扊�".split("");for(a=0;a!=t[145].length;++a)if(t[145][a].charCodeAt(0)!==65533){r[t[145][a]]=37120+a;e[37120+a]=t[145][a]}t[146]="����������������������������������������������������������������扏扐払扖扗扙扚扜扝扞扟扠扡扢扤扥扨扱扲扴扵扷扸扺扻扽抁抂抃抅抆抇抈抋抌抍抎抏抐抔抙抜抝択抣抦抧抩抪抭抮抯抰抲抳抴抶抷抸抺抾拀拁�拃拋拏拑拕拝拞拠拡拤拪拫拰拲拵拸拹拺拻挀挃挄挅挆挊挋挌挍挏挐挒挓挔挕挗挘挙挜挦挧挩挬挭挮挰挱挳挴挵挶挷挸挻挼挾挿捀捁捄捇捈捊捑捒捓捔捖捗捘捙捚捛捜捝捠捤捥捦捨捪捫捬捯捰捲捳捴捵捸捹捼捽捾捿掁掃掄掅掆掋掍掑掓掔掕掗掙掚掛掜掝掞掟採掤掦掫掯掱掲掵掶掹掻掽掿揀�".split("");for(a=0;a!=t[146].length;++a)if(t[146][a].charCodeAt(0)!==65533){r[t[146][a]]=37376+a;e[37376+a]=t[146][a]}t[147]="����������������������������������������������������������������揁揂揃揅揇揈揊揋揌揑揓揔揕揗揘揙揚換揜揝揟揢揤揥揦揧揨揫揬揮揯揰揱揳揵揷揹揺揻揼揾搃搄搆搇搈搉搊損搎搑搒搕搖搗搘搙搚搝搟搢搣搤�搥搧搨搩搫搮搯搰搱搲搳搵搶搷搸搹搻搼搾摀摂摃摉摋摌摍摎摏摐摑摓摕摖摗摙摚摛摜摝摟摠摡摢摣摤摥摦摨摪摫摬摮摯摰摱摲摳摴摵摶摷摻摼摽摾摿撀撁撃撆撈撉撊撋撌撍撎撏撐撓撔撗撘撚撛撜撝撟撠撡撢撣撥撦撧撨撪撫撯撱撲撳撴撶撹撻撽撾撿擁擃擄擆擇擈擉擊擋擌擏擑擓擔擕擖擙據�".split("");for(a=0;a!=t[147].length;++a)if(t[147][a].charCodeAt(0)!==65533){r[t[147][a]]=37632+a;e[37632+a]=t[147][a]}t[148]="����������������������������������������������������������������擛擜擝擟擠擡擣擥擧擨擩擪擫擬擭擮擯擰擱擲擳擴擵擶擷擸擹擺擻擼擽擾擿攁攂攃攄攅攆攇攈攊攋攌攍攎攏攐攑攓攔攕攖攗攙攚攛攜攝攞攟攠攡�攢攣攤攦攧攨攩攪攬攭攰攱攲攳攷攺攼攽敀敁敂敃敄敆敇敊敋敍敎敐敒敓敔敗敘敚敜敟敠敡敤敥敧敨敩敪敭敮敯敱敳敵敶數敹敺敻敼敽敾敿斀斁斂斃斄斅斆斈斉斊斍斎斏斒斔斕斖斘斚斝斞斠斢斣斦斨斪斬斮斱斲斳斴斵斶斷斸斺斻斾斿旀旂旇旈旉旊旍旐旑旓旔旕旘旙旚旛旜旝旞旟旡旣旤旪旫�".split("");for(a=0;a!=t[148].length;++a)if(t[148][a].charCodeAt(0)!==65533){r[t[148][a]]=37888+a;e[37888+a]=t[148][a]}t[149]="����������������������������������������������������������������旲旳旴旵旸旹旻旼旽旾旿昁昄昅昇昈昉昋昍昐昑昒昖昗昘昚昛昜昞昡昢昣昤昦昩昪昫昬昮昰昲昳昷昸昹昺昻昽昿晀時晄晅晆晇晈晉晊晍晎晐晑晘�晙晛晜晝晞晠晢晣晥晧晩晪晫晬晭晱晲晳晵晸晹晻晼晽晿暀暁暃暅暆暈暉暊暋暍暎暏暐暒暓暔暕暘暙暚暛暜暞暟暠暡暢暣暤暥暦暩暪暫暬暭暯暰暱暲暳暵暶暷暸暺暻暼暽暿曀曁曂曃曄曅曆曇曈曉曊曋曌曍曎曏曐曑曒曓曔曕曖曗曘曚曞曟曠曡曢曣曤曥曧曨曪曫曬曭曮曯曱曵曶書曺曻曽朁朂會�".split("");for(a=0;a!=t[149].length;++a)if(t[149][a].charCodeAt(0)!==65533){r[t[149][a]]=38144+a;e[38144+a]=t[149][a]}t[150]="����������������������������������������������������������������朄朅朆朇朌朎朏朑朒朓朖朘朙朚朜朞朠朡朢朣朤朥朧朩朮朰朲朳朶朷朸朹朻朼朾朿杁杄杅杇杊杋杍杒杔杕杗杘杙杚杛杝杢杣杤杦杧杫杬杮東杴杶�杸杹杺杻杽枀枂枃枅枆枈枊枌枍枎枏枑枒枓枔枖枙枛枟枠枡枤枦枩枬枮枱枲枴枹枺枻枼枽枾枿柀柂柅柆柇柈柉柊柋柌柍柎柕柖柗柛柟柡柣柤柦柧柨柪柫柭柮柲柵柶柷柸柹柺査柼柾栁栂栃栄栆栍栐栒栔栕栘栙栚栛栜栞栟栠栢栣栤栥栦栧栨栫栬栭栮栯栰栱栴栵栶栺栻栿桇桋桍桏桒桖桗桘桙桚桛�".split("");for(a=0;a!=t[150].length;++a)if(t[150][a].charCodeAt(0)!==65533){r[t[150][a]]=38400+a;e[38400+a]=t[150][a]}t[151]="����������������������������������������������������������������桜桝桞桟桪桬桭桮桯桰桱桲桳桵桸桹桺桻桼桽桾桿梀梂梄梇梈梉梊梋梌梍梎梐梑梒梔梕梖梘梙梚梛梜條梞梟梠梡梣梤梥梩梪梫梬梮梱梲梴梶梷梸�梹梺梻梼梽梾梿棁棃棄棅棆棇棈棊棌棎棏棐棑棓棔棖棗棙棛棜棝棞棟棡棢棤棥棦棧棨棩棪棫棬棭棯棲棳棴棶棷棸棻棽棾棿椀椂椃椄椆椇椈椉椊椌椏椑椓椔椕椖椗椘椙椚椛検椝椞椡椢椣椥椦椧椨椩椪椫椬椮椯椱椲椳椵椶椷椸椺椻椼椾楀楁楃楄楅楆楇楈楉楊楋楌楍楎楏楐楑楒楓楕楖楘楙楛楜楟�".split("");for(a=0;a!=t[151].length;++a)if(t[151][a].charCodeAt(0)!==65533){r[t[151][a]]=38656+a;e[38656+a]=t[151][a]}t[152]="����������������������������������������������������������������楡楢楤楥楧楨楩楪楬業楯楰楲楳楴極楶楺楻楽楾楿榁榃榅榊榋榌榎榏榐榑榒榓榖榗榙榚榝榞榟榠榡榢榣榤榥榦榩榪榬榮榯榰榲榳榵榶榸榹榺榼榽�榾榿槀槂槃槄槅槆槇槈槉構槍槏槑槒槓槕槖槗様槙槚槜槝槞槡槢槣槤槥槦槧槨槩槪槫槬槮槯槰槱槳槴槵槶槷槸槹槺槻槼槾樀樁樂樃樄樅樆樇樈樉樋樌樍樎樏樐樑樒樓樔樕樖標樚樛樜樝樞樠樢樣樤樥樦樧権樫樬樭樮樰樲樳樴樶樷樸樹樺樻樼樿橀橁橂橃橅橆橈橉橊橋橌橍橎橏橑橒橓橔橕橖橗橚�".split("");for(a=0;a!=t[152].length;++a)if(t[152][a].charCodeAt(0)!==65533){r[t[152][a]]=38912+a;e[38912+a]=t[152][a];
@@ -787,7 +811,8 @@ const ST = {
   target: null, targetSec: 'C', tpl: null, lastBuf: null, lastName: '',
   /* V2 */ fav: [], recientes: [], vistas: {}, busq: [], vocab: [], byCod: null,
   alertas: [], alFiltro: 'todas', alShown: 0, cfg: { sup: false, bloq: false },
-  fkRow: null, scanStream: null, scanTimer: null, fillRate: null, baseVista: null,
+  fkRow: null, scanStream: null, scanTimer: null, baseVista: null, kpiFiltro: '', cntSoloDif: false,
+  rowsRaw: [], scope: null,
   personal: null, login: null
 };
 
@@ -1000,178 +1025,6 @@ function sampleFor(rows) {
    este último dice a qué nodo devuelve materiales cada base. Nada más de
    Fill Rate entra a la app.
    ══════════════════════════════════════════════════════════════════════ */
-function parseFillRatePersonal(wb, fileName) {
-  let sheet = wb.SheetNames[0], bs = -1;
-  for (const name of wb.SheetNames) {
-    const ws = wb.Sheets[name]; if (!ws || !ws['!ref']) continue;
-    const head = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, blankrows: false }).slice(0, 8)
-      .map(r => (r || []).map(norm));
-    let hits = 0;
-    for (const row of head) { if (row.some(x => /deposito entrega/.test(x))) hits++;
-      if (row.some(x => /apellido y nombre/.test(x))) hits++; }
-    if (hits > bs) { bs = hits; sheet = name; }
-  }
-  const ws = wb.Sheets[sheet];
-  if (!ws || !ws['!ref']) throw new Error('La hoja está vacía.');
-  const fmt = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, blankrows: false, defval: '' });
-  if (!fmt.length) throw new Error('No se leyeron filas.');
-
-  let hr = 0, best = -1;
-  for (let r = 0; r < Math.min(8, fmt.length); r++) {
-    const row = (fmt[r] || []).map(norm);
-    let hits = 0;
-    if (row.some(x => /deposito entrega/.test(x))) hits++;
-    if (row.some(x => /apellido y nombre/.test(x))) hits++;
-    if (hits > best) { best = hits; hr = r; }
-  }
-  const header = (fmt[hr] || []).map(norm);
-  let iDep = header.findIndex(x => /deposito entrega/.test(x));
-  let iDesc = iDep >= 0 ? iDep + 1 : colIdx('F');
-  /* el depósito ABASTECEDOR es el próximo par "Depósito/Descripción" después
-     del de Entrega — nunca el primero, para no confundirlo con el de arriba. */
-  let iAbC = -1, iAbD = -1;
-  for (let i = (iDesc >= 0 ? iDesc + 1 : 0); i < header.length; i++)
-    if (/^deposito$/.test(header[i])) { iAbC = i; iAbD = i + 1; break; }
-  if (iAbC < 0) { iAbC = colIdx('G'); iAbD = colIdx('H'); }
-  let iLeg = header.findIndex(x => /^tecnico$/.test(x));
-  let iTec = header.findIndex(x => /apellido y nombre/.test(x));
-  if (iDep < 0) iDep = colIdx('E');
-  if (iTec < 0) iTec = colIdx('J');
-  if (iLeg < 0) iLeg = colIdx('I');
-
-  const filas = fmt.slice(hr + 1);
-  const depIndex = new Map();     // código depósito -> {desc, tecnicos:Map(nombre->apariciones), retorno:Map}
-  const legIndex = new Map();     // legajo (texto) -> {code, desc, nombre}
-  let leidas = 0;
-  for (const r of filas) {
-    const code = (r[iDep] || '').trim(); if (!code) continue;
-    leidas++;
-    const desc = (r[iDesc] || '').trim();
-    const tec = (r[iTec] || '').trim();
-    const leg = (r[iLeg] || '').toString().trim();
-    const abC = (r[iAbC] || '').trim(), abD = (r[iAbD] || '').trim();
-    if (!depIndex.has(code)) depIndex.set(code, { desc: '', tecnicos: new Map(), retorno: new Map() });
-    const e = depIndex.get(code);
-    if (desc && !e.desc) e.desc = desc;
-    if (tec) e.tecnicos.set(tec, (e.tecnicos.get(tec) || 0) + 1);
-    if (abD) e.retorno.set(abD, (e.retorno.get(abD) || 0) + 1);
-    if (leg && tec) legIndex.set(leg, { code, desc, nombre: tec });
-  }
-  const tecIndex = new Map();     // nombre normalizado -> [{code, desc, nombre}]
-  for (const [code, info] of depIndex) for (const [tec] of info.tecnicos) {
-    const key = norm(tec);
-    if (!tecIndex.has(key)) tecIndex.set(key, []);
-    tecIndex.get(key).push({ code, desc: info.desc, nombre: tec });
-  }
-  /* el retorno más frecuente por depósito, resuelto una sola vez */
-  for (const [code, info] of depIndex) {
-    let best2 = '', bn = -1;
-    for (const [d, n] of info.retorno) if (n > bn) { bn = n; best2 = d; }
-    info.retornoDesc = best2;
-  }
-  if (!depIndex.size) throw new Error('No se encontró "Depósito Entrega" ni "Apellido y Nombre" en el archivo.');
-  return { depIndex, tecIndex, legIndex, file: fileName, rows: leidas, deps: depIndex.size,
-    tecs: tecIndex.size, when: Date.now() };
-}
-function renderFillRate() {
-  const fr = ST.fillRate;
-  $('#frFile').textContent = fr ? fr.file : '—';
-  $('#frDeps').textContent = fr ? fr.deps.toLocaleString('es-AR') : '—';
-  $('#frTecs').textContent = fr ? fr.tecs.toLocaleString('es-AR') : '—';
-  $('#frSub').innerHTML = fr
-    ? 'Cargado el ' + dfmt(new Date(fr.when)) + '. Se usa sólo para «Mi base» — el resto de Fill Rate no se toca.'
-    : 'Se usa solo para saber en qué base trabaja cada técnico, así podés buscar «Mi base» por nombre. No se toca ningún otro dato de Fill Rate.';
-}
-$('#fileFR').addEventListener('change', async e => {
-  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
-  loading(true, 'Leyendo Fill Rate', f.name);
-  try {
-    const buf = await f.arrayBuffer();
-    const wb = XLSX.read(buf, { type: 'array', cellDates: false, cellNF: false, cellStyles: false });
-    const fr = parseFillRatePersonal(wb, f.name);
-    ST.fillRate = fr;
-    await DB.set('fillrate', fr);
-    renderFillRate(); loading(false);
-    toast(fr.deps + ' bases · ' + fr.tecs + ' técnicos identificados');
-    reresolverLogin();
-  } catch (err) { loading(false); alert('No se pudo leer el archivo.\n\n' + (err.message || err)); }
-});
-
-/* ══════════════════════════════════════════════════════════════════════
-   V2 · MÓDULO — DIRECTORIO DE PERSONAL (Supervisores y técnicos)
-   De este archivo se usa: Legajo, Apellido y Nombre, Depósito Asociado
-   (código+desc) y Supervisado Por. Es la fuente de verdad para identificar
-   a alguien por legajo al entrar a la app.
-   ══════════════════════════════════════════════════════════════════════ */
-function parsePersonal(wb, fileName) {
-  let sheet = wb.SheetNames[0], bs = -1;
-  for (const name of wb.SheetNames) {
-    const ws = wb.Sheets[name]; if (!ws || !ws['!ref']) continue;
-    const head = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, blankrows: false }).slice(0, 6)
-      .map(r => (r || []).map(norm));
-    let hits = 0;
-    for (const row of head) { if (row.some(x => /^legajo$/.test(x))) hits++;
-      if (row.some(x => /supervisado por/.test(x))) hits++; }
-    if (hits > bs) { bs = hits; sheet = name; }
-  }
-  const ws = wb.Sheets[sheet];
-  if (!ws || !ws['!ref']) throw new Error('La hoja está vacía.');
-  const fmt = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, blankrows: false, defval: '' });
-  if (!fmt.length) throw new Error('No se leyeron filas.');
-  const header = (fmt[0] || []).map(norm);
-  const iLeg = header.findIndex(x => /^legajo$/.test(x));
-  const iNom = header.findIndex(x => /apellido y nombre/.test(x));
-  const iCat = header.findIndex(x => /categoria/.test(x));
-  const iDep = header.findIndex(x => /deposito asociado/.test(x));
-  const iDesc = iDep >= 0 ? iDep + 1 : -1;
-  const iSup = header.findIndex(x => /supervisado por/.test(x));
-  if (iLeg < 0 || iNom < 0) throw new Error('No encontré "Legajo" y "Apellido y Nombre" en el archivo.');
-
-  const porLegajo = new Map();       // legajo -> {nombre, cat, code, desc, supervisadoPor}
-  const porNombreNorm = new Map();   // nombre normalizado -> legajo
-  for (const r of fmt.slice(1)) {
-    const leg = (r[iLeg] || '').toString().trim(); if (!leg) continue;
-    const nombre = (r[iNom] || '').trim(); if (!nombre) continue;
-    const info = { nombre, cat: (r[iCat] || '').trim(),
-      code: iDep >= 0 ? (r[iDep] || '').trim() : '', desc: iDesc >= 0 ? (r[iDesc] || '').trim() : '',
-      supervisadoPor: iSup >= 0 ? (r[iSup] || '').trim() : '' };
-    porLegajo.set(leg, info);
-    porNombreNorm.set(norm(nombre), leg);
-  }
-  /* índice inverso: dado el nombre de un supervisor, quiénes le reportan */
-  const supervisadosPor = new Map();
-  for (const [leg, info] of porLegajo) {
-    if (!info.supervisadoPor) continue;
-    const key = norm(info.supervisadoPor);
-    if (!supervisadosPor.has(key)) supervisadosPor.set(key, []);
-    supervisadosPor.get(key).push(leg);
-  }
-  if (!porLegajo.size) throw new Error('No se encontró ningún legajo válido.');
-  return { porLegajo, porNombreNorm, supervisadosPor, file: fileName, n: porLegajo.size, when: Date.now() };
-}
-function renderPersonal() {
-  const p = ST.personal;
-  $('#perFile').textContent = p ? p.file : '—';
-  $('#perN').textContent = p ? p.n.toLocaleString('es-AR') : '—';
-  $('#perSub').innerHTML = p
-    ? 'Cargado el ' + dfmt(new Date(p.when)) + ' · ' + p.n + ' legajos.'
-    : 'Legajos de supervisores y técnicos — para identificar quién sos al entrar a la app y quién supervisa a quién.';
-}
-$('#filePER').addEventListener('change', async e => {
-  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
-  loading(true, 'Leyendo legajos', f.name);
-  try {
-    const buf = await f.arrayBuffer();
-    const wb = XLSX.read(buf, { type: 'array', cellDates: false, cellNF: false, cellStyles: false });
-    const per = parsePersonal(wb, f.name);
-    ST.personal = per;
-    await DB.set('personal', per);
-    renderPersonal(); loading(false);
-    toast(per.n + ' legajos identificados');
-    reresolverLogin();
-  } catch (err) { loading(false); alert('No se pudo leer el archivo.\n\n' + (err.message || err)); }
-});
-
 /* ══════════════════════════════════════════════════════════════════════
    V2 · MÓDULO — LOGIN / IDENTIFICACIÓN
    Tres roles. El de "Responsable de Stock" es una asignación fija de la
@@ -1183,10 +1036,113 @@ const RESPONSABLES_STOCK = {
   '195': { nombre: 'Di Virgilio, Nicolas Ezequiel', code: 'NODO03', desc: 'Permaquim - Nodo Logístico 03 - Rosario' },
   '592': { nombre: 'Fernandez, Lautaro Benjamín', code: 'NODO02', desc: 'Permaquim - Nodo Logístico 02 - Cordoba' }
 };
-const ROL_LB = { tecnico: 'Técnico Permaquim', supervisor: 'Supervisor Permaquim', responsable: 'Responsable de Stock' };
+const ROL_LB = { tecnico: 'Técnico Permaquim', supervisor: 'Supervisor Permaquim',
+  responsable: 'Responsable de Stock', nacional: 'Planificación' };
 
-/* Intenta resolver rol+legajo contra lo que ya esté cargado. Devuelve
-   { ok, nombre, bases:[{code,desc}], motivo } — nunca lanza. */
+/* ── DIRECTORIO Y DEPÓSITOS · PQ_ORG (embebido, sólo lo actualiza Christian) ──
+   PQ_ORG.deps[code]      = { desc, ab: {tipo, label} | null }
+   PQ_ORG.personal[legajo] = { nombre, cat: 'TEC'|'SUP', dep, misBases:[...] (sólo SUP) }
+   PQ_ORG.planificacion[legajo] = nombre  (acceso a stock de todo el país)
+   El código de depósito es la clave de cruce (Stock, ST Depósitos y
+   Supervisores y técnicos usan el mismo código; las descripciones a veces
+   difieren entre archivos, así que nunca se cruza por descripción). */
+const ORG = window.PQ_ORG || { deps: {}, personal: {}, planificacion: {} };
+function depInfo(code) { return ORG.deps[code] || null; }
+/* Nodo/central abastecedor de un código de depósito, o null si no está
+   registrado. Ya no hay fallback a Haedo: si no está definido, se dice. */
+function nodoDeBase(code) {
+  const d = depInfo(code);
+  if (!d || !d.ab) return null;
+  const t = d.ab.tipo;
+  const corto = t === 'HAEDO' ? 'CENTRAL HAEDO' : t === 'PLANIFICACION' ? 'PLANIFICACIÓN'
+    : /^NODO0[1-4]$/.test(t) ? 'NODO ' + t.slice(-2) : d.ab.label.toUpperCase().slice(0, 22);
+  return { corto, largo: d.ab.label };
+}
+/* Nombres de las personas asociadas a un código de depósito (para mostrar
+   "quién trabaja ahí" en el detalle de base). */
+function personalDeBase(code) {
+  return Object.values(ORG.personal).filter(p => p.dep === code).map(p => p.nombre);
+}
+/* Códigos de depósito que puede ver el login actual. null = sin
+   restricción (Planificación / sin login). Nunca null para Técnico,
+   Supervisor o Responsable de Stock: siempre son sus bases y nada más. */
+function scopeCodes() {
+  if (!ST.login || ST.login.rol === 'nacional') return null;
+  return (ST.login.bases || []).map(b => b.code);
+}
+/* Clona ST.rowsRaw recortado a los códigos del scope: la cantidad de
+   cada producto pasa a ser la suma SÓLO de esos depósitos (nunca la
+   de Haedo ni la de otra base), y porDep queda reducido a esos mismos
+   códigos — así "Mi base"/alertas/ficha no pueden filtrar otra base
+   por accidente aunque lean el mismo objeto. */
+function computeScopedRows(rowsRaw, codes) {
+  if (codes === null) return rowsRaw;
+  return rowsRaw.map(r => {
+    let cant = 0, rot = null; const uC = [], pdSub = {};
+    for (const code of codes) {
+      const pd = r.porDep && r.porDep[code];
+      if (!pd) continue;
+      pdSub[code] = pd;
+      cant += pd.cant;
+      if (pd.rot != null) rot = rot == null ? pd.rot : Math.max(rot, pd.rot);
+      if (pd.cant > 0 && pd.ubi) uC.push([pd.ubi, pd.cant]);
+    }
+    return { ...r, C: cant, A: 0, tot: cant, rot, uC, uA: [], otros: [], porDep: pdSub };
+  });
+}
+/* Recalcula ST.rows a partir de ST.rowsRaw según el login actual y
+   vuelve a correr todo el pipeline de render — se llama al cargar
+   stock nuevo y cada vez que cambia quién está identificado. */
+function aplicarScope() {
+  ST.scope = scopeCodes();
+  ST.rows = computeScopedRows(ST.rowsRaw, ST.scope);
+  ST._alFresh = false;
+  buildIndex(); buildFacets(); renderChips(); renderDatos(); doSearch();
+  renderInicio(); renderAlertas();
+  if (ST.rows.length) $('#hdSub').textContent = ST.rows.length.toLocaleString('es-AR') + ' productos' +
+    (ST.meta && ST.meta.when ? ' · ' + new Date(ST.meta.when).toLocaleDateString('es-AR') : '');
+}
+/* Las "fuentes" contables disponibles para un producto según el scope
+   actual: sin restricción son Central/Alta (Haedo); con restricción,
+   una entrada por cada base del login (siempre presentes aunque esa
+   base tenga 0 unidades, para poder contar "no hay nada acá" también). */
+function fuentesDisponibles(r) {
+  if (ST.scope === null) return [
+    { k: 'C', lb: SEC.C.corto, val: r.C, ubi: r.uC },
+    { k: 'A', lb: SEC.A.corto, val: r.A, ubi: r.uA },
+  ];
+  return ST.scope.map(code => {
+    const pd = (r.porDep && r.porDep[code]) || { cant: 0, ubi: '' };
+    const d = depInfo(code);
+    return { k: code, lb: (d && d.desc) || code, val: pd.cant, ubi: pd.ubi ? [[pd.ubi, pd.cant]] : [] };
+  });
+}
+/* HTML del cartel de stock inmovilizado de una base. '' si no hay nada. */
+function cartelDevolucion(code) {
+  const items = [];
+  for (const r of ST.rows) { const pd = r.porDep && r.porDep[code];
+    if (pd && pd.cant > 0 && pd.rot != null && pd.rot > 3)
+      items.push({ cod: r.cod, desc: r.desc || '', cant: pd.cant, rot: pd.rot }); }
+  if (!items.length) return '';
+  items.sort((a, b) => b.rot - a.rot);
+  const nd = nodoDeBase(code);
+  const un = items.reduce((a, x) => a + x.cant, 0);
+  return '<div class="devol"><b>⚠️ Stock inmovilizado</b>' +
+    '<div>' + items.length.toLocaleString('es-AR') + (items.length === 1 ? ' producto' : ' productos') +
+    ' · ' + nfmt(un) + ' unidades sin rotar hace más de 3 meses.</div>' +
+    (nd ? '<div class="ln">Hay que devolverlo a <b>' + esc(nd.largo) + '</b></div>' +
+          '<span class="nd">DEVOLVER A ' + esc(nd.corto) + '</span>'
+        : '<div class="ln">Este depósito no tiene abastecedor registrado en el directorio. ' +
+          'Consultá con Abastecimiento antes de devolver — no lo mandes a Haedo por defecto.</div>') +
+    '<div class="ln">' + items.slice(0, 6).map(x => '· ' + esc(x.cod) + ' — ' + nfmt(x.cant) +
+      ' u. · ' + x.rot.toFixed(0) + ' meses').join('<br>') +
+      (items.length > 6 ? '<br>· y ' + (items.length - 6) + ' más.' : '') + '</div></div>';
+}
+
+/* Resuelve rol+legajo contra el directorio embebido (PQ_ORG). Como el
+   maestro ya está disponible desde el arranque, la resolución es siempre
+   inmediata — no existe más el estado "pendiente" de versiones anteriores.
+   Devuelve { ok, nombre, bases:[{code,desc}]|null, motivo }. */
 function resolverLogin(rol, legajo) {
   const leg = String(legajo).trim();
   if (rol === 'responsable') {
@@ -1194,78 +1150,153 @@ function resolverLogin(rol, legajo) {
     if (r) return { ok: true, nombre: r.nombre, bases: [{ code: r.code, desc: r.desc }] };
     return { ok: false, motivo: 'Ese legajo no está en la lista de responsables de stock.' };
   }
+  if (rol === 'nacional') {
+    const nombre = ORG.planificacion[leg];
+    if (nombre) return { ok: true, nombre, bases: null };
+    return { ok: false, motivo: 'Ese legajo no está en la lista de Planificación.' };
+  }
   if (rol === 'tecnico') {
-    if (ST.personal && ST.personal.porLegajo.has(leg)) {
-      const info = ST.personal.porLegajo.get(leg);
-      if (info.code) return { ok: true, nombre: info.nombre, bases: [{ code: info.code, desc: info.desc }] };
-    }
-    if (ST.fillRate && ST.fillRate.legIndex.has(leg)) {
-      const info = ST.fillRate.legIndex.get(leg);
-      return { ok: true, nombre: info.nombre, bases: [{ code: info.code, desc: info.desc }] };
-    }
-    /* si ya tenemos AL MENOS uno de los dos archivos cargados y el legajo
-       no aparece en ninguno, es un error real — no "todavía no cargaste" */
-    if (ST.personal || ST.fillRate)
-      return { ok: false, motivo: 'Ese legajo no figura en los datos cargados. Verificá el número.' };
-    return { ok: false, motivo: 'pendiente' };
+    const p = ORG.personal[leg];
+    if (!p) return { ok: false, motivo: 'Ese legajo no figura en el directorio de personal. Verificá el número.' };
+    if (!p.dep) return { ok: false, motivo: 'Ese legajo no tiene depósito asociado en el directorio.' };
+    const d = depInfo(p.dep);
+    return { ok: true, nombre: p.nombre, bases: [{ code: p.dep, desc: (d && d.desc) || p.dep }] };
   }
   if (rol === 'supervisor') {
-    if (!ST.personal) return { ok: false, motivo: 'pendiente' };
-    if (!ST.personal.porLegajo.has(leg))
-      return { ok: false, motivo: 'Ese legajo no figura en Supervisores y técnicos. Verificá el número.' };
-    const yo = ST.personal.porLegajo.get(leg);
-    const legs = ST.personal.supervisadosPor.get(norm(yo.nombre)) || [];
-    const bases = new Map();
-    if (yo.code) bases.set(yo.code, yo.desc);
-    for (const l of legs) { const info = ST.personal.porLegajo.get(l);
-      if (info && info.code) bases.set(info.code, info.desc); }
-    if (!bases.size) return { ok: false, motivo: 'Ese legajo no tiene bases asociadas ni gente a cargo.' };
-    return { ok: true, nombre: yo.nombre, bases: Array.from(bases, ([code, desc]) => ({ code, desc })) };
+    const p = ORG.personal[leg];
+    if (!p) return { ok: false, motivo: 'Ese legajo no figura en el directorio de personal. Verificá el número.' };
+    if (p.cat !== 'SUP' || !p.misBases || !p.misBases.length)
+      return { ok: false, motivo: 'Ese legajo no está registrado como supervisor con bases a cargo.' };
+    const bases = p.misBases.map(code => { const d = depInfo(code); return { code, desc: (d && d.desc) || code }; });
+    return { ok: true, nombre: p.nombre, bases };
   }
-  return { ok: false, motivo: 'Elegí quién sos.' };
+  return { ok: false, motivo: 'Elegí tu responsabilidad.' };
 }
-/* Reintenta resolver el login guardado cuando recién se termina de cargar
-   un archivo (Fill Rate o Personal) — por si alguien ya había entrado antes
-   de que los datos estuvieran disponibles. */
-function reresolverLogin() {
-  if (!ST.login || ST.login.bases) return;
-  const r = resolverLogin(ST.login.rol, ST.login.legajo);
-  if (r.ok) { ST.login.nombre = r.nombre || ST.login.nombre; ST.login.bases = r.bases;
-    LS.set('pq_login', ST.login); renderSesion(); toast('Ya identificamos tu base: ' + r.bases[0].desc); }
+/* ── MODO TÉCNICO ──────────────────────────────────────────────────────
+   Un técnico entra, se identifica y ve SÓLO el stock de su base. No hay
+   buscador global, conteos generales ni alertas de toda la empresa: se le
+   dejan Mi stock y Datos (esta última es imprescindible, porque cada
+   teléfono carga su propio Excel). */
+/* Los 4 roles ven la app completa (Inicio/Buscar/Conteos/Alertas/Datos).
+   "Mi base" queda disponible como acción rápida de Inicio para quien
+   quiera ir directo a su base — no como restricción del resto de la app. */
+function esModoAcotado() { return false; }
+function aplicarModoRol() {
+  document.body.classList.remove('rol-tec');
+  const lb = $('#tabInicioLb'); if (lb) lb.textContent = 'Inicio';
 }
+function stockDeBase(code) {
+  const items = [];
+  for (const r of ST.rows) { const pd = r.porDep && r.porDep[code];
+    if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot }); }
+  items.sort((a, b) => b.cant - a.cant);
+  return items;
+}
+function bloqueBase(base, abierta) {
+  const code = base.code;
+  const d = depInfo(code);
+  const desc = (d && d.desc) || base.desc || code;
+  const nd = nodoDeBase(code);
+  const items = stockDeBase(code);
+  return '<div class="panel" data-basecode="' + esc(code) + '" style="margin-bottom:14px">' +
+    '<p class="eyebrow" style="margin:0 0 4px">Base</p>' +
+    '<h2 style="font-size:17px;margin:0 0 2px">' + esc(desc) + '</h2>' +
+    '<p class="note" style="margin:0 0 10px">Código ' + esc(code) +
+      (nd ? ' · devoluciones a ' + esc(nd.largo) : ' · sin depósito abastecedor registrado') + '</p>' +
+    '<div class="kv"><span>Productos con stock</span><b class="num">' + items.length.toLocaleString('es-AR') + '</b></div>' +
+    '<div class="kv"><span>Unidades</span><b class="num">' + nfmt(items.reduce((a, x) => a + x.cant, 0)) + '</b></div>' +
+    cartelDevolucion(code) +
+    (abierta ? renderListaStock(items) : '<button class="btn gh basetoggle" style="margin-top:10px">Ver stock de esta base</button>') +
+    '</div>';
+}
+function renderListaStock(items) {
+  return '<p class="eyebrow" style="margin:14px 0 6px">Stock — tocá para ver la ficha o contar</p>' +
+    (items.length ? items.map(it => '<div class="rec" style="cursor:default" data-cod="' + esc(it.r.cod) + '">' +
+      '<span class="i" data-act="ficha"><b>' + esc(it.r.cod) + '</b><span>' + esc(it.r.desc || '') + '</span></span>' +
+      (it.rot != null && it.rot > 3 ? '<span class="bayer" style="background:var(--tint-crit);color:var(--crit);border-color:var(--crit);margin-right:6px">' +
+        it.rot.toFixed(0) + 'm</span>' : '') +
+      '<span class="q num" data-act="ficha" style="margin-right:8px">' + nfmt(it.cant) + '</span>' +
+      '<button class="mini pri" data-act="contar" style="height:34px;padding:0 12px;font-size:12.5px">Contar</button></div>').join('')
+      : '<p class="note">No hay stock cargado en esta base en el archivo actual. Si recién entraste, cargá el Excel en <b>Datos</b>.</p>');
+}
+function renderMiStock() {
+  const box = $('#miStock');
+  const l = ST.login, bases = l && l.bases;
+  if (!bases || !bases.length) {
+    box.innerHTML = '<div class="al c1" style="margin-top:12px"><div class="m">No pudimos resolver tu base.</div>' +
+      '<div class="rc">Volvé a identificarte desde Datos → Tu sesión → Cambiar de usuario y verificá tu número de legajo.</div></div>';
+    return;
+  }
+  if (bases.length === 1) { box.innerHTML = bloqueBase(bases[0], true); return; }
+  const totItems = bases.reduce((a, b) => a + stockDeBase(b.code).length, 0);
+  const totUn = bases.reduce((a, b) => a + stockDeBase(b.code).reduce((x, y) => x + y.cant, 0), 0);
+  box.innerHTML =
+    '<p class="eyebrow" style="margin:2px 0 8px">Tus bases — ' + bases.length + '</p>' +
+    '<div class="kpis" style="margin-bottom:14px">' +
+      kpi(totItems, 'Productos con stock', '') + kpi(totUn, 'Unidades totales', '') + '</div>' +
+    bases.map(b => bloqueBase(b, false)).join('') +
+    '<p class="foot">Permaquim · Coordinación de Abastecimiento · funciona sin internet</p>';
+}
+$('#miStock').addEventListener('click', e => {
+  const tg = e.target.closest('.basetoggle');
+  if (tg) { const panel = tg.closest('[data-basecode]'); const code = panel.dataset.code;
+    const base = (ST.login.bases || []).find(b => b.code === panel.dataset.basecode);
+    if (base) { panel.outerHTML = bloqueBase(base, true); } return; }
+  const cnt = e.target.closest('[data-act="contar"]');
+  const row = e.target.closest('[data-cod]'); if (!row) return;
+  const r = ST.byCod.get(row.dataset.cod); if (!r) return;
+  const panel = row.closest('[data-basecode]');
+  const code = panel ? panel.dataset.basecode : (ST.login.bases[0] || {}).code;
+  const base = (ST.login.bases || []).find(b => b.code === code) || ST.login.bases[0];
+  if (cnt) openConteo(r, { code: base.code, desc: base.desc });
+  else openFicha(r);
+});
 function renderSesion() {
   const l = ST.login;
   $('#sesRol').textContent = l ? ROL_LB[l.rol] : '— sin identificar —';
   $('#sesNom').textContent = l ? (l.nombre || '—') : '—';
   $('#sesBase').textContent = l && l.bases && l.bases.length
     ? l.bases.map(b => b.desc || b.code).join(' · ') : (l ? 'Sin resolver todavía' : '—');
+  aplicarModoRol();
 }
-function abrirLogin() { $('#gateLogin').classList.remove('off'); $('#glErr').style.display = 'none'; }
+function abrirLogin() {
+  glRolSel = '';
+  $$('#glRol button').forEach(x => x.classList.remove('on'));
+  $('#glDatos').style.display = 'none';
+  $('#glNombre').value = ''; $('#glLegajo').value = '';
+  $('#glErr').style.display = 'none'; $('#glErr0').style.display = 'none';
+  $('#gateLogin').classList.remove('off');
+}
 function cerrarLogin() { $('#gateLogin').classList.add('off'); }
 let glRolSel = '';
 $('#glRol').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
   glRolSel = b.dataset.rol;
-  $$('#glRol button').forEach(x => x.classList.toggle('on', x === b)); });
+  $$('#glRol button').forEach(x => x.classList.toggle('on', x === b));
+  /* recién ahí se habilita el resto del formulario */
+  $('#glErr0').style.display = 'none';
+  $('#glDatos').style.display = 'block';
+  setTimeout(() => $('#glNombre').focus(), 60); });
 $('#glEntrar').onclick = () => {
   const nombre = $('#glNombre').value.trim(), legajo = $('#glLegajo').value.trim();
-  if (!glRolSel) return mostrarErrGl('Elegí primero quién sos.');
-  if (!legajo) return mostrarErrGl('Ingresá tu número de legajo.');
+  if (!glRolSel) return mostrarErrGl0('Elegí primero tu responsabilidad.');
+  if (nombre.length < 5 || nombre.indexOf(' ') < 0)
+    return mostrarErrGl('Ingresá tu nombre y apellido completos.');
+  if (!/^\d+$/.test(legajo)) return mostrarErrGl('Ingresá tu número de legajo (sólo números).');
   const r = resolverLogin(glRolSel, legajo);
   if (r.ok) {
     ST.login = { rol: glRolSel, legajo, nombre: r.nombre || nombre, bases: r.bases };
     LS.set('pq_login', ST.login);
-    cerrarLogin(); renderSesion(); renderInicio();
-    toast('Hola, ' + (r.nombre || nombre).split(' ')[0] + ' · ' + r.bases[0].desc);
-  } else if (r.motivo === 'pendiente') {
-    ST.login = { rol: glRolSel, legajo, nombre: nombre || '', bases: null };
-    LS.set('pq_login', ST.login);
-    cerrarLogin(); renderSesion(); renderInicio();
-    toast('Guardado. Apenas se cargue el archivo con tu legajo, resolvemos tu base.', 4200);
+    cerrarLogin(); renderSesion();
+    if (ST.rowsRaw.length) aplicarScope(); else renderInicio();
+    toast('Hola, ' + (r.nombre || nombre).split(' ')[0] +
+      (r.bases && r.bases.length ? ' · ' + r.bases[0].desc + (r.bases.length > 1 ? ' y ' + (r.bases.length - 1) + ' más' : '')
+        : ' · acceso a todo el país'));
   } else mostrarErrGl(r.motivo);
 };
 function mostrarErrGl(m) { $('#glErrMsg').textContent = m; $('#glErr').style.display = 'block'; }
-$('#glOmitir').onclick = () => { ST.login = null; LS.set('pq_login', null); cerrarLogin(); renderSesion(); };
-$('#btnCambiarUser').onclick = () => { ST.login = null; LS.set('pq_login', null); renderSesion(); abrirLogin(); };
+function mostrarErrGl0(m) { $('#glErr0Msg').textContent = m; $('#glErr0').style.display = 'block'; }
+$('#btnCambiarUser').onclick = () => { ST.login = null; LS.set('pq_login', null); renderSesion();
+  if (ST.rowsRaw.length) aplicarScope(); abrirLogin(); };
 
 /* ══════════════ FACETAS Y BÚSQUEDA ══════════════ */
 const FAC = { tipo: [], marca: [], maquina: [], unidad: [] };
@@ -1284,11 +1315,15 @@ function buildFacets() {
 function doSearch() {
   const toks = norm(ST.q).split(' ').filter(Boolean);
   const { tipo, marca, maquina, unidad } = ST.filtros, res = [];
+  const kf = ST.kpiFiltro;
   for (const r of ST.rows) {
     if (tipo && r.tipo !== tipo) continue;
     if (marca && r.marca !== marca) continue;
     if (maquina && r.maq !== maquina) continue;
     if (unidad && r.un !== unidad) continue;
+    if (kf === 'con-stock' && !(r.C + r.A > 0)) continue;
+    if (kf === 'sin-stock' && !(r.C + r.A === 0)) continue;
+    if (kf === 'sin-rotacion' && !(r.rot != null && r.rot >= 24 && (r.C + r.A) > 0)) continue;
     if (toks.length) { let ok = true;
       for (const t of toks) if (r._s.indexOf(t) < 0) { ok = false; break; } if (!ok) continue; }
     res.push(r);
@@ -1311,8 +1346,9 @@ function doSearch() {
   $('#cntTxt').textContent = !ST.rows.length ? 'Sin datos cargados'
     : n === 0 ? 'Sin resultados' : n.toLocaleString('es-AR') + (n === 1 ? ' producto' : ' productos');
   let c = 0, a = 0; for (const r of res) { c += r.C; a += r.A; }
-  $('#cntSum').innerHTML = n && n <= 20000
-    ? 'Central <b class="num">' + nfmt(c) + '</b> · Alta <b class="num">' + nfmt(a) + '</b>' : '';
+  $('#cntSum').innerHTML = !n || n > 20000 ? '' : ST.scope === null
+    ? 'Central <b class="num">' + nfmt(c) + '</b> · Alta <b class="num">' + nfmt(a) + '</b>'
+    : (ST.scope.length > 1 ? 'Tus bases' : 'Tu base') + ' <b class="num">' + nfmt(c) + '</b>';
   if (!ST.rows.length) $('#list').innerHTML = '<div class="empty"><h3>Todavía no hay stock cargado</h3>' +
     '<p>Andá a <b>Datos</b> y elegí el Excel de Stock por Producto.</p>' +
     '<button class="mini pri" onclick="go(\'vDatos\')">Ir a Datos</button></div>';
@@ -1351,27 +1387,33 @@ function renderPage() {
     const otros = r.tot - r.C - r.A;
     const d = document.createElement('article');
     d.className = 'card'; d.dataset.i = i;
-    d.innerHTML =
-      '<div class="top"><div style="flex:1;min-width:0">' +
-        '<div class="cod">' + hl(r.cod, toks) + '</div>' +
-        '<div class="dsc">' + hl(r.desc || '—', toks) + '</div>' +
-        ((r.marca || r.maq) ? '<div class="dsc" style="font-size:12.5px;color:var(--ink-muted);margin-top:2px">' +
-          hl([r.marca, r.maq].filter(Boolean).join(' · '), toks) + '</div>' : '') +
-        badgeFor(r.cod) + '</div>' +
-        (r.tipo ? '<span class="tipo">' + esc(r.tipo) + '</span>' : '') + '</div>' +
-      '<div class="deps">' +
-        '<div class="dep a ' + depCls(r.C) + '"><div class="lb"><i></i>Almacén CENTRAL</div>' +
+    const depsHtml = ST.scope === null
+      ? '<div class="dep a ' + depCls(r.C) + '"><div class="lb"><i></i>Almac\u00e9n CENTRAL</div>' +
           '<div class="v num">' + nfmt(r.C) + '</div>' +
           '<div class="st"><span aria-hidden="true">' + sc.i + '</span>' + sc.t + '</div>' +
           '<div class="ubis">' + ubiHtml(r.uC, toks) + '</div></div>' +
         '<div class="dep b ' + depCls(r.A) + '"><div class="lb"><i></i>Planta alta</div>' +
           '<div class="v num">' + nfmt(r.A) + '</div>' +
           '<div class="st"><span aria-hidden="true">' + sa.i + '</span>' + sa.t + '</div>' +
-          '<div class="ubis">' + ubiHtml(r.uA, toks) + '</div></div>' +
-      '</div>' +
+          '<div class="ubis">' + ubiHtml(r.uA, toks) + '</div></div>'
+      : '<div class="dep a ' + depCls(r.C) + '" style="grid-column:1 / -1"><div class="lb"><i></i>' +
+          esc(ST.scope.length > 1 ? 'Tus bases' : ((depInfo(ST.scope[0]) || {}).desc || ST.scope[0])) + '</div>' +
+          '<div class="v num">' + nfmt(r.C) + '</div>' +
+          '<div class="st"><span aria-hidden="true">' + sc.i + '</span>' + sc.t + '</div>' +
+          '<div class="ubis">' + ubiHtml(r.uC, toks) + '</div></div>';
+    const totLb = ST.scope === null ? 'Pa\u00eds' : (ST.scope.length > 1 ? 'Tus bases' : 'Tu base');
+    d.innerHTML =
+      '<div class="top"><div style="flex:1;min-width:0">' +
+        '<div class="cod">' + hl(r.cod, toks) + '</div>' +
+        '<div class="dsc">' + hl(r.desc || '\u2014', toks) + '</div>' +
+        ((r.marca || r.maq) ? '<div class="dsc" style="font-size:12.5px;color:var(--ink-muted);margin-top:2px">' +
+          hl([r.marca, r.maq].filter(Boolean).join(' \u00b7 '), toks) + '</div>' : '') +
+        badgeFor(r.cod) + '</div>' +
+        (r.tipo ? '<span class="tipo">' + esc(r.tipo) + '</span>' : '') + '</div>' +
+      '<div class="deps">' + depsHtml + '</div>' +
       '<div class="bar">' +
-        '<span class="tot">País <b class="num">' + nfmt(r.tot) + '</b></span>' +
-        (otros > 0 ? '<span class="tot" style="color:var(--ink-muted)">· otros <b class="num">' + nfmt(otros) + '</b></span>' : '') +
+        '<span class="tot">' + totLb + ' <b class="num">' + nfmt(r.tot) + '</b></span>' +
+        (ST.scope === null && otros > 0 ? '<span class="tot" style="color:var(--ink-muted)">\u00b7 otros <b class="num">' + nfmt(otros) + '</b></span>' : '') +
         '<span class="sp"></span>' +
         '<button class="mini" data-act="ficha">Ver ficha</button>' +
         '<button class="mini pri" data-act="contar">Contar</button></div>' +
@@ -1395,8 +1437,17 @@ function refreshBadges() {
 const kv = (k, v) => (v === '' || v == null) ? '' : '<dt>' + esc(k) + '</dt><dd>' + esc(v) + '</dd>';
 
 /* ══════════════ CHIPS ══════════════ */
+const lblStock = () => ST.scope === null ? 'en Haedo' : (ST.scope.length > 1 ? 'en tus bases' : 'en tu base');
+const KPI_LB = { get 'con-stock'() { return 'Con stock ' + lblStock(); }, 'sin-stock': 'Sin stock', 'sin-rotacion': 'Sin rotación +24m' };
 function renderChips() {
   const c = $('#chips'); c.innerHTML = '';
+  if (ST.kpiFiltro) {
+    const b = document.createElement('button');
+    b.className = 'chip on';
+    b.innerHTML = '<b>' + esc(KPI_LB[ST.kpiFiltro] || ST.kpiFiltro) + '</b><span>&times;</span>';
+    b.onclick = () => { ST.kpiFiltro = ''; renderChips(); doSearch(); };
+    c.appendChild(b);
+  }
   for (const d of [{k:'tipo',lb:'Tipo'},{k:'marca',lb:'Marca'},{k:'maquina',lb:'Máquina'},{k:'unidad',lb:'Unidad negocio'}]) {
     if (!FAC[d.k].length) continue;
     const on = !!ST.filtros[d.k], b = document.createElement('button');
@@ -1406,10 +1457,10 @@ function renderChips() {
     b.onclick = () => { if (on) { ST.filtros[d.k] = ''; renderChips(); doSearch(); } else openFiltro(d.k, d.lb); };
     c.appendChild(b);
   }
-  if (Object.values(ST.filtros).some(Boolean)) {
+  if (ST.kpiFiltro || Object.values(ST.filtros).some(Boolean)) {
     const b = document.createElement('button');
     b.className = 'chip'; b.textContent = 'Limpiar filtros';
-    b.onclick = () => { ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' }; renderChips(); doSearch(); };
+    b.onclick = () => { ST.kpiFiltro = ''; ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' }; renderChips(); doSearch(); };
     c.appendChild(b);
   }
 }
@@ -1476,10 +1527,12 @@ function openConteo(r, baseCtx) {
       '.\nSistema ' + nfmt(y.sistema) + ' → contado ' + nfmt(y.contado) + '.\n\n¿Volver a contarlo?')) return;
   }
   ST.target = r;
-  /* Si viene de "Mi base"/"Buscar mi base", NO es Haedo: no corresponde el
-     selector Almacén Central / Planta Alta — ahí se cuenta contra ESA base. */
-  if (baseCtx) { ST.targetMode = 'base'; ST.targetBase = baseCtx; }
-  else { ST.targetMode = 'haedo'; ST.targetSec = r.C > 0 || r.A === 0 ? 'C' : 'A'; }
+  ST.targetFuentes = fuentesDisponibles(r);
+  ST.targetIdx = ST.targetFuentes.findIndex(f => f.val > 0); if (ST.targetIdx < 0) ST.targetIdx = 0;
+  /* "Mi base"/bloqueBase ya sabe cuál de las fuentes del login corresponde
+     — la preselecciona, pero el selector sigue mostrando todas por si el
+     material está en otra de sus bases. */
+  if (baseCtx) { const i = ST.targetFuentes.findIndex(f => f.k === baseCtx.code); if (i >= 0) ST.targetIdx = i; }
   ST.motivo = ''; $('#kObs').value = '';
   const prev = ST.conteos.find(c => c.cod === r.cod);
   if (prev) { ST.motivo = prev.motivo || ''; $('#kObs').value = prev.obs || ''; }
@@ -1489,20 +1542,17 @@ function openConteo(r, baseCtx) {
   paintSegs(); $('#cnt').value = String(sysVal()); paintDif(); openSheet('#shConteo');
 }
 function paintSegs() {
-  const r = ST.target;
-  if (ST.targetMode === 'base') {
-    const b = ST.targetBase, pd = r.porDep && r.porDep[b.code];
+  const fus = ST.targetFuentes || [];
+  if (fus.length <= 1) {
+    const f = fus[0] || { lb: '—', val: 0, ubi: [] };
     $('#kSegs').innerHTML = '<div class="seg on" style="grid-column:1 / -1;cursor:default">' +
-      esc(b.desc || b.code) + '<small>Sistema: ' + nfmt(pd ? pd.cant : 0) + '</small></div>';
-    $('#kUbi').innerHTML = '<p class="eyebrow" style="margin:0 0 6px">Ubicación</p>' +
-      '<div class="ubi none" style="background:var(--surface-2)">' +
-      esc((pd && pd.ubi) || 'Sin ubicación asignada') + '</div>';
-    return;
+      esc(f.lb) + '<small>Sistema: ' + nfmt(f.val) + '</small></div>';
+  } else {
+    $('#kSegs').innerHTML = fus.map((f, i) =>
+      '<button class="seg' + (ST.targetIdx === i ? ' on' : '') + '" data-i="' + i + '">' +
+      esc(f.lb) + '<small>Sistema: ' + nfmt(f.val) + '</small></button>').join('');
   }
-  $('#kSegs').innerHTML = ['C','A'].map(k =>
-    '<button class="seg' + (ST.targetSec === k ? ' on' : '') + '" data-k="' + k + '">' +
-    esc(SEC[k].corto) + '<small>Sistema: ' + nfmt(r[k]) + '</small></button>').join('');
-  const u = ST.targetSec === 'C' ? r.uC : r.uA;
+  const u = (fus[ST.targetIdx] || {}).ubi || [];
   $('#kUbi').innerHTML = '<p class="eyebrow" style="margin:0 0 6px">Ubicación</p>' +
     (u.length ? u.map(([x, q]) => '<div class="ubi" style="background:var(--surface-2)">' +
       (x || 'sin ubicación') + '<small class="num">' + nfmt(q) + '</small></div>').join('')
@@ -1511,13 +1561,10 @@ function paintSegs() {
 $('#kMot').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
   ST.motivo = (ST.motivo === b.dataset.m) ? '' : b.dataset.m;
   $$('#kMot button').forEach(x => x.classList.toggle('on', x.dataset.m === ST.motivo)); });
-$('#kSegs').addEventListener('click', e => { if (ST.targetMode === 'base') return;
+$('#kSegs').addEventListener('click', e => { if ((ST.targetFuentes || []).length <= 1) return;
   const b = e.target.closest('.seg'); if (!b) return;
-  ST.targetSec = b.dataset.k; $('#cnt').value = String(sysVal()); paintSegs(); paintDif(); });
-const sysVal = () => { if (!ST.target) return 0;
-  if (ST.targetMode === 'base') { const pd = ST.target.porDep && ST.target.porDep[ST.targetBase.code];
-    return pd ? pd.cant : 0; }
-  return ST.target[ST.targetSec] || 0; };
+  ST.targetIdx = +b.dataset.i; $('#cnt').value = String(sysVal()); paintSegs(); paintDif(); });
+const sysVal = () => ((ST.targetFuentes || [])[ST.targetIdx] || { val: 0 }).val;
 function paintDif() {
   const c = numOf($('#cnt').value) || 0, s = sysVal(), d = c - s, el = $('#kDif');
   el.className = 'dif ' + (d === 0 ? 'z' : d > 0 ? 'p' : 'n');
@@ -1534,14 +1581,9 @@ $('#kMinus').onclick = () => { $('#cnt').value = String(Math.max(0, (numOf($('#c
 $('#kSave').onclick = async () => {
   const r = ST.target; if (!r) return;
   const c = numOf($('#cnt').value) || 0, s = sysVal();
-  let k, secLb, ub;
-  if (ST.targetMode === 'base') {
-    k = ST.targetBase.code; secLb = ST.targetBase.desc || ST.targetBase.code;
-    const pd = r.porDep && r.porDep[k]; ub = (pd && pd.ubi) || 's/u';
-  } else {
-    k = ST.targetSec; secLb = SEC[k].lb;
-    ub = (k === 'C' ? r.uC : r.uA).map(x => x[0] || 's/u').join(' | ');
-  }
+  const f = (ST.targetFuentes || [])[ST.targetIdx] || { k: '?', lb: '?', ubi: [] };
+  const k = f.k, secLb = f.lb;
+  const ub = (f.ubi || []).map(x => x[0] || 's/u').join(' | ') || 's/u';
   const reg = { cod: r.cod, desc: r.desc, tipo: r.tipo, marca: r.marca, sec: k, secLb,
     ubi: ub, sistema: s, contado: c, dif: c - s, ts: Date.now(), oper: ($('#oper').value || '').trim(),
     motivo: (c - s) === 0 ? '' : (ST.motivo || ''), obs: (c - s) === 0 ? '' : ($('#kObs').value || '').trim() };
@@ -1552,11 +1594,16 @@ $('#kSave').onclick = async () => {
 };
 function renderConteos() {
   const n = ST.conteos.length, b = $('#bdgCnt');
+  const banner = $('#cntFiltroBanner');
+  if (banner) banner.style.display = ST.cntSoloDif ? 'flex' : 'none';
   b.style.display = n ? 'block' : 'none'; b.textContent = String(n);
   ['#btnExpCsv','#btnExpXlsx','#btnClrCnt','#btnShare'].forEach(s => $(s).disabled = !n);
+  const base = ST.cntSoloDif ? ST.conteos.filter(c => c.dif !== 0) : ST.conteos;
+  if (ST.cntSoloDif && !base.length) { $('#cntList').innerHTML =
+    '<div class="empty"><h3>Sin diferencias hoy</h3><p>Ningún conteo registrado difiere del sistema.</p></div>'; return; }
   if (!n) { $('#cntList').innerHTML = '<div class="empty"><h3>Todavía no hay conteos</h3>' +
     '<p>Buscá un producto y tocá <b>Contar</b>.</p></div>'; return; }
-  $('#cntList').innerHTML = ST.conteos.map((c, i) => {
+  $('#cntList').innerHTML = base.map((c, i) => {
     const st = c.dif === 0 ? '' : c.dif > 0 ? 'color:var(--s1)' : 'color:var(--crit)';
     return '<div class="crow"><div class="i"><b>' + esc(c.cod) + '</b>' +
       '<span>' + esc(c.desc || '') + '</span>' +
@@ -1567,6 +1614,7 @@ function renderConteos() {
       '<button class="del" data-i="' + i + '" aria-label="Borrar">&times;</button></div>';
   }).join('');
 }
+$('#cntFiltroQuitar').addEventListener('click', () => { ST.cntSoloDif = false; renderConteos(); });
 $('#cntList').addEventListener('click', async e => { const b = e.target.closest('.del'); if (!b) return;
   ST.conteos.splice(+b.dataset.i, 1); saveMem(); renderConteos(); refreshBadges(); ST._alFresh = false; });
 $('#btnClrCnt').onclick = async () => {
@@ -1710,19 +1758,13 @@ function renderDatos() {
   $('#footTxt').innerHTML = 'Permaquim · Stock en Planta · Coordinación de Abastecimiento<br>' +
     (m.when ? 'Datos al ' + dfmt(new Date(m.when)) + ' · Fuente: ' + esc(m.file || '') : 'Sin datos') +
     ' · v' + APP_VER + ' · Documento interno';
-  renderFillRate();
 }
 
 /* ══════════════ CARGA ══════════════ */
 async function applyData(res, persist) {
-  ST.rows = res.rows; ST.meta = res.meta; ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' };
-  ST._alFresh = false;   /* nuevo stock cargado → las alertas quedaron viejas */
-  buildIndex();                       /* V2: índice de búsqueda + vocabulario */
-  buildFacets(); renderChips(); renderDatos(); doSearch();
-  renderInicio(); renderAlertas();
-  $('#hdSub').textContent = ST.meta.rows.toLocaleString('es-AR') + ' productos · ' +
-    new Date(ST.meta.when).toLocaleDateString('es-AR');
-  if (persist !== false) { await DB.set('rows', ST.rows); await DB.set('meta', ST.meta); }
+  ST.rowsRaw = res.rows; ST.meta = res.meta; ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' };
+  aplicarScope();                     /* arma ST.rows según el login actual y re-renderiza todo */
+  if (persist !== false) { await DB.set('rows', ST.rowsRaw); await DB.set('meta', ST.meta); }
 }
 async function readFile(file) {
   loading(true, 'Leyendo Excel', file.name);
@@ -1978,7 +2020,21 @@ function scoreRow(r, q, qn, toks) {
 function saludo() { const h = new Date().getHours();
   return h < 13 ? 'Buenos días' : h < 20 ? 'Buenas tardes' : 'Buenas noches'; }
 function renderInicio() {
-  const main = $('#vInicio main');
+  aplicarModoRol();
+  if (esModoAcotado()) {
+    $('#inicioGral').style.display = 'none';
+    $('#miStock').style.display = 'block';
+    const op = String((ST.login && ST.login.nombre) || '').split(/[\s,]+/)[0];
+    $('#saludo').textContent = saludo() + (op ? ', ' + op : '');
+    $('#heroSub').innerHTML = ST.rows.length
+      ? 'Stock al <b>' + dfmt(new Date(ST.meta.when)) + '</b>'
+      : 'Todavía no hay datos. Andá a <b>Datos</b> para cargarlos.';
+    renderMiStock();
+    return;
+  }
+  $('#miStock').style.display = 'none';
+  $('#inicioGral').style.display = 'block';
+  const main = $('#inicioGral');
   main.style.opacity = ST._inicioListo ? '1' : '0';   /* primera vez: se arma oculto y aparece ya terminado */
   const op = (localStorage.getItem('pq_oper') || '').trim();
   $('#saludo').textContent = saludo() + (op ? ', ' + op.slice(0, 20) : '');
@@ -1993,9 +2049,11 @@ function renderInicio() {
     if (r.rot != null && r.rot >= 24 && r.C + r.A > 0) rot++; }
   const dif = ST.conteos.filter(c => c.dif !== 0).length;
   $('#kpis').innerHTML =
-    kpi(n, 'Productos', '') + kpi(con, 'Con stock en Haedo', 'ok') + kpi(sin, 'Sin stock', 'crit') +
-    kpi(rot, 'Sin rotación +24m', 'warn') + kpi(ST.conteos.length, 'Contados hoy', '') +
-    kpi(dif, 'Con diferencia', dif ? 'crit' : '');
+    kpi(n, 'Productos', '', 'todos') + kpi(con, 'Con stock ' + lblStock(), 'ok', 'con-stock') +
+    kpi(sin, 'Sin stock', 'crit', 'sin-stock') +
+    kpi(rot, 'Sin rotación +24m', 'warn', 'sin-rotacion') +
+    kpi(ST.conteos.length, 'Contados hoy', '', 'contados') +
+    kpi(dif, 'Con diferencia', dif ? 'crit' : '', 'con-diferencia');
   computeAlertas();
   $('#qaAl').textContent = ST.alertas.length ? ST.alertas.length + ' pendientes' : 'todo en orden';
 
@@ -2006,8 +2064,9 @@ function renderInicio() {
   if (!ST._inicioListo) { ST._inicioListo = true;
     requestAnimationFrame(() => requestAnimationFrame(() => { main.style.opacity = '1'; })); }
 }
-const kpi = (n, l, c) => '<div class="kpi ' + (c || '') + '"><div class="n">' +
-  n.toLocaleString('es-AR') + '</div><div class="l">' + l + '</div></div>';
+const kpi = (n, l, c, act) => '<button class="kpi ' + (c || '') + '"' +
+  (act ? ' data-act="' + act + '"' : '') + '><div class="n">' +
+  n.toLocaleString('es-AR') + '</div><div class="l">' + l + '</div></button>';
 function renderMiniList(box, hd, cods, showQ) {
   const items = cods.map(c => ST.byCod && ST.byCod.get(c)).filter(Boolean);
   $(hd).style.display = items.length ? 'flex' : 'none';
@@ -2017,6 +2076,7 @@ function renderMiniList(box, hd, cods, showQ) {
            : '<span class="q num">' + nfmt(r.C + r.A) + '</span>') + '</button>').join('');
 }
 $('#vInicio').addEventListener('click', e => {
+  if (e.target.closest('#miStock')) return;   /* Mi stock tiene su propio handler */
   const rec = e.target.closest('.rec');
   if (rec) { const r = ST.byCod && ST.byCod.get(rec.dataset.cod); if (r) openFicha(r); return; }
   const qa = e.target.closest('[data-qa]'); if (!qa) return;
@@ -2027,6 +2087,16 @@ $('#vInicio').addEventListener('click', e => {
   else if (a === 'mibase') openBase();
   else if (a === 'conteo') { go('vBuscar'); toast('Buscá el producto y tocá Contar', 3000); setTimeout(() => $('#q').focus(), 150); }
   else if (a === 'alertas') go('vAlertas');
+});
+$('#kpis').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const act = b.dataset.act;
+  if (act === 'contados' || act === 'con-diferencia') {
+    ST.cntSoloDif = act === 'con-diferencia'; go('vConteos'); renderConteos(); return;
+  }
+  ST.kpiFiltro = act === 'todos' ? '' : act;
+  ST.q = ''; $('#q').value = ''; ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' };
+  go('vBuscar'); renderChips(); doSearch();
 });
 $('#recClr').onclick = () => { ST.recientes = []; LS.set('pq_recientes', []); renderInicio(); toast('Historial borrado'); };
 $('#favClr').onclick = () => { if (!confirm('¿Vaciar favoritos?')) return;
@@ -2061,18 +2131,23 @@ function openFicha(r) {
   const st = estadoDe(r), ub = (r.uC[0] || r.uA[0] || [''])[0];
   const partes = ub ? ub.split('-') : null;
   const recs = recomendar(r);
+  const cabecera = ST.scope === null
+    ? '<div class="fk"><div><div class="l">🏭 Central</div><div class="v" style="color:' + (r.C > 0 ? 'var(--ok)' : 'var(--crit)') + '">' + nfmt(r.C) + '</div></div>' +
+      '<div><div class="l">🏢 Planta alta</div><div class="v" style="color:' + (r.A > 0 ? 'var(--ok)' : 'var(--crit)') + '">' + nfmt(r.A) + '</div></div>' +
+      '<div><div class="l">🌎 Total país</div><div class="v">' + nfmt(r.tot) + '</div></div></div>'
+    : '<p class="eyebrow" style="margin:0 0 6px">Stock en ' + (ST.scope.length > 1 ? 'tus bases' : 'tu base') + '</p>' +
+      fuentesDisponibles(r).map(f => fila(f.lb, f.val)).join('') +
+      (ST.scope.length > 1 ? '<div class="kv" style="margin-top:6px"><span>Total</span><b class="num">' + nfmt(r.tot) + '</b></div>' : '');
   $('#fkBody').innerHTML =
     '<div class="est ' + st.c + '">' + (st.c === 'ok' ? '🟢' : st.c === 'no' ? '🔴' : '🟡') + ' ' + st.t + '</div>' +
-    '<div class="fk"><div><div class="l">🏭 Central</div><div class="v" style="color:' + (r.C > 0 ? 'var(--ok)' : 'var(--crit)') + '">' + nfmt(r.C) + '</div></div>' +
-      '<div><div class="l">🏢 Planta alta</div><div class="v" style="color:' + (r.A > 0 ? 'var(--ok)' : 'var(--crit)') + '">' + nfmt(r.A) + '</div></div>' +
-      '<div><div class="l">🌎 Total país</div><div class="v">' + nfmt(r.tot) + '</div></div></div>' +
+    cabecera +
     '<p class="eyebrow" style="margin:14px 0 0">Ubicación</p>' +
     (partes ? '<div class="ubx">' +
         '<div class="c"><div class="l">Sector</div><div class="v">' + esc(partes[0] || '—') + '</div></div><div class="ar">›</div>' +
         '<div class="c"><div class="l">Estante</div><div class="v">' + esc(partes[1] || '—') + '</div></div><div class="ar">›</div>' +
         '<div class="c"><div class="l">Ubicación</div><div class="v">' + esc(partes[2] || '—') + '</div></div></div>'
       : '<p class="note">Sin ubicación asignada en el sistema.</p>') +
-    (r.uC.length + r.uA.length > 1 ? '<div class="otros" style="border:0;padding-top:4px">' +
+    (ST.scope === null && r.uC.length + r.uA.length > 1 ? '<div class="otros" style="border:0;padding-top:4px">' +
       r.uC.map(u => fila('Central · ' + (u[0] || 's/u'), u[1])).join('') +
       r.uA.map(u => fila('Planta alta · ' + (u[0] || 's/u'), u[1])).join('') + '</div>' : '') +
     (recs.length ? '<p class="eyebrow" style="margin:16px 0 6px">Recomendaciones</p>' +
@@ -2082,7 +2157,7 @@ function openFicha(r) {
       kv('Tipo', r.tipo) + kv('Marca', r.marca) + kv('Máquina', r.maq) + kv('Unidad neg.', r.un) +
       kv('Material', r.mat) + kv('Segmento', r.seg) + kv('Detalle segm.', r.det) +
       kv('Meses sin rot.', r.rot == null ? '' : nfmt(r.rot)) + '</dl>' +
-    (r.otros.length ? '<p class="eyebrow" style="margin:16px 0 6px">Otros depósitos</p><div class="otros" style="border:0;padding:0">' +
+    (ST.scope === null && r.otros.length ? '<p class="eyebrow" style="margin:16px 0 6px">Otros depósitos</p><div class="otros" style="border:0;padding:0">' +
       r.otros.map(o => fila(o[0], o[1], (o[3] != null && o[3] > 3) ? '⚠ Devolución' : null)).join('') + '</div>' : '') +
     '<div class="acts">' +
       '<button class="btn pri full" data-fk="contar">＋ Contar</button>' +
@@ -2176,21 +2251,20 @@ function paintBase(term) {
       '<p class="note" style="margin-top:12px">O buscá otra base por nombre o técnico.</p>';
     return;
   }
-  if (!ST.fillRate) { box.innerHTML = '<div class="al c3"><div class="m">📋 Todavía no cargaste los técnicos por base.</div>' +
-    '<div class="rc">Andá a Datos → Cargar/actualizar stock y elegí el Fill Rate.xlsx.</div></div>'; return; }
   if (t.length < 2) { box.innerHTML = '<p class="note">Escribí al menos 2 letras.</p>'; return; }
-  const porTec = [];
-  for (const [key, arr] of ST.fillRate.tecIndex) if (key.indexOf(t) >= 0) for (const it of arr) porTec.push(it);
-  const porDep = [];
-  for (const [code, info] of ST.fillRate.depIndex)
-    if (norm(info.desc).indexOf(t) >= 0 || norm(code).indexOf(t) >= 0)
-      porDep.push({ code, desc: info.desc, tecnicos: Array.from(info.tecnicos.keys()) });
-  /* de-duplicar bases repetidas entre ambos resultados */
   const vistos = new Set(); const out = [];
-  for (const it of porTec) if (!vistos.has(it.code)) { vistos.add(it.code);
-    out.push({ code: it.code, desc: it.desc, tecnicos: Array.from((ST.fillRate.depIndex.get(it.code) || {}).tecnicos || []).map(x => x[0]),
-      porNombre: it.nombre }); }
-  for (const it of porDep) if (!vistos.has(it.code)) { vistos.add(it.code); out.push(it); }
+  for (const [leg, p] of Object.entries(ORG.personal)) {
+    if (!p.dep || vistos.has(p.dep)) continue;
+    if (norm(p.nombre).indexOf(t) < 0) continue;
+    vistos.add(p.dep);
+    out.push({ code: p.dep, desc: (depInfo(p.dep) || {}).desc || p.dep, tecnicos: personalDeBase(p.dep) });
+  }
+  for (const [code, info] of Object.entries(ORG.deps)) {
+    if (vistos.has(code)) continue;
+    if (norm(info.desc).indexOf(t) < 0 && norm(code).indexOf(t) < 0) continue;
+    vistos.add(code);
+    out.push({ code, desc: info.desc, tecnicos: personalDeBase(code) });
+  }
   if (!out.length) { box.innerHTML = '<p class="note">No encontré ningún técnico ni base con ese nombre.</p>'; return; }
   box.innerHTML = out.slice(0, 30).map(b => '<button class="rec" data-code="' + esc(b.code) + '">' +
     '<span class="i"><b>' + esc(b.desc || b.code) + '</b>' +
@@ -2202,11 +2276,11 @@ $('#baseRes').addEventListener('click', e => { const b = e.target.closest('.rec'
   abrirDetalleBase(b.dataset.code); });
 function abrirDetalleBase(code) {
   ST.baseVista = code;
-  const info = ST.fillRate && ST.fillRate.depIndex.get(code);
-  const tecnicos = info ? Array.from(info.tecnicos.keys()) : [];
+  const info = depInfo(code);
+  const tecnicos = personalDeBase(code);
   const desc = (info && info.desc) ||
     (ST.login && ST.login.bases && (ST.login.bases.find(b => b.code === code) || {}).desc) || code;
-  const retorno = info && info.retornoDesc;
+  const nd = nodoDeBase(code);
   const items = [];
   for (const r of ST.rows) { const pd = r.porDep && r.porDep[code];
     if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot }); }
@@ -2218,8 +2292,10 @@ function abrirDetalleBase(code) {
     '<h2 style="font-size:17px;margin-bottom:2px">' + esc(desc) + '</h2>' +
     '<p class="note" style="margin:0 0 12px">Código ' + esc(code) + (tecnicos.length ?
       ' · ' + tecnicos.join(', ') : '') + '</p>' +
-    (retorno ? '<p class="note" style="margin:0 0 12px">📍 Las devoluciones de esta base van a <b>' +
-      esc(retorno) + '</b>.</p>' : '') +
+    (nd ? '<p class="note" style="margin:0 0 12px">📍 Las devoluciones de esta base van a <b>' +
+      esc(nd.largo) + '</b>.</p>'
+        : '<p class="note" style="margin:0 0 12px">📍 Sin depósito abastecedor registrado para esta base.</p>') +
+    cartelDevolucion(code) +
     '<div class="kv"><span>Productos con stock</span><b class="num">' + items.length.toLocaleString('es-AR') + '</b></div>' +
     '<div class="kv"><span>Unidades en total</span><b class="num">' + nfmt(items.reduce((a, x) => a + x.cant, 0)) + '</b></div>' +
     '<p class="eyebrow" style="margin:14px 0 6px">Stock actual — tocá para ver la ficha o contar</p>' +
@@ -2336,21 +2412,23 @@ function computeAlertas(force) {
   }
   /* Material inmovilizado: stock en cualquier depósito que NO sea Almacén Central
      ni Planta Alta (Haedo), con más de 3 meses sin rotar. Se le avisa a la base
-     — con el/los técnicos si Fill Rate está cargado — que hay que devolverlo. */
+     — con el/los técnicos del directorio — que hay que devolverlo al depósito
+     abastecedor que corresponda (nunca a Haedo por defecto). */
   for (const r of ST.rows) {
     if (!r.porDep) continue;
     for (const code in r.porDep) {
       const info = r.porDep[code];
       if (!(info.cant > 0) || info.rot == null || info.rot <= 3) continue;
-      const base = ST.fillRate && ST.fillRate.depIndex.get(code);
+      const base = depInfo(code);
       const baseDesc = (base && base.desc) || info.desc || code;
-      const tecnicos = base ? Array.from(base.tecnicos.keys()) : [];
-      const retorno = (base && base.retornoDesc) || 'Permaquim Haedo';
+      const tecnicos = personalDeBase(code);
+      const nd = nodoDeBase(code);
       const grave = info.rot >= 6;
       A.push({ n: grave ? 1 : 2, r, tg: 'Devolución pendiente',
         m: baseDesc + (tecnicos.length ? ' · ' + tecnicos.join(', ') : '') + ' · ' +
            nfmt(info.cant) + ' u. · ' + info.rot.toFixed(1) + ' meses sin rotar',
-        rc: 'Material inmovilizado — devolver a ' + retorno + '.' });
+        rc: nd ? 'Stock inmovilizado — devolver a ' + nd.largo + '.'
+               : 'Stock inmovilizado — esta base no tiene depósito abastecedor registrado. Consultar con Abastecimiento antes de devolver.' });
     }
   }
   A.sort((a, b) => a.n - b.n || (b.r.C + b.r.A) - (a.r.C + a.r.A));
@@ -2401,8 +2479,8 @@ function renderSup() {
   box.innerHTML = '<h2>📊 Resumen de inventario</h2>' +
     '<p class="sub">Modo supervisor · sobre los conteos del ' + dISO(ST.hoy) + '</p>' +
     '<div class="kv"><span>Total de SKUs</span><b class="num">' + ST.rows.length.toLocaleString('es-AR') + '</b></div>' +
-    '<div class="kv"><span>Con stock en Haedo</span><b class="num">' + con.toLocaleString('es-AR') + '</b></div>' +
-    '<div class="kv"><span>Sin stock en Haedo</span><b class="num">' + (ST.rows.length - con).toLocaleString('es-AR') + '</b></div>' +
+    '<div class="kv"><span>Con stock ' + lblStock() + '</span><b class="num">' + con.toLocaleString('es-AR') + '</b></div>' +
+    '<div class="kv"><span>Sin stock ' + lblStock() + '</span><b class="num">' + (ST.rows.length - con).toLocaleString('es-AR') + '</b></div>' +
     '<div class="kv"><span>Conteos realizados</span><b class="num">' + n + '</b></div>' +
     '<div class="kv"><span>Con diferencia</span><b class="num">' + (n - ok) + '</b></div>' +
     '<div class="kv"><span>Precisión de inventario</span><b class="num" style="color:' +
@@ -2425,7 +2503,7 @@ function renderSup() {
    No toca ningún dato: IndexedDB y localStorage siguen igual que antes,
    porque el origen (dominio) es el mismo antes y después de instalar.
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '2.0.2';                 /* ← subir junto con APP_VER del service-worker.js */
+const APP_VER = '2.4.0';                 /* ← subir junto con APP_VER del service-worker.js */
 let deferredPrompt = null, swReg = null;
 
 const esStandalone = () => window.matchMedia('(display-mode: standalone)').matches ||
@@ -2546,10 +2624,15 @@ function rutaInicial() {
   loadMem(); saveMem();
   ST.mapUser = (await DB.get('mapUser')) || {};
   ST.dirHandle = (await DB.get('dirHandle')) || null;
-  ST.fillRate = (await DB.get('fillrate')) || null; renderFillRate();
-  ST.personal = (await DB.get('personal')) || null; renderPersonal();
-  ST.login = LS.get('pq_login', null); renderSesion();
-  if (ST.login && !ST.login.bases) reresolverLogin();
+  $('#orgDeps').textContent = Object.keys(ORG.deps).length.toLocaleString('es-AR');
+  $('#orgPer').textContent = Object.keys(ORG.personal).length.toLocaleString('es-AR');
+  $('#orgWhen').textContent = ORG.generado || '—';
+  ST.login = LS.get('pq_login', null);
+  /* migración: un login de una versión anterior pudo haber quedado en estado
+     "pendiente" (bases:null) sin ser Planificación — ya no existe ese estado,
+     así que se lo hace re-identificar. */
+  if (ST.login && ST.login.rol !== 'nacional' && !ST.login.bases) { ST.login = null; LS.set('pq_login', null); }
+  renderSesion();
   if (ST.login) cerrarLogin(); else abrirLogin();
   loadPrefs(); ST.hist = null; renderHist(); renderConteos(); redNote();
 

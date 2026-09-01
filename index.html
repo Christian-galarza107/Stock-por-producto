@@ -166,6 +166,7 @@ mark{background:var(--tint-warn);color:inherit;border-radius:3px;padding:0 1px}
 .kpi .l{font-size:10.5px;font-weight:600;letter-spacing:.03em;color:var(--ink-muted);margin-top:5px;line-height:1.25}
 .kpi.ok .n{color:var(--ok)} .kpi.crit .n{color:var(--crit)} .kpi.warn .n{color:var(--warn)}
 .qa{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:8px}
+.qa>[style*="grid-column"]{margin:0}
 .qa button{min-height:78px;border-radius:var(--r-md);border:1.5px solid var(--border);background:var(--surface);
   box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
   gap:7px;padding:12px;font-size:14px;font-weight:600;color:var(--ink);text-align:left}
@@ -405,18 +406,93 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 .tabs button.on::before{left:16%;right:16%}
 .bdg{right:calc(50% - 20px);min-width:16px;height:16px;line-height:16px;font-size:9.5px}
 @media (max-width:340px){.tabs button{font-size:8.5px}.tabs button svg{width:19px;height:19px}}
-/* ── MODO TÉCNICO · sólo su base: se ocultan las pestañas generales ───── */
-body.rol-tec .tabs{grid-template-columns:repeat(2,1fr)}
-body.rol-tec .tabs button[data-view="vBuscar"],
-body.rol-tec .tabs button[data-view="vConteos"],
-body.rol-tec .tabs button[data-view="vAlertas"]{display:none}
-body.rol-tec .tabs button{font-size:11.5px}
+.al-group{margin:0 0 10px;border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden}
+.al-group summary{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;
+  font-size:14px;background:var(--surface);user-select:none}
+.al-group summary .cnt{margin-left:auto;font-size:12px;color:var(--ink-muted);font-family:var(--f-num)}
+.al-group[open] summary{border-bottom:1px solid var(--border)}
+.al-group .al{border-radius:0;border-left:0;border-right:0;border-top:0;margin:0}
 .devol{border:1.5px solid var(--crit);background:var(--tint-crit);border-radius:var(--r-md);
   padding:12px 13px;margin:0 0 14px}
 .devol b{font-family:var(--f-tit);font-size:14px;display:block;margin-bottom:3px;color:var(--crit)}
 .devol .ln{font-size:13px;color:var(--ink-2);margin-top:6px;line-height:1.5}
 .devol .nd{display:inline-block;font-family:var(--f-num);font-size:12px;font-weight:700;
   background:var(--crit);color:#fff;border-radius:var(--r-pill);padding:2px 9px;margin-top:8px}
+
+/* ══════════════════════════════════════════════════════════════════════
+   FASE 3 · fila SKU horizontal + nav inferior estilo app nativa
+   Va al final del bloque para ganar en cascada sobre los estilos v2.
+   ══════════════════════════════════════════════════════════════════════ */
+:root{ --tabs:5; --r-xs:6px; --lift:0 1px 2px rgba(15,19,48,.05),0 10px 24px -18px rgba(15,19,48,.45); }
+:root[data-tema="oscuro"]{ --lift:0 1px 2px rgba(0,0,0,.5) }
+@media (prefers-color-scheme:dark){:root:not([data-tema="claro"]){ --lift:0 1px 2px rgba(0,0,0,.5) }}
+
+/* ── fila SKU ───────────────────────────────────────────────────────── */
+.sku{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+  box-shadow:var(--lift);margin-bottom:8px;overflow:hidden}
+.sku-hd{display:flex;align-items:center;gap:10px;padding:9px 11px;min-height:var(--tap);
+  text-align:left;color:inherit;background:transparent}
+.sku:not(.compact) .sku-hd{cursor:pointer}
+.sku:not(.compact) .sku-hd:active{background:var(--surface-2)}
+.sku.open{border-color:var(--s1)}
+
+/* ubicación · izquierda */
+.loc{flex:none;width:80px;font-family:var(--f-num);font-size:11px;font-weight:700;line-height:1.3;
+  color:var(--ink-2);background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-xs);
+  padding:6px 3px;text-align:center;word-break:normal;overflow-wrap:break-word;hyphens:none}
+.loc small{display:block;font-family:var(--f-txt);font-weight:600;font-size:9.5px;
+  letter-spacing:.02em;opacity:.72;margin-top:2px;word-break:normal}
+.loc.none{font-family:var(--f-txt);font-weight:600;font-size:10.5px;color:var(--ink-muted);
+  letter-spacing:.02em;text-transform:uppercase}
+
+/* nombre + código · centro */
+.sku-i{flex:1;min-width:0}
+.sku-cod{display:block;font-family:var(--f-num);font-size:15px;font-weight:700;
+  line-height:1.2;word-break:break-all}
+.sku-dsc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  font-size:12.5px;color:var(--ink-2);line-height:1.32;margin-top:2px}
+.sku-meta{display:block;font-size:11px;color:var(--ink-muted);margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sku-i .badges{margin-top:5px}
+
+/* badge circular de stock · derecha */
+.qty{flex:none;width:52px;height:52px;border-radius:var(--r-pill);display:grid;place-items:center;
+  font-family:var(--f-tit);font-weight:700;font-size:17px;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;border:2px solid transparent}
+.qty.has{background:var(--tint-ok);color:var(--ok);border-color:var(--ok)}
+.qty.low{background:var(--tint-warn);color:var(--warn);border-color:var(--warn)}
+.qty.zero{background:var(--tint-crit);color:var(--crit);border-color:var(--crit)}
+.qty.lg{font-size:14px} .qty.xl{font-size:11.5px}
+.chev{flex:none;width:15px;height:15px;color:var(--ink-muted);transition:transform .18s}
+.sku.open .chev{transform:rotate(180deg)}
+.sku-hd .mini{flex:none;height:38px;padding:0 12px;font-size:12.5px}
+
+/* banda desplegable · desglose por sector/base y acciones */
+.sku-det{display:none;border-top:1px solid var(--border);background:var(--surface-2);padding:10px 11px 11px}
+.sku.open .sku-det{display:block}
+.src+.src{margin-top:9px}
+.src .sh{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted)}
+.src .sh i{width:8px;height:8px;border-radius:2px;flex:none}
+.src.a .sh i{background:var(--s1)} .src.b .sh i{background:var(--s2)}
+.src .sh b{margin-left:auto;font-family:var(--f-num);font-size:13.5px;color:var(--ink);letter-spacing:0}
+.src .ubis{margin-top:5px}
+.sku-bar{display:flex;align-items:center;gap:8px;margin-top:11px;padding-top:10px;
+  border-top:1px dashed var(--border)}
+.sku-bar .tot{flex:1;min-width:0;font-size:12px;color:var(--ink-muted)}
+.sku-bar .tot b{font-family:var(--f-num);font-size:13px;color:var(--ink)}
+
+/* ── nav inferior ───────────────────────────────────────────────────── */
+.tabs{grid-template-columns:repeat(var(--tabs),1fr);box-shadow:0 -1px 0 var(--border),0 -8px 22px -18px rgba(15,19,48,.5)}
+.tabs button{padding:7px 1px 6px;gap:3px;font-size:10px;letter-spacing:-.01em}
+.tabs button.on::before{display:none}
+.tabs button svg{width:21px;height:21px;padding:4px 13px;box-sizing:content-box;
+  border-radius:var(--r-pill);transition:background .16s}
+.tabs button.on svg{background:var(--tint-brand)}
+.tabs button[data-view="vDatos"]:not(.on){opacity:.6}
+.tabs button:active svg{background:var(--surface-2)}
+.bdg{top:3px;right:calc(50% - 22px)}
+@media (max-width:340px){.tabs button svg{padding:4px 9px}}
 </style>
 </head>
 <body>
@@ -476,7 +552,7 @@ body.rol-tec .tabs button{font-size:11.5px}
       <button data-qa="ubicacion"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Buscar ubicación</button>
       <button data-qa="mibase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/></svg>Mi base</button>
       <button data-qa="conteo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM5 7h14v13H5zM8 12h8M8 16h5"/></svg>Iniciar conteo</button>
-      <button class="wide" data-qa="alertas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3zM12 10v4M12 17.5v.5"/></svg>Ver alertas<span id="qaAl" style="margin-left:auto;font-size:12px;color:var(--ink-muted)"></span></button>
+      <!-- alertas button is generated per-role by renderInicio -->
     </div>
     <div class="sechd" id="hdFav" style="display:none"><h2>⭐ Favoritos</h2>
       <button id="favClr">Vaciar</button></div>
@@ -647,9 +723,9 @@ body.rol-tec .tabs button{font-size:11.5px}
 </section>
 
 <nav class="tabs" role="tablist">
-  <button class="on" data-view="vInicio" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7M6 10v10h12V10"/></svg><span id="tabInicioLb">Inicio</span></button>
+  <button class="on" data-view="vInicio" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7M6 10v10h12V10"/></svg><span id="tabInicioLb">Stock</span></button>
   <button data-view="vBuscar" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM20 20l-3.5-3.5"/></svg>Buscar</button>
-  <button data-view="vConteos" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM5 7h14v13H5zM8 12h8M8 16h5"/></svg>Conteos<span class="bdg" id="bdgCnt" style="display:none">0</span></button>
+  <button data-view="vConteos" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM5 7h14v13H5zM8 12h8M8 16h5"/></svg>Conteo<span class="bdg" id="bdgCnt" style="display:none">0</span></button>
   <button data-view="vAlertas" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3zM12 10v4M12 17.5v.5"/></svg>Alertas<span class="bdg" id="bdgAl" style="display:none">0</span></button>
   <button data-view="vDatos" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg>Datos</button>
 </nav>
@@ -768,7 +844,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
    Archivo único, sin CDN, sin servidor.
    ══════════════════════════════════════════════════════════════════════ */
 
-const $ = s => document.querySelector(s);
+const $ = (s, ctx) => (ctx || document).querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const norm = s => String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   .toLowerCase().replace(/\s+/g, ' ').trim();
@@ -984,7 +1060,8 @@ function parseWorkbook(wb, fileName) {
   }
   if (!byCod.size) throw new Error('No se encontró ningún código de producto. Revisá el mapeo de columnas.');
 
-  const rows = Array.from(byCod.values());
+  const TIPOS_OK = new Set(['PQ-REP','PQ-MAQ','PQ-INT','PQ-INS']);
+  const rows = Array.from(byCod.values()).filter(r => TIPOS_OK.has(r.tipo));
   for (const o of rows) {
     o.otros.sort((a, b) => b[1] - a[1]);
     if (o.otros.length > 14) o.otros = o.otros.slice(0, 14);
@@ -1068,7 +1145,11 @@ function personalDeBase(code) {
    Supervisor o Responsable de Stock: siempre son sus bases y nada más. */
 function scopeCodes() {
   if (!ST.login || ST.login.rol === 'nacional') return null;
-  return (ST.login.bases || []).map(b => b.code);
+  const codes = (ST.login.bases || []).map(b => b.code);
+  /* Responsable de stock: incluir también las bases que su nodo abastece,
+     así puede ver qué material le deben de cada base. */
+  if (ST.login.basesAbastecidas) for (const c of ST.login.basesAbastecidas) if (!codes.includes(c)) codes.push(c);
+  return codes;
 }
 /* Clona ST.rowsRaw recortado a los códigos del scope: la cantidad de
    cada producto pasa a ser la suma SÓLO de esos depósitos (nunca la
@@ -1090,12 +1171,17 @@ function computeScopedRows(rowsRaw, codes) {
     return { ...r, C: cant, A: 0, tot: cant, rot, uC, uA: [], otros: [], porDep: pdSub };
   });
 }
+/* Dado un código de nodo (ej 'NODO03'), devuelve los códigos de base que ese nodo abastece. */
+function basesDeNodo(nodoCode) {
+  return Object.entries(ORG.deps).filter(([c, d]) => d.ab && d.ab.tipo === nodoCode).map(([c]) => c);
+}
 /* Recalcula ST.rows a partir de ST.rowsRaw según el login actual y
    vuelve a correr todo el pipeline de render — se llama al cargar
    stock nuevo y cada vez que cambia quién está identificado. */
 function aplicarScope() {
+  const TIPOS_OK = new Set(['PQ-REP','PQ-MAQ','PQ-INT','PQ-INS']);
   ST.scope = scopeCodes();
-  ST.rows = computeScopedRows(ST.rowsRaw, ST.scope);
+  ST.rows = computeScopedRows(ST.rowsRaw.filter(r => TIPOS_OK.has(r.tipo)), ST.scope);
   ST._alFresh = false;
   buildIndex(); buildFacets(); renderChips(); renderDatos(); doSearch();
   renderInicio(); renderAlertas();
@@ -1147,8 +1233,12 @@ function resolverLogin(rol, legajo) {
   const leg = String(legajo).trim();
   if (rol === 'responsable') {
     const r = RESPONSABLES_STOCK[leg];
-    if (r) return { ok: true, nombre: r.nombre, bases: [{ code: r.code, desc: r.desc }] };
-    return { ok: false, motivo: 'Ese legajo no está en la lista de responsables de stock.' };
+    if (!r) return { ok: false, motivo: 'Ese legajo no está en la lista de responsables de stock.' };
+    /* El responsable ve su NODO como base principal, y además tiene acceso a
+       las bases que ese nodo abastece (para ver qué le deben). */
+    const misBases = basesDeNodo(r.code);
+    return { ok: true, nombre: r.nombre, bases: [{ code: r.code, desc: r.desc }],
+             basesAbastecidas: misBases };
   }
   if (rol === 'nacional') {
     const nombre = ORG.planificacion[leg];
@@ -1183,12 +1273,12 @@ function resolverLogin(rol, legajo) {
 function esModoAcotado() { return false; }
 function aplicarModoRol() {
   document.body.classList.remove('rol-tec');
-  const lb = $('#tabInicioLb'); if (lb) lb.textContent = 'Inicio';
+  const lb = $('#tabInicioLb'); if (lb) lb.textContent = 'Stock';
 }
 function stockDeBase(code) {
   const items = [];
   for (const r of ST.rows) { const pd = r.porDep && r.porDep[code];
-    if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot }); }
+    if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot, ubi: pd.ubi }); }
   items.sort((a, b) => b.cant - a.cant);
   return items;
 }
@@ -1211,12 +1301,13 @@ function bloqueBase(base, abierta) {
 }
 function renderListaStock(items) {
   return '<p class="eyebrow" style="margin:14px 0 6px">Stock — tocá para ver la ficha o contar</p>' +
-    (items.length ? items.map(it => '<div class="rec" style="cursor:default" data-cod="' + esc(it.r.cod) + '">' +
-      '<span class="i" data-act="ficha"><b>' + esc(it.r.cod) + '</b><span>' + esc(it.r.desc || '') + '</span></span>' +
-      (it.rot != null && it.rot > 3 ? '<span class="bayer" style="background:var(--tint-crit);color:var(--crit);border-color:var(--crit);margin-right:6px">' +
-        it.rot.toFixed(0) + 'm</span>' : '') +
-      '<span class="q num" data-act="ficha" style="margin-right:8px">' + nfmt(it.cant) + '</span>' +
-      '<button class="mini pri" data-act="contar" style="height:34px;padding:0 12px;font-size:12.5px">Contar</button></div>').join('')
+    (items.length ? items.map(it => filaSKU(it.r, {
+      cant: it.cant, contar: true,
+      fuentes: [{ cant: it.cant, ubis: it.ubi ? [[it.ubi, it.cant]] : [] }],
+      extra: (it.rot != null && it.rot > 3)
+        ? '<span class="sku-meta" style="color:var(--crit);font-weight:700">' +
+          it.rot.toFixed(0) + ' meses sin rotación</span>' : ''
+    })).join('')
       : '<p class="note">No hay stock cargado en esta base en el archivo actual. Si recién entraste, cargá el Excel en <b>Datos</b>.</p>');
 }
 function renderMiStock() {
@@ -1284,7 +1375,8 @@ $('#glEntrar').onclick = () => {
   if (!/^\d+$/.test(legajo)) return mostrarErrGl('Ingresá tu número de legajo (sólo números).');
   const r = resolverLogin(glRolSel, legajo);
   if (r.ok) {
-    ST.login = { rol: glRolSel, legajo, nombre: r.nombre || nombre, bases: r.bases };
+    ST.login = { rol: glRolSel, legajo, nombre: r.nombre || nombre, bases: r.bases,
+      basesAbastecidas: r.basesAbastecidas || null };
     LS.set('pq_login', ST.login);
     cerrarLogin(); renderSesion();
     if (ST.rowsRaw.length) aplicarScope(); else renderInicio();
@@ -1324,6 +1416,11 @@ function doSearch() {
     if (kf === 'con-stock' && !(r.C + r.A > 0)) continue;
     if (kf === 'sin-stock' && !(r.C + r.A === 0)) continue;
     if (kf === 'sin-rotacion' && !(r.rot != null && r.rot >= 24 && (r.C + r.A) > 0)) continue;
+    if (kf === 'sin-rotacion-3' && !(r.rot != null && r.rot > 3 && (r.C + r.A) > 0)) continue;
+    if (kf === 'central' && !(r.C > 0)) continue;
+    if (kf === 'planta-alta' && !(r.A > 0)) continue;
+    /* roles acotados: ocultar productos con 0 stock en sus bases */
+    if (ST.scope !== null && !kf && (r.C + r.A) <= 0) continue;
     if (toks.length) { let ok = true;
       for (const t of toks) if (r._s.indexOf(t) < 0) { ok = false; break; } if (!ok) continue; }
     res.push(r);
@@ -1378,48 +1475,92 @@ function ubiHtml(list, toks) {
   return vis + (list.length > 3 ? '<div class="ubi none">+' + (list.length - 3) + ' ubicación(es)</div>' : '');
 }
 
-function renderPage() {
-  const toks = norm(ST.q).split(' ').filter(Boolean);
-  const frag = document.createDocumentFragment();
-  const end = Math.min(ST.shown + ST.page, ST.res.length);
-  for (let i = ST.shown; i < end; i++) {
-    const r = ST.res[i], sc = depSt(r.C), sa = depSt(r.A);
-    const otros = r.tot - r.C - r.A;
-    const d = document.createElement('article');
-    d.className = 'card'; d.dataset.i = i;
-    const depsHtml = ST.scope === null
-      ? '<div class="dep a ' + depCls(r.C) + '"><div class="lb"><i></i>Almac\u00e9n CENTRAL</div>' +
-          '<div class="v num">' + nfmt(r.C) + '</div>' +
-          '<div class="st"><span aria-hidden="true">' + sc.i + '</span>' + sc.t + '</div>' +
-          '<div class="ubis">' + ubiHtml(r.uC, toks) + '</div></div>' +
-        '<div class="dep b ' + depCls(r.A) + '"><div class="lb"><i></i>Planta alta</div>' +
-          '<div class="v num">' + nfmt(r.A) + '</div>' +
-          '<div class="st"><span aria-hidden="true">' + sa.i + '</span>' + sa.t + '</div>' +
-          '<div class="ubis">' + ubiHtml(r.uA, toks) + '</div></div>'
-      : '<div class="dep a ' + depCls(r.C) + '" style="grid-column:1 / -1"><div class="lb"><i></i>' +
-          esc(ST.scope.length > 1 ? 'Tus bases' : ((depInfo(ST.scope[0]) || {}).desc || ST.scope[0])) + '</div>' +
-          '<div class="v num">' + nfmt(r.C) + '</div>' +
-          '<div class="st"><span aria-hidden="true">' + sc.i + '</span>' + sc.t + '</div>' +
-          '<div class="ubis">' + ubiHtml(r.uC, toks) + '</div></div>';
-    const totLb = ST.scope === null ? 'Pa\u00eds' : (ST.scope.length > 1 ? 'Tus bases' : 'Tu base');
-    d.innerHTML =
-      '<div class="top"><div style="flex:1;min-width:0">' +
-        '<div class="cod">' + hl(r.cod, toks) + '</div>' +
-        '<div class="dsc">' + hl(r.desc || '\u2014', toks) + '</div>' +
-        ((r.marca || r.maq) ? '<div class="dsc" style="font-size:12.5px;color:var(--ink-muted);margin-top:2px">' +
-          hl([r.marca, r.maq].filter(Boolean).join(' \u00b7 '), toks) + '</div>' : '') +
-        badgeFor(r.cod) + '</div>' +
-        (r.tipo ? '<span class="tipo">' + esc(r.tipo) + '</span>' : '') + '</div>' +
-      '<div class="deps">' + depsHtml + '</div>' +
-      '<div class="bar">' +
-        '<span class="tot">' + totLb + ' <b class="num">' + nfmt(r.tot) + '</b></span>' +
-        (ST.scope === null && otros > 0 ? '<span class="tot" style="color:var(--ink-muted)">\u00b7 otros <b class="num">' + nfmt(otros) + '</b></span>' : '') +
-        '<span class="sp"></span>' +
+/* ══════════════════════════════════════════════════════════════════════
+   FASE 3 · RENDERIZADOR ÚNICO DE FILA SKU
+   Un solo lugar define cómo se ve un SKU: ubicación a la izquierda,
+   código + descripción al centro, badge circular de stock a la derecha.
+   Lo usan Buscar (expandible), Mi base y las listas de Inicio (compactas).
+   ══════════════════════════════════════════════════════════════════════ */
+const qtyCls = v => { const t = nfmt(v).length;
+  return 'qty ' + depCls(v) + (t > 6 ? ' xl' : t > 4 ? ' lg' : ''); };
+
+/* la ubicación "principal" es la que concentra más unidades */
+function mejorUbi(fuentes) {
+  let best = null, n = 0;
+  for (const f of (fuentes || [])) for (const par of (f.ubis || [])) {
+    if (!par || !par[0]) continue; n++;
+    if (!best || par[1] > best[1]) best = par;
+  }
+  return { best, n };
+}
+function locHtml(fuentes, toks) {
+  const { best, n } = mejorUbi(fuentes);
+  if (!best) return '<span class="loc none">sin ubic.</span>';
+  return '<span class="loc">' + hl(best[0], toks || []) +
+    (n > 1 ? '<small>+' + (n - 1) + ' ubic.</small>' : '') + '</span>';
+}
+function filaSKU(r, o) {
+  o = o || {};
+  const toks = o.toks || [];
+  const fuentes = o.fuentes || [];
+  const cant = o.cant != null ? o.cant : (r.C + r.A);
+  const attrs = ' data-cod="' + esc(r.cod) + '"' + (o.i != null ? ' data-i="' + o.i + '"' : '');
+  const info = '<span class="sku-i">' +
+    '<span class="sku-cod">' + hl(r.cod, toks) + '</span>' +
+    '<span class="sku-dsc">' + hl(r.desc || '\u2014', toks) + '</span>' +
+    ((r.marca || r.maq) ? '<span class="sku-meta">' +
+      hl([r.marca, r.maq].filter(Boolean).join(' \u00b7 '), toks) + '</span>' : '') +
+    (o.extra || '') + badgeFor(r.cod) + '</span>';
+  const nucleo = locHtml(fuentes, toks) + info +
+    '<span class="' + qtyCls(cant) + '">' + nfmt(cant) + '</span>';
+
+  if (!o.expandible) {
+    return '<div class="sku compact"' + attrs + '><div class="sku-hd">' + nucleo +
+      (o.contar ? '<button class="mini pri" data-act="contar">Contar</button>' : '') +
+      '</div></div>';
+  }
+  const det = fuentes.map(f =>
+    '<div class="src ' + (f.cls || 'a') + '"><div class="sh"><i></i>' + esc(f.lb || '') +
+      '<b class="num">' + nfmt(f.cant) + '</b></div>' +
+      '<div class="ubis">' + ubiHtml(f.ubis || [], toks) + '</div></div>').join('');
+  return '<article class="sku"' + attrs + '>' +
+    '<div class="sku-hd" role="button" tabindex="0" aria-expanded="false">' + nucleo +
+      '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>' +
+    '</div>' +
+    '<div class="sku-det">' + det +
+      '<div class="sku-bar"><span class="tot">' + esc(o.totLb || '') + ' <b class="num">' +
+        nfmt(o.tot != null ? o.tot : cant) + '</b>' + (o.totExtra || '') + '</span>' +
         '<button class="mini" data-act="ficha">Ver ficha</button>' +
         '<button class="mini pri" data-act="contar">Contar</button></div>' +
-      '';
-    frag.appendChild(d);
+    '</div></article>';
+}
+
+function renderPage() {
+  const toks = norm(ST.q).split(' ').filter(Boolean);
+  const end = Math.min(ST.shown + ST.page, ST.res.length);
+  const buf = [];
+  for (let i = ST.shown; i < end; i++) {
+    const r = ST.res[i];
+    const fuentes = ST.scope === null
+      ? [{ lb: 'Almac\u00e9n CENTRAL', cls: 'a', cant: r.C, ubis: r.uC },
+         { lb: 'Planta alta',        cls: 'b', cant: r.A, ubis: r.uA }]
+      : [{ lb: (ST.scope.length > 1 ? 'Tus bases'
+              : ((depInfo(ST.scope[0]) || {}).desc || ST.scope[0])),
+           cls: 'a', cant: r.C, ubis: r.uC }];
+    const otros = r.tot - r.C - r.A;
+    buf.push(filaSKU(r, {
+      i: i, toks: toks, cant: r.C + r.A, fuentes: fuentes, expandible: true,
+      totLb: ST.scope === null ? 'Pa\u00eds' : (ST.scope.length > 1 ? 'Tus bases' : 'Tu base'),
+      tot: r.tot,
+      totExtra: (ST.scope === null && otros > 0)
+        ? ' \u00b7 otros <b class="num">' + nfmt(otros) + '</b>' : ''
+    }));
   }
+  const tmp = document.createElement('div');
+  tmp.innerHTML = buf.join('');
+  const frag = document.createDocumentFragment();
+  while (tmp.firstChild) frag.appendChild(tmp.firstChild);
   $('#list').appendChild(frag); ST.shown = end;
   const b = $('#btnMore');
   b.style.display = ST.shown < ST.res.length ? 'block' : 'none';
@@ -1427,18 +1568,20 @@ function renderPage() {
 }
 /* repinta sólo las marcas de las tarjetas ya dibujadas, sin perder la posición */
 function refreshBadges() {
-  $$('#list .card').forEach(card => {
+  $$('#list .sku').forEach(card => {
     const r = ST.res[+card.dataset.i]; if (!r) return;
     const cur = card.querySelector('.badges'), nue = badgeFor(r.cod);
     if (cur) cur.remove();
-    if (nue) card.querySelector('.dsc').insertAdjacentHTML('afterend', nue);
+    if (nue) card.querySelector('.sku-i').insertAdjacentHTML('beforeend', nue);
   });
 }
 const kv = (k, v) => (v === '' || v == null) ? '' : '<dt>' + esc(k) + '</dt><dd>' + esc(v) + '</dd>';
 
 /* ══════════════ CHIPS ══════════════ */
 const lblStock = () => ST.scope === null ? 'en Haedo' : (ST.scope.length > 1 ? 'en tus bases' : 'en tu base');
-const KPI_LB = { get 'con-stock'() { return 'Con stock ' + lblStock(); }, 'sin-stock': 'Sin stock', 'sin-rotacion': 'Sin rotación +24m' };
+const KPI_LB = { get 'con-stock'() { return 'Con stock ' + lblStock(); }, 'sin-stock': 'Sin stock',
+  'sin-rotacion': 'Sin rotación +24m', 'sin-rotacion-3': 'Material sin rotación (>3 meses)',
+  'central': 'Almacén Central', 'planta-alta': 'Planta Alta' };
 function renderChips() {
   const c = $('#chips'); c.innerHTML = '';
   if (ST.kpiFiltro) {
@@ -1873,10 +2016,22 @@ $('#btnMore').onclick = renderPage;
 $('#sugBox').addEventListener('click', e => { const b = e.target.closest('[data-sug]'); if (!b) return;
   $('#q').value = b.dataset.sug; ST.q = b.dataset.sug; doSearch(); });
 $('#list').addEventListener('click', e => {
-  const b = e.target.closest('[data-act]'); if (!b) return;
-  const card = b.closest('.card'), r = ST.res[+card.dataset.i];
-  if (b.dataset.act === 'ficha') openFicha(r);
-  else { verProducto(r.cod); openConteo(r); }
+  const art = e.target.closest('.sku'); if (!art) return;
+  const r = ST.res[+art.dataset.i]; if (!r) return;
+  const b = e.target.closest('[data-act]');
+  if (b) {
+    if (b.dataset.act === 'ficha') openFicha(r);
+    else { verProducto(r.cod); openConteo(r); }
+    return;
+  }
+  const hd = e.target.closest('.sku-hd'); if (!hd) return;
+  const abierta = art.classList.toggle('open');
+  hd.setAttribute('aria-expanded', abierta ? 'true' : 'false');
+});
+$('#list').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const hd = e.target.closest('.sku-hd'); if (!hd) return;
+  e.preventDefault(); hd.click();
 });
 $('#btnTema').onclick = () => {
   const cur = document.documentElement.getAttribute('data-tema');
@@ -2021,48 +2176,153 @@ function saludo() { const h = new Date().getHours();
   return h < 13 ? 'Buenos días' : h < 20 ? 'Buenas tardes' : 'Buenas noches'; }
 function renderInicio() {
   aplicarModoRol();
-  if (esModoAcotado()) {
-    $('#inicioGral').style.display = 'none';
-    $('#miStock').style.display = 'block';
-    const op = String((ST.login && ST.login.nombre) || '').split(/[\s,]+/)[0];
-    $('#saludo').textContent = saludo() + (op ? ', ' + op : '');
-    $('#heroSub').innerHTML = ST.rows.length
-      ? 'Stock al <b>' + dfmt(new Date(ST.meta.when)) + '</b>'
-      : 'Todavía no hay datos. Andá a <b>Datos</b> para cargarlos.';
-    renderMiStock();
-    return;
-  }
-  $('#miStock').style.display = 'none';
-  $('#inicioGral').style.display = 'block';
+  const rol = ST.login ? ST.login.rol : 'nacional';
   const main = $('#inicioGral');
-  main.style.opacity = ST._inicioListo ? '1' : '0';   /* primera vez: se arma oculto y aparece ya terminado */
-  const op = (localStorage.getItem('pq_oper') || '').trim();
-  $('#saludo').textContent = saludo() + (op ? ', ' + op.slice(0, 20) : '');
+  $('#miStock').style.display = 'none';
+  main.style.display = 'block';
+  main.style.opacity = ST._inicioListo ? '1' : '0';
+
+  const op = String((ST.login && ST.login.nombre) || (localStorage.getItem('pq_oper') || '')).split(/[\s,]+/)[0];
+  $('#saludo').textContent = saludo() + (op ? ', ' + op : '');
   $('#heroSub').innerHTML = ST.rows.length
-    ? 'Stock al <b>' + dfmt(new Date(ST.meta.when)) + '</b>' +
-      (ST.meta.file ? '<br>' + esc(String(ST.meta.file).slice(0, 46)) : '')
+    ? 'Stock al <b>' + dfmt(new Date(ST.meta.when)) + '</b>'
     : 'Todavía no hay datos. Andá a <b>Datos</b> para cargarlos.';
 
-  const n = ST.rows.length;
-  let con = 0, sin = 0, rot = 0;
-  for (const r of ST.rows) { if (r.C + r.A > 0) con++; else sin++;
-    if (r.rot != null && r.rot >= 24 && r.C + r.A > 0) rot++; }
-  const dif = ST.conteos.filter(c => c.dif !== 0).length;
-  $('#kpis').innerHTML =
-    kpi(n, 'Productos', '', 'todos') + kpi(con, 'Con stock ' + lblStock(), 'ok', 'con-stock') +
-    kpi(sin, 'Sin stock', 'crit', 'sin-stock') +
-    kpi(rot, 'Sin rotación +24m', 'warn', 'sin-rotacion') +
-    kpi(ST.conteos.length, 'Contados hoy', '', 'contados') +
-    kpi(dif, 'Con diferencia', dif ? 'crit' : '', 'con-diferencia');
   computeAlertas();
-  $('#qaAl').textContent = ST.alertas.length ? ST.alertas.length + ' pendientes' : 'todo en orden';
+  const dif = ST.conteos.filter(c => c.dif !== 0).length;
 
+  /* ── TÉCNICO: vista simplificada ────────────────────────────────── */
+  if (rol === 'tecnico') {
+    let con = 0, rot3 = 0;
+    for (const r of ST.rows) { if (r.C + r.A > 0) con++;
+      if (r.rot != null && r.rot > 3 && r.C + r.A > 0) rot3++; }
+    const baseLb = (ST.login.bases && ST.login.bases[0] && ST.login.bases[0].desc) || 'tu base';
+    $('#kpis').innerHTML =
+      kpi(con, 'Stock en tu base', 'ok', 'con-stock') +
+      kpi(rot3, 'Material sin rotación (>3 meses)', rot3 ? 'warn' : '', 'sin-rotacion-3') +
+      kpi(ST.conteos.length, 'Conteos registrados', '', 'contados') +
+      kpi(dif, 'Con diferencia', dif ? 'crit' : '', 'con-diferencia');
+    $('.qa', main).innerHTML =
+      '<button data-qa="buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM20 20l-3.5-3.5"/></svg>Buscar producto</button>' +
+      '<button data-qa="mibase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/></svg>Mi base · ' + esc(baseLb) + '</button>' +
+      '<button data-qa="conteo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM5 7h14v13H5zM8 12h8M8 16h5"/></svg>Iniciar conteo</button>';
+    hideExtras(main);
+
+  /* ── SUPERVISOR: selector de bases ──────────────────────────────── */
+  } else if (rol === 'supervisor') {
+    let con = 0, rot3 = 0;
+    for (const r of ST.rows) { if (r.C + r.A > 0) con++;
+      if (r.rot != null && r.rot > 3 && r.C + r.A > 0) rot3++; }
+    const nb = (ST.login.bases || []).length;
+    $('#kpis').innerHTML =
+      kpi(nb, nb === 1 ? 'Base a cargo' : 'Bases a cargo', '', '') +
+      kpi(con, 'Productos con stock', 'ok', 'con-stock') +
+      kpi(rot3, 'Material sin rotación (>3 meses)', rot3 ? 'warn' : '', 'sin-rotacion-3') +
+      kpi(dif, 'Diferencias de conteo', dif ? 'crit' : '', 'con-diferencia');
+    const basesHtml = (ST.login.bases || []).map(b => {
+      const d = depInfo(b.code); const desc = (d && d.desc) || b.desc || b.code;
+      const items = stockDeBase(b.code);
+      const inmo = items.filter(it => it.rot != null && it.rot > 3);
+      return '<button class="rec" data-qa="verbase" data-code="' + esc(b.code) + '">' +
+        '<span class="i"><b>' + esc(desc) + '</b><span>' +
+        items.length + ' productos · ' + nfmt(items.reduce((a,x)=>a+x.cant,0)) + ' un.' +
+        (inmo.length ? ' · <b style="color:var(--crit)">' + inmo.length + ' a devolver</b>' : '') +
+        '</span></span><span class="q">' + esc(b.code) + '</span></button>';
+    }).join('');
+    $('.qa', main).innerHTML =
+      '<p class="eyebrow" style="grid-column:1 / -1;margin:0">Seleccioná una base para ver su stock</p>' +
+      '<div style="grid-column:1 / -1">' + basesHtml + '</div>' +
+      '<button data-qa="buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM20 20l-3.5-3.5"/></svg>Buscar producto</button>' +
+      '<button data-qa="conteo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM5 7h14v13H5zM8 12h8M8 16h5"/></svg>Iniciar conteo</button>';
+    hideExtras(main);
+
+  /* ── RESPONSABLE DE STOCK: NODO + bases abastecidas ─────────────── */
+  } else if (rol === 'responsable') {
+    const nodoBase = (ST.login.bases || [])[0];
+    const nodoCode = nodoBase ? nodoBase.code : '';
+    const nodoDesc = nodoBase ? nodoBase.desc : '';
+    const nodoItems = stockDeBase(nodoCode);
+    const misBasesAb = ST.login.basesAbastecidas || [];
+    /* inmovilizado en las bases que abastece */
+    let inmoTotal = 0;
+    const basesConInmo = [];
+    for (const bc of misBasesAb) {
+      const items = stockDeBase(bc);
+      const inmo = items.filter(it => it.rot != null && it.rot > 3);
+      if (inmo.length) { inmoTotal += inmo.length;
+        basesConInmo.push({ code: bc, desc: (depInfo(bc) || {}).desc || bc, cant: inmo.length,
+          un: inmo.reduce((a,x)=>a+x.cant,0) }); }
+    }
+    basesConInmo.sort((a, b) => b.cant - a.cant);
+    $('#kpis').innerHTML =
+      kpi(nodoItems.length, 'Productos en tu nodo', 'ok', '') +
+      kpi(nodoItems.reduce((a,x)=>a+x.cant,0), 'Unidades en nodo', '', '') +
+      kpi(inmoTotal, 'Devoluciones pendientes', inmoTotal ? 'crit' : '', '') +
+      kpi(misBasesAb.length, 'Bases que abastecés', '', '');
+    /* listar las bases que abastece + opción de ver el stock propio del nodo */
+    const allBases = misBasesAb.map(bc => {
+      const d = depInfo(bc); const desc = (d && d.desc) || bc;
+      const items = stockDeBase(bc);
+      const inmo = items.filter(it => it.rot != null && it.rot > 3);
+      return { code: bc, desc, items: items.length, un: items.reduce((a,x)=>a+x.cant,0),
+               inmo: inmo.length, inmoUn: inmo.reduce((a,x)=>a+x.cant,0) };
+    });
+    allBases.sort((a, b) => b.inmo - a.inmo || b.items - a.items);
+    const basesHtml = allBases.map(b =>
+      '<button class="rec" data-qa="verbase" data-code="' + esc(b.code) + '">' +
+      '<span class="i"><b>' + esc(b.desc) + '</b><span>' +
+      b.items + ' productos · ' + nfmt(b.un) + ' un.' +
+      (b.inmo ? ' · <b style="color:var(--crit)">' + b.inmo + ' a devolver</b>' : '') +
+      '</span></span><span class="q">' + esc(b.code) + '</span></button>').join('');
+    $('.qa', main).innerHTML =
+      '<button data-qa="verbase" data-code="' + esc(nodoCode) + '" style="grid-column:1 / -1">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>' +
+        'Ver stock de mi nodo · ' + esc(nodoDesc) + '</button>' +
+      '<p class="eyebrow" style="grid-column:1 / -1;margin:4px 0 0">Bases que abastecés (' + misBasesAb.length + ')</p>' +
+      '<div style="grid-column:1 / -1">' + basesHtml + '</div>' +
+      '<button data-qa="buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM20 20l-3.5-3.5"/></svg>Buscar producto</button>' +
+      '<button data-qa="conteo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM5 7h14v13H5zM8 12h8M8 16h5"/></svg>Iniciar conteo</button>';
+    hideExtras(main);
+
+  /* ── PLANIFICACIÓN: selector Haedo / base ──────────────────────── */
+  } else {
+    const n = ST.rows.length;
+    let con = 0, sin = 0, rot = 0;
+    for (const r of ST.rows) { if (r.C + r.A > 0) con++; else sin++;
+      if (r.rot != null && r.rot >= 24 && r.C + r.A > 0) rot++; }
+    $('#kpis').innerHTML =
+      kpi(n, 'Productos', '', 'todos') + kpi(con, 'Con stock en Haedo', 'ok', 'con-stock') +
+      kpi(sin, 'Sin stock', 'crit', 'sin-stock') +
+      kpi(rot, 'Sin rotación +24m', 'warn', 'sin-rotacion') +
+      kpi(ST.conteos.length, 'Contados hoy', '', 'contados') +
+      kpi(dif, 'Con diferencia', dif ? 'crit' : '', 'con-diferencia');
+    const qaE = $('#qaAl'); if (qaE) qaE.textContent = ST.alertas.length ? ST.alertas.length + ' pendientes' : 'todo en orden';
+    $('.qa', main).innerHTML =
+      '<button data-qa="buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM20 20l-3.5-3.5"/></svg>Buscar producto</button>' +
+      '<button data-qa="escanear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3M4 12h16"/></svg>Escanear código</button>' +
+      '<button data-qa="ubicacion"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Buscar ubicación</button>' +
+      '<button data-qa="mibase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/></svg>Ver stock de una base</button>' +
+      '<button data-qa="filtro-central"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>Almacén Central</button>' +
+      '<button data-qa="filtro-planta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 21V10l8-7 8 7v11"/><path d="M9 21v-6h6v6"/></svg>Planta Alta</button>' +
+      '<button data-qa="conteo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM5 7h14v13H5zM8 12h8M8 16h5"/></svg>Iniciar conteo</button>' +
+      '<button class="wide" data-qa="alertas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3zM12 10v4M12 17.5v.5"/></svg>Ver alertas<span id="qaAl" style="margin-left:auto;font-size:12px;color:var(--ink-muted)">' +
+        (ST.alertas.length ? ST.alertas.length + ' pendientes' : 'todo en orden') + '</span></button>';
+    showExtras(main);
+  }
+
+  if (!ST._inicioListo) { ST._inicioListo = true;
+    requestAnimationFrame(() => requestAnimationFrame(() => { main.style.opacity = '1'; })); }
+}
+/* helpers de renderInicio */
+function hideExtras(m) {
+  const ids = ['#hdFav','#favBox','#hdRec','#recBox','#hdTop','#topBox'];
+  ids.forEach(id => { const el = $(id, m) || $(id); if (el) el.style.display = 'none'; });
+}
+function showExtras(m) {
   renderMiniList('#favBox', '#hdFav', ST.fav.slice(0, 8), false);
   renderMiniList('#recBox', '#hdRec', ST.recientes.slice(0, 8), false);
   const top = Object.keys(ST.vistas).sort((a, b) => ST.vistas[b] - ST.vistas[a]).slice(0, 5);
   renderMiniList('#topBox', '#hdTop', top, true);
-  if (!ST._inicioListo) { ST._inicioListo = true;
-    requestAnimationFrame(() => requestAnimationFrame(() => { main.style.opacity = '1'; })); }
 }
 const kpi = (n, l, c, act) => '<button class="kpi ' + (c || '') + '"' +
   (act ? ' data-act="' + act + '"' : '') + '><div class="n">' +
@@ -2070,23 +2330,40 @@ const kpi = (n, l, c, act) => '<button class="kpi ' + (c || '') + '"' +
 function renderMiniList(box, hd, cods, showQ) {
   const items = cods.map(c => ST.byCod && ST.byCod.get(c)).filter(Boolean);
   $(hd).style.display = items.length ? 'flex' : 'none';
-  $(box).innerHTML = items.map(r => '<button class="rec" data-cod="' + esc(r.cod) + '">' +
-    '<span class="i"><b>' + esc(r.cod) + '</b><span>' + esc(r.desc || '') + '</span></span>' +
-    (showQ ? '<span class="q">' + (ST.vistas[r.cod] || 0) + ' consultas</span>'
-           : '<span class="q num">' + nfmt(r.C + r.A) + '</span>') + '</button>').join('');
+  $(box).innerHTML = items.map(r => filaSKU(r, {
+    cant: r.C + r.A,
+    fuentes: [{ cant: r.C + r.A, ubis: (r.uC || []).concat(r.uA || []) }],
+    extra: showQ ? '<span class="sku-meta">' + (ST.vistas[r.cod] || 0) + ' consultas</span>' : ''
+  })).join('');
 }
 $('#vInicio').addEventListener('click', e => {
-  if (e.target.closest('#miStock')) return;   /* Mi stock tiene su propio handler */
+  if (e.target.closest('#miStock')) return;
+  /* click en producto de la lista del nodo (responsable) o de cualquier rol */
+  const cnt = e.target.closest('[data-act="contar"]');
+  const rowEl = e.target.closest('[data-cod]');
+  if (rowEl && !rowEl.closest('.rec')) {
+    const r = ST.byCod.get(rowEl.dataset.cod); if (!r) return;
+    if (cnt) openConteo(r); else openFicha(r); return;
+  }
+  /* data-qa tiene prioridad sobre .rec (los botones de base tienen ambos) */
+  const qa = e.target.closest('[data-qa]');
+  if (qa) {
+    const a = qa.dataset.qa;
+    if (a === 'buscar') { go('vBuscar'); setTimeout(() => $('#q').focus(), 150); }
+    else if (a === 'escanear') openScan();
+    else if (a === 'ubicacion') openUbi();
+    else if (a === 'mibase') openBase();
+    else if (a === 'conteo') { go('vBuscar'); toast('Buscá el producto y tocá Contar', 3000); setTimeout(() => $('#q').focus(), 150); }
+    else if (a === 'alertas') go('vAlertas');
+    else if (a === 'verbase') { const code = qa.dataset.code; if (code) { openSheet('#shBase'); abrirDetalleBase(code); } }
+    else if (a === 'filtro-central') { ST.kpiFiltro = 'central'; ST.q = ''; $('#q').value = '';
+      ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' }; go('vBuscar'); renderChips(); doSearch(); }
+    else if (a === 'filtro-planta') { ST.kpiFiltro = 'planta-alta'; ST.q = ''; $('#q').value = '';
+      ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' }; go('vBuscar'); renderChips(); doSearch(); }
+    return;
+  }
   const rec = e.target.closest('.rec');
   if (rec) { const r = ST.byCod && ST.byCod.get(rec.dataset.cod); if (r) openFicha(r); return; }
-  const qa = e.target.closest('[data-qa]'); if (!qa) return;
-  const a = qa.dataset.qa;
-  if (a === 'buscar') { go('vBuscar'); setTimeout(() => $('#q').focus(), 150); }
-  else if (a === 'escanear') openScan();
-  else if (a === 'ubicacion') openUbi();
-  else if (a === 'mibase') openBase();
-  else if (a === 'conteo') { go('vBuscar'); toast('Buscá el producto y tocá Contar', 3000); setTimeout(() => $('#q').focus(), 150); }
-  else if (a === 'alertas') go('vAlertas');
 });
 $('#kpis').addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
@@ -2213,13 +2490,15 @@ function paintUbi() {
   const tot = hits.reduce((a, h) => a + h.cant, 0);
   box.innerHTML = '<div class="kv"><span>Coincidencias</span><b class="num">' + hits.length + '</b></div>' +
     '<div class="kv"><span>Unidades en total</span><b class="num">' + nfmt(tot) + '</b></div>' +
-    hits.slice(0, 120).map(h => '<button class="rec" data-cod="' + esc(h.r.cod) + '" style="margin-top:7px">' +
-      '<span class="i"><b>' + esc(h.r.cod) + '</b><span>' + esc(h.r.desc || '') + '</span>' +
-      '<span style="font-family:var(--f-num);color:var(--s1)">' + esc(h.u) + ' · ' + SEC[h.sec].corto + '</span></span>' +
-      '<span class="q num">' + nfmt(h.cant) + '</span></button>').join('') +
+    hits.slice(0, 120).map(h => filaSKU(h.r, {
+      cant: h.cant,
+      fuentes: [{ cant: h.cant, ubis: [[h.u, h.cant]] }],
+      extra: '<span class="sku-meta" style="color:var(--s1);font-weight:700">' +
+        esc(SEC[h.sec].corto) + '</span>'
+    })).join('') +
     (hits.length > 120 ? '<p class="note">Se muestran las primeras 120.</p>' : '');
 }
-$('#ubiRes').addEventListener('click', e => { const b = e.target.closest('.rec'); if (!b) return;
+$('#ubiRes').addEventListener('click', e => { const b = e.target.closest('[data-cod]'); if (!b) return;
   const r = ST.byCod.get(b.dataset.cod); if (r) { closeSheet('#shUbi'); openFicha(r); } });
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -2283,7 +2562,7 @@ function abrirDetalleBase(code) {
   const nd = nodoDeBase(code);
   const items = [];
   for (const r of ST.rows) { const pd = r.porDep && r.porDep[code];
-    if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot }); }
+    if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot, ubi: pd.ubi }); }
   items.sort((a, b) => b.cant - a.cant);
   $('#baseBuscar').style.display = 'none'; $('#baseBack').style.display = 'flex';
   const box = $('#baseDetalle'); box.style.display = 'block';
@@ -2299,12 +2578,13 @@ function abrirDetalleBase(code) {
     '<div class="kv"><span>Productos con stock</span><b class="num">' + items.length.toLocaleString('es-AR') + '</b></div>' +
     '<div class="kv"><span>Unidades en total</span><b class="num">' + nfmt(items.reduce((a, x) => a + x.cant, 0)) + '</b></div>' +
     '<p class="eyebrow" style="margin:14px 0 6px">Stock actual — tocá para ver la ficha o contar</p>' +
-    (items.length ? items.slice(0, 200).map(it => '<div class="rec" style="cursor:default" data-cod="' + esc(it.r.cod) + '">' +
-      '<span class="i" data-act="ficha"><b>' + esc(it.r.cod) + '</b><span>' + esc(it.r.desc || '') + '</span></span>' +
-      (it.rot != null && it.rot > 3 ? '<span class="bayer" style="background:var(--tint-crit);color:var(--crit);border-color:var(--crit);margin-right:6px">' +
-        it.rot.toFixed(0) + 'm</span>' : '') +
-      '<span class="q num" data-act="ficha" style="margin-right:8px">' + nfmt(it.cant) + '</span>' +
-      '<button class="mini pri" data-act="contar" style="height:34px;padding:0 12px;font-size:12.5px">Contar</button></div>').join('')
+    (items.length ? items.slice(0, 200).map(it => filaSKU(it.r, {
+      cant: it.cant, contar: true,
+      fuentes: [{ cant: it.cant, ubis: it.ubi ? [[it.ubi, it.cant]] : [] }],
+      extra: (it.rot != null && it.rot > 3)
+        ? '<span class="sku-meta" style="color:var(--crit);font-weight:700">' +
+          it.rot.toFixed(0) + ' meses sin rotación</span>' : ''
+    })).join('')
       : '<p class="note">No hay stock cargado en esta base en el archivo actual.</p>') +
     (items.length > 200 ? '<p class="note">Se muestran los primeros 200.</p>' : '');
   box.dataset.code = code; box.dataset.desc = desc;
@@ -2381,39 +2661,37 @@ $('#shScan').addEventListener('click', e => { if (e.target.closest('[data-close]
    Clasificación 100% derivada del archivo cargado y de los conteos del día.
    ══════════════════════════════════════════════════════════════════════ */
 function computeAlertas(force) {
-  /* Barre todo el stock (miles de filas); se cachea porque Inicio y Alertas
-     lo invocaban por separado y encima dos veces al abrir la app — eso era
-     el "se acomoda mal": eran 2-3 barridos completos antes de asentarse. */
   if (ST._alFresh && !force) return ST.alertas;
   const A = [];
   const conteoDe = {};
   for (const c of ST.conteos) conteoDe[c.cod] = c;
   for (const r of ST.rows) {
     const h = r.C + r.A, c = conteoDe[r.cod];
+    /* roles acotados: solo alertas para productos con stock en sus bases */
+    if (ST.scope !== null && h <= 0) continue;
     if (c && Math.abs(c.dif) > 0) {
       const grave = Math.abs(c.dif) >= 5 || (c.sistema > 0 && Math.abs(c.dif) / c.sistema >= .3);
       A.push({ n: grave ? 1 : 2, r, tg: grave ? 'Diferencia importante' : 'Diferencia menor',
         m: 'Sistema ' + nfmt(c.sistema) + ' · contado ' + nfmt(c.contado) + ' (' + (c.dif > 0 ? '+' : '') + nfmt(c.dif) + ')' +
            (c.motivo ? ' · ' + c.motivo : ''),
         rc: grave ? 'Recontar y escalar a Abastecimiento antes de cerrar el turno.'
-                  : 'Confirmar el conteo y registrar el motivo.' });
+                  : 'Confirmar el conteo y registrar el motivo.', base: '' });
       continue;
     }
-    if (h === 0 && r.tot === 0) { A.push({ n: 1, r, tg: 'Sin stock', m: 'No hay unidades en ningún depósito.',
-      rc: 'Verificar si hay compra en curso o pedido pendiente.' }); continue; }
-    if (h === 0 && r.tot > 0) { A.push({ n: 2, r, tg: 'Sin stock en Haedo', m: 'Hay ' + nfmt(r.tot) + ' unidades fuera de Haedo.',
-      rc: 'Evaluar transferencia desde el nodo que tenga disponible.' }); continue; }
-    if (h > 0 && h <= 2) { A.push({ n: 2, r, tg: 'Stock bajo', m: 'Quedan ' + nfmt(h) + ' unidades en planta.',
-      rc: 'Confirmar físicamente y avisar a Abastecimiento.' }); continue; }
-    if (h > 0 && !r.uC.length && !r.uA.length) { A.push({ n: 2, r, tg: 'Sin ubicación', m: 'Tiene ' + nfmt(h) + ' unidades sin posición cargada.',
-      rc: 'Asignar sector-estante-ubicación en el sistema.' }); continue; }
-    if (r.rot != null && r.rot >= 24 && h > 0) { A.push({ n: 3, r, tg: 'Sin rotación', m: nfmt(r.rot) + ' meses sin movimiento · ' + nfmt(h) + ' en planta.',
-      rc: 'Verificar físicamente y confirmar si conviene mantener inventario.' }); continue; }
+    if (ST.scope === null) {
+      if (h === 0 && r.tot === 0) { A.push({ n: 1, r, tg: 'Sin stock', m: 'No hay unidades en ningún depósito.',
+        rc: 'Verificar si hay compra en curso o pedido pendiente.', base: '' }); continue; }
+      if (h === 0 && r.tot > 0) { A.push({ n: 2, r, tg: 'Sin stock en Haedo', m: 'Hay ' + nfmt(r.tot) + ' fuera de Haedo.',
+        rc: 'Evaluar transferencia desde el nodo con disponible.', base: '' }); continue; }
+    }
+    if (h > 0 && h <= 2) { A.push({ n: 2, r, tg: 'Stock bajo', m: 'Quedan ' + nfmt(h) + ' unidades.',
+      rc: 'Confirmar físicamente y avisar a Abastecimiento.', base: '' }); continue; }
+    if (h > 0 && !r.uC.length && !r.uA.length) { A.push({ n: 2, r, tg: 'Sin ubicación', m: nfmt(h) + ' un. sin posición.',
+      rc: 'Asignar sector-estante-ubicación en el sistema.', base: '' }); continue; }
+    if (r.rot != null && r.rot >= 24 && h > 0) { A.push({ n: 3, r, tg: 'Sin rotación', m: nfmt(r.rot) + ' meses sin movimiento.',
+      rc: 'Verificar físicamente y confirmar si conviene mantener inventario.', base: '' }); continue; }
   }
-  /* Material inmovilizado: stock en cualquier depósito que NO sea Almacén Central
-     ni Planta Alta (Haedo), con más de 3 meses sin rotar. Se le avisa a la base
-     — con el/los técnicos del directorio — que hay que devolverlo al depósito
-     abastecedor que corresponda (nunca a Haedo por defecto). */
+  /* Devoluciones pendientes (>3 meses sin rotar fuera de Central/Alta) */
   for (const r of ST.rows) {
     if (!r.porDep) continue;
     for (const code in r.porDep) {
@@ -2424,15 +2702,23 @@ function computeAlertas(force) {
       const tecnicos = personalDeBase(code);
       const nd = nodoDeBase(code);
       const grave = info.rot >= 6;
-      A.push({ n: grave ? 1 : 2, r, tg: 'Devolución pendiente',
+      A.push({ n: grave ? 1 : 2, r, tg: 'Devolución pendiente', base: code,
+        baseDesc,
         m: baseDesc + (tecnicos.length ? ' · ' + tecnicos.join(', ') : '') + ' · ' +
-           nfmt(info.cant) + ' u. · ' + info.rot.toFixed(1) + ' meses sin rotar',
+           nfmt(info.cant) + ' u. · ' + info.rot.toFixed(1) + ' meses',
         rc: nd ? 'Stock inmovilizado — devolver a ' + nd.largo + '.'
-               : 'Stock inmovilizado — esta base no tiene depósito abastecedor registrado. Consultar con Abastecimiento antes de devolver.' });
+               : 'Sin depósito abastecedor registrado. Consultar con Abastecimiento.' });
     }
   }
   A.sort((a, b) => a.n - b.n || (b.r.C + b.r.A) - (a.r.C + a.r.A));
   ST.alertas = A; ST._alFresh = true;
+  /* agrupar por base para la vista segmentada */
+  ST.alertasPorBase = new Map();
+  for (const a of A) {
+    const k = a.base || '(general)';
+    if (!ST.alertasPorBase.has(k)) ST.alertasPorBase.set(k, []);
+    ST.alertasPorBase.get(k).push(a);
+  }
   const b = $('#bdgAl'), crit = A.filter(x => x.n === 1).length;
   b.style.display = crit ? 'block' : 'none'; b.textContent = crit > 99 ? '99+' : String(crit);
   return A;
@@ -2440,13 +2726,38 @@ function computeAlertas(force) {
 const AL_F = [['todas','Todas'],['1','🔴 Críticas'],['2','🟠 Atención'],['3','🟡 Revisión']];
 function renderAlertas() {
   computeAlertas(); renderSup();
+  const rol = ST.login ? ST.login.rol : 'nacional';
+  const multiBases = rol === 'supervisor' || rol === 'responsable' || rol === 'nacional';
   $('#alChips').innerHTML = AL_F.map(([k, l]) => '<button class="chip' + (ST.alFiltro === k ? ' on' : '') +
     '" data-f="' + k + '">' + l + (k === 'todas' ? '' : ' ' + ST.alertas.filter(a => String(a.n) === k).length) + '</button>').join('');
-  const list = ST.alFiltro === 'todas' ? ST.alertas : ST.alertas.filter(a => String(a.n) === ST.alFiltro);
-  ST.alView = list; ST.alShown = 0; $('#alList').innerHTML = '';
-  $('#alCnt').textContent = list.length ? list.length.toLocaleString('es-AR') + ' alertas' :
+  const all = ST.alFiltro === 'todas' ? ST.alertas : ST.alertas.filter(a => String(a.n) === ST.alFiltro);
+  ST.alView = all; ST.alShown = 0; $('#alList').innerHTML = '';
+  $('#alCnt').textContent = all.length ? all.length.toLocaleString('es-AR') + ' alertas' :
     (ST.rows.length ? 'Sin alertas en esta categoría' : 'Cargá los datos para ver alertas');
-  alPage();
+  if (multiBases && all.length > 0) {
+    /* Vista agrupada por base */
+    const grupos = new Map();
+    for (const a of all) {
+      const k = a.base || '(general)'; const lb = a.baseDesc || k;
+      if (!grupos.has(k)) grupos.set(k, { lb, items: [] });
+      grupos.get(k).items.push(a);
+    }
+    let h = '';
+    for (const [k, g] of grupos) {
+      h += '<details class="al-group"><summary><b>' + esc(g.lb || 'General') + '</b>' +
+        '<span class="cnt">' + g.items.length + ' alertas</span></summary>';
+      for (const a of g.items.slice(0, 50)) {
+        h += '<div class="al c' + a.n + '"><div class="h"><b>' + esc(a.r.cod) + '</b><span class="tg">' + esc(a.tg) + '</span></div>' +
+          '<div class="d">' + esc(a.r.desc || '') + '</div><div class="m">' + esc(a.m) + '</div>' +
+          '<div class="rc">' + esc(a.rc) + '</div>' +
+          '<button class="go" data-cod="' + esc(a.r.cod) + '">Ver ficha</button></div>';
+      }
+      if (g.items.length > 50) h += '<p class="note">Se muestran las primeras 50.</p>';
+      h += '</details>';
+    }
+    $('#alList').innerHTML = h;
+    $('#alMore').style.display = 'none';
+  } else { alPage(); }
 }
 function alPage() {
   const l = ST.alView || [], end = Math.min(ST.alShown + 40, l.length);
@@ -2503,7 +2814,7 @@ function renderSup() {
    No toca ningún dato: IndexedDB y localStorage siguen igual que antes,
    porque el origen (dominio) es el mismo antes y después de instalar.
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '2.4.0';                 /* ← subir junto con APP_VER del service-worker.js */
+const APP_VER = '2.7.0';                 /* ← subir junto con APP_VER del service-worker.js */
 let deferredPrompt = null, swReg = null;
 
 const esStandalone = () => window.matchMedia('(display-mode: standalone)').matches ||

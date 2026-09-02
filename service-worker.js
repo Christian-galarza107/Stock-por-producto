@@ -4,8 +4,13 @@
    PARA PUBLICAR UNA VERSIÓN NUEVA: cambiar SÓLO la constante APP_VER.
    Eso invalida el caché viejo y dispara el aviso "Hay una nueva versión".
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '2.7.0';
+const APP_VER = '3.6.0';
 const CACHE   = 'stock-en-planta-v' + APP_VER;
+
+/* Desde la v3.0.0 la interfaz usa Tailwind y FontAwesome por CDN.
+   Se precachean acá para que, después de la primera carga, sigan
+   andando sin conexión igual que el resto de la app. */
+const EXTERNAL_ORIGINS = ['https://cdn.tailwindcss.com', 'https://cdnjs.cloudflare.com'];
 
 /* Todo lo que la app necesita para arrancar sin conexión.
    El HTML pesa ~1 MB porque lleva SheetJS embebido: se cachea igual. */
@@ -18,7 +23,9 @@ const PRECACHE = [
   './maskable-192.png',
   './maskable-512.png',
   './apple-touch-icon.png',
-  './favicon-32.png'
+  './favicon-32.png',
+  'https://cdn.tailwindcss.com',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css'
 ];
 
 self.addEventListener('install', e => {
@@ -48,7 +55,9 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
-  if (url.origin !== self.location.origin) return;   /* nada externo: la app es 100% local */
+  const esExterno = url.origin !== self.location.origin;
+  /* nada externo salvo los dos CDN de Tailwind/FontAwesome que la interfaz necesita */
+  if (esExterno && !EXTERNAL_ORIGINS.includes(url.origin)) return;
 
   /* Navegación (abrir la app): red primero para detectar versión nueva,
      caché si no hay señal. Es lo que la hace usable en el depósito sin datos. */

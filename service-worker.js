@@ -4,7 +4,7 @@
    PARA PUBLICAR UNA VERSIÓN NUEVA: cambiar SÓLO la constante APP_VER.
    Eso invalida el caché viejo y dispara el aviso "Hay una nueva versión".
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.7.0';
+const APP_VER = '3.9.0';
 const CACHE   = 'stock-en-planta-v' + APP_VER;
 
 /* Desde la v3.0.0 la interfaz usa Tailwind y FontAwesome por CDN.

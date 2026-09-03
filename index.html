@@ -33,7 +33,7 @@
   --ok:#0E8F45; --warn:#B87A00; --crit:#C62828;
   --s1:#4556D9; --s2:#DD5001;
   --tint-ok:#E4F5EB; --tint-crit:#FCE9E9; --tint-brand:#E0E7FF; --tint-warn:#FBF1DC;
-  --header-bg:#20258A; --shadow:0 1px 2px rgba(15,19,48,.06),0 6px 18px -14px rgba(15,19,48,.35);
+  --header-bg:#2563EB; --shadow:0 1px 2px rgba(15,19,48,.06),0 6px 18px -14px rgba(15,19,48,.35);
   --sheet-back:rgba(15,19,48,.45);
 }
 @media (prefers-color-scheme: dark){ :root:not([data-tema="claro"]){
@@ -87,11 +87,14 @@ button{cursor:pointer}
   padding:10px 12px 8px;border-bottom:1px solid var(--border)}
 .sbox{position:relative;display:flex;align-items:center}
 .sbox>svg{position:absolute;left:14px;width:20px;height:20px;color:var(--ink-muted);pointer-events:none}
-#q{width:100%;height:var(--tap);padding:0 46px 0 44px;border-radius:var(--r-md);
-  border:1.5px solid var(--border);background:var(--surface);font-size:17px}
-#q::placeholder{color:var(--ink-muted)}
-#q::-webkit-search-cancel-button,#q::-webkit-search-decoration{-webkit-appearance:none;display:none}
-#q:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px var(--tint-brand)}
+.sbox input{width:100%;height:var(--tap);padding:0 46px 0 44px;border-radius:var(--r-md);
+  border:1.5px solid var(--border);background:var(--surface);color:var(--ink);
+  font-family:inherit;font-size:17px;-webkit-appearance:none;appearance:none;
+  transition:border-color .15s ease,box-shadow .15s ease}
+.sbox input::placeholder{color:var(--ink-muted)}
+.sbox input::-webkit-search-cancel-button,.sbox input::-webkit-search-decoration{-webkit-appearance:none;display:none}
+.sbox input:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px var(--tint-brand)}
+.sbox:focus-within>svg{color:var(--brand)}
 .sclr{position:absolute;right:6px;width:40px;height:40px;border:0;background:transparent;
   color:var(--ink-muted);font-size:22px;border-radius:var(--r-pill);display:none;place-items:center}
 .sclr.on{display:grid}
@@ -382,8 +385,8 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 .gl-isobox{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;
   border-radius:16px;overflow:visible;background:#fff;
   box-shadow:0 12px 30px -16px rgba(0,0,0,.55);border:1px solid rgba(15,19,48,.06)}
-.gl-iso{width:34px;height:34px;color:#20258A;display:block;overflow:visible;flex:none}
-.gl-word{font-family:var(--f-tit);font-weight:800;font-size:23px;color:#20258A;
+.gl-iso{width:34px;height:34px;color:var(--brand);display:block;overflow:visible;flex:none}
+.gl-word{font-family:var(--f-tit);font-weight:800;font-size:23px;color:var(--brand);
   letter-spacing:-.01em;white-space:nowrap}
 #gateLogin h1{color:#fff;text-align:center;font-size:21px;margin-bottom:4px}
 .gl-sub{color:rgba(255,255,255,.75);text-align:center;font-size:13.5px;margin:0 0 6px}
@@ -761,6 +764,12 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 <!-- ═══ PEDIDOS (Etapa 3) ═══ -->
 <section class="view" id="vPedidos">
   <div class="searchwrap">
+    <div class="sbox" id="sugBox2" style="display:none;margin-bottom:8px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="sugQ" type="search" inputmode="search" autocomplete="off" autocapitalize="off"
+             spellcheck="false" placeholder="Filtrar por SKU o descripción…" aria-label="Filtrar stock sugerido">
+      <button class="sclr" id="sugQClear" aria-label="Borrar filtro">&times;</button>
+    </div>
     <div class="chips" id="pdChips"></div>
     <div id="pdBaseBar" style="display:none;padding:0 0 4px">
       <button class="btn gh" id="pdBack" style="height:38px;font-size:13px">← Elegir otra base</button>
@@ -963,6 +972,8 @@ const ST = {
   ciot: [], ciotMeta: null, mvQ: '', mvRes: [], mvShown: 0, mvPage: 50, mvBase: null,
   /* Pedidos (Fill Rate) */
   fr: null, frMeta: null, pdBase: null, pdTab: 'prep', pdRes: [], pdShown: 0, pdPage: 40,
+  /* Pedidos → Stock sugerido por base */
+  sugQ: '', sugRes: [], sugShown: 0, sugPage: 40,
   personal: null, login: null
 };
 
@@ -2096,6 +2107,17 @@ async function cargarStockDesde(root) {
   return res.meta.rows;
 }
 
+/* Clave AAAAMM del primer mes de la ventana anual móvil (12 meses incluyendo
+   el mes en curso). Ej.: hoy 09/2026 → 202509. */
+function ventanaCiotDesde() {
+  const h = new Date();
+  return new Date(h.getFullYear(), h.getMonth() - 11, 1);
+}
+function mesMinCiot() {
+  const d = ventanaCiotDesde();
+  return d.getFullYear() * 100 + (d.getMonth() + 1);
+}
+
 async function cargarMovimientosDesde(root) {
   loading(true, 'Actualizando todo', 'Buscando Movimiento de stock…');
   const dir = await buscarCarpeta(root, ['movimiento']);
@@ -2105,17 +2127,21 @@ async function cargarMovimientosDesde(root) {
   if (actual) { loading(true, 'Actualizando todo', 'Procesando ' + actual.name + '…'); await cargarMovimiento(actual.f, actual.name, acc); }
   const histDir = await buscarCarpeta(dir.h, ['argentina']);
   if (histDir) {
-    const anioMin = new Date().getFullYear(); /* ventana año en curso, mismo criterio que Pedidos Preparados */
+    /* Ventana ANUAL MÓVIL: los últimos 12 meses contados desde hoy (no desde el
+       1/1). La necesita Stock Sugerido para calcular rotación por SKU, y de paso
+       le da más historia a Movimientos. Se compara por clave AAAAMM, así que
+       cruzar el cambio de año no requiere ningún caso especial. */
+    const mesMin = mesMinCiot();
     const archivos = await todosLosXlsx(histDir.h);
     for (const a of archivos) {
       const m = a.name.match(/(\d{4})-(\d{2})/);
-      if (m && Number(m[1]) < anioMin) continue; /* descarta años previos */
+      if (m && (Number(m[1]) * 100 + Number(m[2])) < mesMin) continue; /* fuera de los 12 meses */
       loading(true, 'Actualizando todo', 'Procesando ' + a.name + '…');
       await cargarMovimiento(a.h, a.name, acc);
     }
   }
   ST.ciot = acc;
-  ST.ciotMeta = { when: Date.now(), archivos: (actual ? 1 : 0) + (histDir ? 1 : 0), filas: acc.length };
+  ST.ciotMeta = { when: Date.now(), archivos: (actual ? 1 : 0) + (histDir ? 1 : 0), filas: acc.length, desde: ventanaCiotDesde() };
   return acc.length;
 }
 
@@ -2274,7 +2300,8 @@ function renderPedidos() {
   const hay = !!(ST.fr && ST.fr.length);
   $('#pdSinDatos').style.display = hay ? 'none' : 'block';
   if (!hay) { $('#pdBases').style.display = 'none'; $('#pdDetalle').style.display = 'none';
-    $('#pdBaseBar').style.display = 'none'; renderChipsPd(); return; }
+    $('#pdBaseBar').style.display = 'none'; $('#sugBox2').style.display = 'none';
+    renderChipsPd(); return; }
 
   const bases = basesPedidos();
   const unaSola = bases.length === 1;
@@ -2285,8 +2312,15 @@ function renderPedidos() {
   $('#pdDetalle').style.display = eligiendo ? 'none' : 'block';
   $('#pdBaseBar').style.display = (!eligiendo && !unaSola) ? 'block' : 'none';
   renderChipsPd();
-  if (eligiendo) { renderGrillaBasesPd(bases); return; }
-  renderKpisPd(); renderTabsPd(); doSearchPd();
+  if (eligiendo) { $('#sugBox2').style.display = 'none'; renderGrillaBasesPd(bases); return; }
+  renderKpisPd(); renderTabsPd(); pintarTabPd();
+}
+
+/* despacha al render de la solapa activa; 'sug' no sale del Fill Rate */
+function pintarTabPd() {
+  const esSug = ST.pdTab === 'sug';
+  $('#sugBox2').style.display = esSug ? 'flex' : 'none';
+  if (esSug) doSearchSug(); else doSearchPd();
 }
 
 function renderChipsPd() {
@@ -2338,14 +2372,137 @@ function renderKpisPd() {
     '<div class="kpi"><b class="num">' + m.pend + '</b><span>Pendientes</span></div>';
 }
 
-const PD_TABS = [['prep','Preparados'], ['pend','Pendientes'], ['venc','Vencidos']];
+const PD_TABS = [['prep','Preparados'], ['pend','Pendientes'], ['venc','Vencidos'], ['sug','Stock sugerido']];
 function renderTabsPd() {
   $('#pdTabs').innerHTML = PD_TABS.map(([k, lb]) => {
-    const n = ST.fr.filter(r => r.grupo === k && r.dep === ST.pdBase).length;
+    /* 'sug' no sale del Fill Rate: se cuenta sobre el cálculo de sugeridos */
+    const n = k === 'sug'
+      ? calcSugerido(ST.pdBase).filter(x => x.sug > 0).length
+      : ST.fr.filter(r => r.grupo === k && r.dep === ST.pdBase).length;
     return '<button class="chip' + (ST.pdTab === k ? ' on' : '') + '" data-pdtab="' + k + '">' +
       lb + ' <b>' + n + '</b></button>';
   }).join('');
 }
+
+/* ══════════════════ STOCK SUGERIDO POR BASE ══════════════════════════
+   Cuánto stock debería tener HOY una base para cubrir los próximos 3
+   meses, mirando su rotación real de los últimos 12 meses (consumos CIOT).
+
+   La demanda general viene en descenso, así que el cálculo es deliberadamente
+   conservador: el objetivo se redondea SIEMPRE hacia abajo (Math.floor), para
+   no empujar sobrestock a las bases.
+
+     Consumo mensual = consumo de los últimos 12 meses / 12
+     Objetivo (3 m)  = floor(consumo mensual × 3)
+     Sugerido        = max(0, objetivo − stock actual en la base)
+
+   Nota de datos: el divisor es 12 fijo, por definición del indicador. Si la
+   carpeta de red no tiene los 12 meses completos, el consumo mensual sale
+   subestimado — y por lo tanto el sugerido también. Es conservador en la
+   misma dirección que el redondeo, no lo contrario. */
+const SUG_MESES_OBJ = 3;
+const SUG_MESES_VENTANA = 12;
+
+function calcSugerido(base) {
+  if (!base) return [];
+  if (ST._sugCache && ST._sugCache.base === base &&
+      ST._sugCache.ciot === ST.ciot && ST._sugCache.rows === ST.rows) return ST._sugCache.out;
+
+  const desde = ventanaCiotDesde();
+  /* consumo de los últimos 12 meses, por SKU, sólo de esta base */
+  const cons = new Map();
+  for (const m of ST.ciot) {
+    if (m.dep !== base) continue;
+    if (m.fecha && m.fecha < desde) continue;
+    const e = cons.get(m.cod);
+    if (e) { e.anual += m.cant; if (m.fecha && (!e.ult || m.fecha > e.ult)) e.ult = m.fecha; }
+    else cons.set(m.cod, { anual: m.cant, desc: m.desc || '', ult: m.fecha || null });
+  }
+  /* stock actual de la base, por SKU */
+  const stk = new Map();
+  for (const r of ST.rows) {
+    const pd = r.porDep && r.porDep[base];
+    if (pd && pd.cant > 0) stk.set(r.cod, pd.cant);
+  }
+
+  const out = [];
+  for (const [cod, c] of cons) {
+    const mensual = c.anual / SUG_MESES_VENTANA;
+    const obj = Math.floor(mensual * SUG_MESES_OBJ);
+    const act = stk.get(cod) || 0;
+    const row = ST.byCod && ST.byCod.get(cod);
+    out.push({
+      cod, desc: c.desc || (row && row.desc) || '', anual: c.anual, mensual,
+      obj, act, sug: Math.max(0, obj - act), ult: c.ult, r: row || null
+    });
+  }
+  /* primero lo que hay que despachar, y dentro de eso lo de mayor rotación */
+  out.sort((a, b) => b.sug - a.sug || b.anual - a.anual);
+  ST._sugCache = { base, ciot: ST.ciot, rows: ST.rows, out };
+  return out;
+}
+
+function doSearchSug() {
+  const todos = calcSugerido(ST.pdBase);
+  const toks = norm(ST.sugQ).split(' ').filter(Boolean);
+  const res = toks.length
+    ? todos.filter(x => { const hay = norm(x.cod + ' ' + x.desc);
+        return toks.every(t => hay.indexOf(t) >= 0); })
+    : todos;
+  ST.sugRes = res; ST.sugShown = 0; $('#pdList').innerHTML = '';
+  renderPageSug();
+
+  const conSug = res.filter(x => x.sug > 0);
+  const un = conSug.reduce((a, x) => a + x.sug, 0);
+  $('#pdCntTxt').textContent = !ST.ciot.length
+    ? 'Sin consumos cargados — actualizá desde la red'
+    : res.length === 0 ? 'Sin resultados'
+    : conSug.length.toLocaleString('es-AR') + (conSug.length === 1 ? ' SKU a reponer · ' : ' SKU a reponer · ') +
+      nfmt(un) + ' un. · ' + res.length.toLocaleString('es-AR') + ' con rotación · base ' + ST.pdBase;
+}
+
+function renderPageSug() {
+  const toks = norm(ST.sugQ).split(' ').filter(Boolean);
+  const end = Math.min(ST.sugShown + ST.sugPage, ST.sugRes.length);
+  const buf = [];
+  for (let i = ST.sugShown; i < end; i++) {
+    const x = ST.sugRes[i];
+    const cls = x.sug > 0 ? (x.act === 0 ? 'zero' : 'low') : 'has';
+    buf.push('<div class="sku compact" data-sugcod="' + esc(x.cod) + '"><div class="sku-hd">' +
+      '<span class="loc">SUG</span>' +
+      '<span class="sku-i"><span class="sku-cod">' + hl(x.cod, toks) + '</span>' +
+      '<span class="sku-dsc">' + hl(x.desc || '—', toks) + '</span>' +
+      '<span class="sku-meta">consumo 12 m <b>' + nfmt(x.anual) + '</b> · ' +
+        x.mensual.toFixed(1).replace('.', ',') + '/mes</span>' +
+      '<span class="sku-meta">stock <b>' + nfmt(x.act) + '</b> · objetivo 3 m <b>' + nfmt(x.obj) + '</b>' +
+        (x.ult ? ' · último consumo ' + dfmtSolo(x.ult) : '') + '</span></span>' +
+      '<span class="qty ' + cls + '" style="text-align:center;line-height:1.05">' + nfmt(x.sug) +
+        '<small style="display:block;font-size:9px;opacity:.75;font-weight:600">' +
+        (x.sug > 0 ? 'a enviar' : 'cubierto') + '</small></span>' +
+      '</div></div>');
+  }
+  const tmp = document.createElement('div'); tmp.innerHTML = buf.join('');
+  const frag = document.createDocumentFragment();
+  while (tmp.firstChild) frag.appendChild(tmp.firstChild);
+  $('#pdList').appendChild(frag); ST.sugShown = end;
+  const b = $('#pdBtnMore');
+  b.style.display = ST.sugShown < ST.sugRes.length ? 'block' : 'none';
+  b.textContent = 'Ver más (quedan ' + (ST.sugRes.length - ST.sugShown).toLocaleString('es-AR') + ')';
+}
+
+/* tocar una fila abre la ficha del producto, igual que en Stock */
+$('#pdList').addEventListener('click', e => {
+  const el = e.target.closest('[data-sugcod]'); if (!el) return;
+  const r = ST.byCod && ST.byCod.get(el.dataset.sugcod);
+  if (r) openFicha(r);
+});
+
+let tsug;
+$('#sugQ').addEventListener('input', e => { ST.sugQ = e.target.value;
+  $('#sugQClear').classList.toggle('on', !!ST.sugQ);
+  clearTimeout(tsug); tsug = setTimeout(doSearchSug, 120); });
+$('#sugQClear').addEventListener('click', () => { ST.sugQ = ''; $('#sugQ').value = '';
+  $('#sugQClear').classList.remove('on'); doSearchSug(); });
 
 function doSearchPd() {
   const res = ST.fr.filter(r => r.grupo === ST.pdTab && r.dep === ST.pdBase);
@@ -2387,14 +2544,18 @@ function renderPagePd() {
 
 $('#pdBases').addEventListener('click', e => {
   const el = e.target.closest('[data-pdbase]'); if (!el) return;
-  ST.pdBase = el.dataset.pdbase; ST.pdTab = 'prep'; renderPedidos();
+  ST.pdBase = el.dataset.pdbase; ST.pdTab = 'prep';
+  ST.sugQ = ''; $('#sugQ').value = ''; $('#sugQClear').classList.remove('on');
+  renderPedidos();
 });
 $('#pdBack').addEventListener('click', () => { ST.pdBase = null; renderPedidos(); });
 $('#pdTabs').addEventListener('click', e => {
   const b = e.target.closest('[data-pdtab]'); if (!b) return;
-  ST.pdTab = b.dataset.pdtab; renderTabsPd(); doSearchPd();
+  ST.pdTab = b.dataset.pdtab; renderTabsPd(); pintarTabPd();
 });
-$('#pdBtnMore').addEventListener('click', renderPagePd);
+$('#pdBtnMore').addEventListener('click', () => {
+  if (ST.pdTab === 'sug') renderPageSug(); else renderPagePd();
+});
 
 /* ══════════════ MOVIMIENTOS · CONSUMO DE REPUESTOS (CIOT) ══════════════
    Columnas confirmadas por Christian (posición, no encabezado — el mismo
@@ -2641,7 +2802,7 @@ $('#btnTema').onclick = () => {
   const next = cur === 'auto' ? (sysDark ? 'claro' : 'oscuro') : (cur === 'claro' ? 'oscuro' : 'claro');
   document.documentElement.setAttribute('data-tema', next);
   localStorage.setItem('pq_tema', next);
-  document.querySelector('meta[name=theme-color]').setAttribute('content', next === 'oscuro' ? '#151A35' : '#20258A');
+  document.querySelector('meta[name=theme-color]').setAttribute('content', next === 'oscuro' ? '#0F172A' : '#2563EB');
   toast('Modo ' + next);
 };
 window.addEventListener('scroll', () => {
@@ -2857,9 +3018,9 @@ function renderInicio() {
     }
     basesConInmo.sort((a, b) => b.cant - a.cant);
     $('#kpis').innerHTML =
-      kpi(nodoItems.length, 'Productos en tu nodo', 'ok', '') +
-      kpi(nodoItems.reduce((a,x)=>a+x.cant,0), 'Unidades en nodo', '', '') +
-      kpi(inmoTotal, 'Devoluciones pendientes', inmoTotal ? 'crit' : '', '') +
+      kpi(nodoItems.length, 'Productos en tu nodo', 'ok', 'ver-nodo') +
+      kpi(nodoItems.reduce((a,x)=>a+x.cant,0), 'Unidades en nodo', '', 'ver-nodo') +
+      kpi(inmoTotal, 'Devoluciones pendientes', inmoTotal ? 'crit' : '', 'ver-devoluciones') +
       kpi(misBasesAb.length, 'Bases que abastecés', '', '');
     /* listar las bases que abastece + opción de ver el stock propio del nodo */
     const allBases = misBasesAb.map(bc => {
@@ -2974,6 +3135,13 @@ $('#kpis').addEventListener('click', e => {
   if (act === 'contados' || act === 'con-diferencia') {
     ST.cntSoloDif = act === 'con-diferencia'; go('vConteos'); renderConteos(); return;
   }
+  /* Responsable de stock: los KPIs del nodo abren el detalle, no el buscador */
+  if (act === 'ver-nodo') {
+    const nb = (ST.login && ST.login.bases || [])[0];
+    if (nb) { openSheet('#shBase'); abrirDetalleBase(nb.code); }
+    return;
+  }
+  if (act === 'ver-devoluciones') { abrirDevoluciones(); return; }
   ST.kpiFiltro = act === 'todos' ? '' : act;
   ST.q = ''; $('#q').value = ''; ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' };
   go('vBuscar'); renderChips(); doSearch();
@@ -3156,6 +3324,60 @@ function paintBase(term) {
 $('#baseQ').addEventListener('input', e => paintBase(e.target.value));
 $('#baseRes').addEventListener('click', e => { const b = e.target.closest('.rec'); if (!b) return;
   abrirDetalleBase(b.dataset.code); });
+/* ── Devoluciones pendientes ────────────────────────────────────────────
+   Consolida, en las bases que abastece el responsable, todo el material
+   con más de 3 meses sin rotación: es lo que tiene que volver al nodo.
+   Reusa la misma hoja (#shBase) y las mismas filas que el detalle de base,
+   sólo que agrupadas por base y filtradas por rotación. */
+function abrirDevoluciones() {
+  const bases = (ST.login && ST.login.basesAbastecidas) || [];
+  const grupos = [];
+  let totLineas = 0, totUn = 0;
+  for (const bc of bases) {
+    const items = stockDeBase(bc).filter(it => it.rot != null && it.rot > 3);
+    if (!items.length) continue;
+    items.sort((a, b) => b.rot - a.rot);
+    const un = items.reduce((a, x) => a + x.cant, 0);
+    totLineas += items.length; totUn += un;
+    grupos.push({ code: bc, desc: (depInfo(bc) || {}).desc || bc, items, un });
+  }
+  grupos.sort((a, b) => b.items.length - a.items.length);
+
+  openSheet('#shBase');
+  ST.baseVista = null;
+  $('#baseBuscar').style.display = 'none';
+  $('#baseBack').style.display = 'flex';
+  const box = $('#baseDetalle'); box.style.display = 'block';
+  box.dataset.code = ''; box.dataset.desc = 'Devoluciones pendientes';
+
+  if (!grupos.length) {
+    box.innerHTML = '<p class="eyebrow" style="margin:0 0 4px">Devoluciones</p>' +
+      '<h2 style="font-size:17px;margin-bottom:2px">Devoluciones pendientes</h2>' +
+      '<p class="note" style="margin:10px 0 0">No hay material con más de 3 meses sin rotación ' +
+      'en las bases que abastecés. Nada para devolver por ahora.</p>';
+    return;
+  }
+  box.innerHTML =
+    '<p class="eyebrow" style="margin:0 0 4px">Devoluciones</p>' +
+    '<h2 style="font-size:17px;margin-bottom:2px">Devoluciones pendientes</h2>' +
+    '<p class="note" style="margin:0 0 12px">Material con más de 3 meses sin rotación en las ' +
+    'bases que abastecés. Tocá cualquier producto para ver la ficha.</p>' +
+    '<div class="kv"><span>Líneas a devolver</span><b class="num">' + totLineas.toLocaleString('es-AR') + '</b></div>' +
+    '<div class="kv"><span>Unidades en total</span><b class="num">' + nfmt(totUn) + '</b></div>' +
+    '<div class="kv"><span>Bases involucradas</span><b class="num">' + grupos.length + '</b></div>' +
+    grupos.map(g =>
+      '<p class="eyebrow" style="margin:16px 0 6px">' + esc(g.desc) + ' · ' + esc(g.code) +
+      ' — ' + g.items.length + (g.items.length === 1 ? ' línea · ' : ' líneas · ') + nfmt(g.un) + ' un.</p>' +
+      g.items.slice(0, 100).map(it => filaSKU(it.r, {
+        cant: it.cant,
+        fuentes: [{ cant: it.cant, ubis: it.ubi ? [[it.ubi, it.cant]] : [] }],
+        extra: '<span class="sku-meta" style="color:var(--crit);font-weight:700">' +
+          it.rot.toFixed(0) + ' meses sin rotación</span>'
+      })).join('') +
+      (g.items.length > 100 ? '<p class="note">Se muestran las primeras 100 de esta base.</p>' : '')
+    ).join('');
+}
+
 function abrirDetalleBase(code) {
   ST.baseVista = code;
   const info = depInfo(code);
@@ -3417,7 +3639,7 @@ function renderSup() {
    No toca ningún dato: IndexedDB y localStorage siguen igual que antes,
    porque el origen (dominio) es el mismo antes y después de instalar.
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.7.0';                 /* ← subir junto con APP_VER del service-worker.js */
+const APP_VER = '3.9.0';                 /* ← subir junto con APP_VER del service-worker.js */
 let deferredPrompt = null, swReg = null;
 
 const esStandalone = () => window.matchMedia('(display-mode: standalone)').matches ||

@@ -2540,7 +2540,7 @@ function parseFillRate(wb, nombre) {
   return out;
 }
 
-async function cargarFillRateDesde(root) {
+async function cargarFillRateDesde(root, forzarTodo) {
   loading(true, 'Actualizando todo', 'Buscando Fill Rate…');
   const dir = await buscarCarpeta(root, ['fill']);
   if (!dir) { ST.fr = null; ST.frMeta = null; return 0; }   /* sin Fill Rate no se rompe el resto */
@@ -3917,7 +3917,7 @@ function renderSup() {
    No toca ningún dato: IndexedDB y localStorage siguen igual que antes,
    porque el origen (dominio) es el mismo antes y después de instalar.
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.11.0';                 /* ← subir junto con APP_VER del service-worker.js */
+const APP_VER = '3.11.1';                 /* ← subir junto con APP_VER del service-worker.js */
 let deferredPrompt = null, swReg = null;
 
 const esStandalone = () => window.matchMedia('(display-mode: standalone)').matches ||

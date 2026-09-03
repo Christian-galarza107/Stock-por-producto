@@ -4,7 +4,7 @@
    PARA PUBLICAR UNA VERSIÓN NUEVA: cambiar SÓLO la constante APP_VER.
    Eso invalida el caché viejo y dispara el aviso "Hay una nueva versión".
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.9.0';
+const APP_VER = '3.10.0';
 const CACHE   = 'stock-en-planta-v' + APP_VER;
 
 /* Desde la v3.0.0 la interfaz usa Tailwind y FontAwesome por CDN.
@@ -72,6 +72,23 @@ self.addEventListener('fetch', e => {
         return (await caches.match('./index.html')) || (await caches.match('./')) ||
           new Response('<h1>Sin conexión</h1><p>Abrí la app una vez con internet para dejarla instalada.</p>',
             { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+      }
+    })());
+    return;
+  }
+
+  /* El snapshot de datos SIEMPRE se busca en la red primero: si se sirviera
+     desde caché, el celular seguiría mostrando los datos de la semana pasada
+     aunque ya se hubiera publicado uno nuevo. La copia cacheada queda sólo
+     como respaldo para cuando no hay señal. */
+  if (url.pathname.endsWith('/datos.json.gz') || url.pathname.endsWith('datos.json.gz')) {
+    e.respondWith((async () => {
+      try {
+        const net = await fetch(req, { cache: 'no-store' });
+        if (net && net.ok) { const c = await caches.open(CACHE); c.put(req, net.clone()); }
+        return net;
+      } catch (err) {
+        return (await caches.match(req)) || new Response('', { status: 504 });
       }
     })());
     return;

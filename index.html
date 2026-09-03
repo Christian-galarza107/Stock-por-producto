@@ -57,7 +57,8 @@
 
 /* ── BASE ─────────────────────────────────────────────────────────────── */
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;height:100%}
+html,html{overscroll-behavior-y:contain}   /* corta el 'deslizar para recargar' accidental */
+body{margin:0;padding:0;height:100%}
 body{font-family:var(--f-txt);font-size:16px;line-height:1.45;color:var(--ink);
   background:var(--plane);-webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
 h1,h2,h3{font-family:var(--f-tit);font-stretch:105%;font-weight:600;margin:0}
@@ -682,7 +683,14 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h6l2 2h10v10H3z"/></svg>
         <span>Actualizar desde la carpeta de red</span></button>
       <button class="btn gh" id="btnRedChg">Cambiar carpeta de red</button>
+      <button class="btn gh" id="btnRedFull" style="font-size:12.5px;opacity:.85">
+        Forzar recarga completa</button>
+      <button class="btn gh" id="btnSnap" style="margin-top:8px;display:none">
+        Generar snapshot para publicar</button>
+      <button class="btn gh" id="btnSnapRetry" style="margin-top:8px;display:none">
+        Reintentar descarga de datos</button>
       <p class="note" id="redNote"></p>
+      <p class="note" id="snapNote" style="display:none"></p>
 
     </div>
 
@@ -849,7 +857,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 
 <div class="sheet" id="shBase"><div class="bk" data-close></div><div class="bd">
   <div class="hh"><button class="cl" id="baseBack" style="display:none" aria-label="Volver">←</button>
-    <h2 style="flex:1">Mi base</h2><button class="cl" data-close aria-label="Cerrar">&times;</button></div>
+    <h2 style="flex:1" id="baseTit">Mi base</h2><button class="cl" data-close aria-label="Cerrar">&times;</button></div>
   <div class="cn">
     <div id="baseBuscar">
       <p class="note" style="margin:0 0 8px">Escribí tu nombre, apellido, o el nombre de la base (ej. <b>Molla</b> o <b>Santa Fe</b>).</p>
@@ -974,7 +982,9 @@ const ST = {
   fr: null, frMeta: null, pdBase: null, pdTab: 'prep', pdRes: [], pdShown: 0, pdPage: 40,
   /* Pedidos → Stock sugerido por base */
   sugQ: '', sugRes: [], sugShown: 0, sugPage: 40,
-  personal: null, login: null
+  personal: null, login: null,
+  /* snapshot publicado (celular) */
+  snapGenerado: null, snapOrigen: null, snapDiag: null
 };
 
 /* ══════════════ MAPEO DE COLUMNAS ══════════════
@@ -2001,9 +2011,186 @@ $('#btnShare').onclick = async () => {
 /* Nota: la función que generaba la "copia HTML para el celular" se sacó de la UI
    — la app en sí ES la aplicación de celular, no hace falta esa exportación. */
 
+
+/* ══════════════════ SNAPSHOT PUBLICABLE ═══════════════════════════════
+   El celular no puede leer la carpeta de red: la File System Access API no
+   existe en Android, y aunque existiera, un teléfono fuera de la LAN no
+   resuelve una ruta UNC. La vía elegida es publicar los datos ya procesados
+   junto a la app en GitHub Pages:
+
+     1. En la PC (con acceso a la red) se actualiza como siempre.
+     2. Se genera 'datos.json.gz' y se sube al repo, al lado de index.html.
+     3. Cualquier celular que abra la app lo baja solo al arrancar.
+
+   El archivo se comprime con gzip nativo del navegador (CompressionStream) y
+   se codifica en columnas con diccionarios, porque un JSON plano de los tres
+   datasets pesa decenas de MB y no bajaría nunca en una conexión de depósito.
+   ════════════════════════════════════════════════════════════════════ */
+const SNAP_FILE = 'datos.json.gz';
+const SNAP_VER  = 1;
+
+/* Codificación columnar: en vez de repetir la clave y el texto en cada fila,
+   se guarda un diccionario y un índice numérico por fila. */
+function colEnc(filas, campos) {
+  const dic = {}, out = {};
+  for (const [k, tipo] of campos) {
+    if (tipo === 'd') { dic[k] = []; const ix = new Map();
+      out[k] = filas.map(f => { const v = f[k] == null ? '' : String(f[k]);
+        let i = ix.get(v); if (i === undefined) { i = dic[k].length; dic[k].push(v); ix.set(v, i); }
+        return i; }); }
+    else if (tipo === 'f') out[k] = filas.map(f => f[k] ? +f[k] : 0);
+    else out[k] = filas.map(f => f[k] == null ? 0 : f[k]);
+  }
+  return { n: filas.length, dic, col: out };
+}
+function colDec(enc, campos) {
+  if (!enc || !enc.n) return [];
+  const filas = [];
+  for (let i = 0; i < enc.n; i++) {
+    const o = {};
+    for (const [k, tipo] of campos) {
+      const c = enc.col[k];
+      if (tipo === 'd') o[k] = enc.dic[k][c[i]] || '';
+      else if (tipo === 'f') o[k] = c[i] ? new Date(c[i]) : null;
+      else o[k] = c[i];
+    }
+    filas.push(o);
+  }
+  return filas;
+}
+const SNAP_CIOT = [['dep','d'], ['cod','d'], ['desc','d'], ['cliente','d'],
+                   ['clienteCod','d'], ['cant','n'], ['fecha','f']];
+const SNAP_FR   = [['dep','d'], ['cod','d'], ['desc','d'], ['tec','d'], ['grupo','d'],
+                   ['clase','d'], ['or','n'], ['sol','n'], ['prep','n'], ['pend','n'],
+                   ['dias','n'], ['fSolic','f'], ['fEnt','f']];
+
+function snapshotObj() {
+  return {
+    v: SNAP_VER, generado: Date.now(),
+    meta: ST.meta, rows: ST.rowsRaw,
+    ciotMeta: ST.ciotMeta ? { when: ST.ciotMeta.when, filas: ST.ciotMeta.filas } : null,
+    frMeta:   ST.frMeta   ? { when: ST.frMeta.when,   filas: ST.frMeta.filas }   : null,
+    ciot: colEnc(ST.ciot || [], SNAP_CIOT),
+    fr:   colEnc(ST.fr   || [], SNAP_FR)
+  };
+}
+
+async function gzip(str) {
+  const cs = new CompressionStream('gzip');
+  const w = cs.writable.getWriter();
+  w.write(new TextEncoder().encode(str)); w.close();
+  return new Response(cs.readable).arrayBuffer();
+}
+async function gunzip(buf) {
+  const ds = new DecompressionStream('gzip');
+  const w = ds.writable.getWriter();
+  w.write(new Uint8Array(buf)); w.close();
+  return new Response(ds.readable).text();
+}
+
+async function exportarSnapshot() {
+  if (!ST.rowsRaw.length && !(ST.ciot || []).length && !(ST.fr || []).length)
+    return alert('No hay datos cargados todavía. Actualizá primero desde la carpeta de red.');
+  if (typeof CompressionStream !== 'function')
+    return alert('Este navegador no puede comprimir el archivo. Usá Chrome o Edge en la PC.');
+  loading(true, 'Generando snapshot', 'Empaquetando stock, consumos y pedidos…');
+  try {
+    const json = JSON.stringify(snapshotObj());
+    const gz = await gzip(json);
+    dl(new Blob([gz], { type: 'application/gzip' }), SNAP_FILE);
+    loading(false);
+    toast('Snapshot generado: ' + (gz.byteLength / 1048576).toFixed(1) + ' MB · subilo al repo junto a index.html', 6000);
+  } catch (e) { loading(false); alert('No se pudo generar el snapshot.\n\n' + (e && e.message ? e.message : e)); }
+}
+
+/* Reconstruye el estado desde un snapshot ya parseado */
+async function aplicarSnapshot(o, origen) {
+  ST.ciot = colDec(o.ciot, SNAP_CIOT);
+  ST.fr   = o.fr && o.fr.n ? colDec(o.fr, SNAP_FR) : null;
+  ST.ciotMeta = o.ciotMeta ? Object.assign({}, o.ciotMeta, { desde: ventanaCiotDesde(), publicado: o.generado }) : null;
+  ST.frMeta   = o.frMeta   ? Object.assign({}, o.frMeta,   { publicado: o.generado }) : null;
+  ST.snapGenerado = o.generado || null;
+  ST.snapOrigen = origen || 'publicado';
+  await applyData({ rows: o.rows || [], meta: o.meta || {} }, false);
+  await DB.set('snap', o);          /* queda offline para la próxima apertura */
+}
+
+/* Al arrancar: si la app está servida por http(s), intenta bajar el snapshot
+   publicado. Si no hay red, usa la última copia guardada en el dispositivo. */
+/* Algunos servidores (GitHub Pages entre ellos, según cómo resuelva el tipo)
+   mandan el .gz con cabecera 'Content-Encoding: gzip'. En ese caso el navegador
+   YA lo descomprime solo, y volver a descomprimirlo revienta. Por eso no se
+   asume: se miran los dos bytes mágicos del gzip (1f 8b) y se decide ahí. */
+async function textoDeSnapshot(buf) {
+  const b = new Uint8Array(buf);
+  if (b.length >= 2 && b[0] === 0x1f && b[1] === 0x8b) return gunzip(buf);
+  return new TextDecoder().decode(b);          /* ya venía descomprimido */
+}
+
+async function cargarSnapshotPublicado() {
+  const esWeb = location.protocol === 'http:' || location.protocol === 'https:';
+  ST.snapDiag = null;
+  if (!esWeb) {
+    ST.snapDiag = 'La app está abierta como archivo local (' + location.protocol +
+      '), no desde una dirección web. Abrila desde el link de GitHub Pages.';
+  } else {
+    try {
+      const url = SNAP_FILE + '?t=' + Date.now();
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) {
+        ST.snapDiag = 'El servidor respondió ' + r.status + ' al pedir ' + SNAP_FILE +
+          '. Revisá que el archivo esté subido al repo, al lado de index.html, con ese nombre exacto.';
+      } else {
+        const buf = await r.arrayBuffer();
+        if (!buf.byteLength) {
+          ST.snapDiag = SNAP_FILE + ' llegó vacío (0 bytes).';
+        } else {
+          let o = null;
+          try { o = JSON.parse(await textoDeSnapshot(buf)); }
+          catch (err) {
+            ST.snapDiag = 'No pude leer ' + SNAP_FILE + ' (' + (buf.byteLength / 1024).toFixed(0) +
+              ' KB). ¿Se subió el archivo correcto y completo? Detalle: ' + (err && err.message ? err.message : err);
+          }
+          if (o && o.v !== SNAP_VER) {
+            ST.snapDiag = 'El snapshot publicado es de otra versión de formato (v' + o.v +
+              ', esta app espera v' + SNAP_VER + '). Regeneralo desde la PC con esta misma versión de la app.';
+          } else if (o) { await aplicarSnapshot(o, 'red'); return true; }
+        }
+      }
+    } catch (e) {
+      ST.snapDiag = 'No se pudo descargar ' + SNAP_FILE + '. Puede ser falta de señal. Detalle: ' +
+        (e && e.message ? e.message : e);
+    }
+  }
+  const guardado = await DB.get('snap');
+  if (guardado && guardado.v === SNAP_VER) { await aplicarSnapshot(guardado, 'guardado'); return true; }
+  return false;
+}
+
 /* ══════════════ VISTA DATOS ══════════════ */
 function renderDatos() {
   const m = ST.meta;
+  /* el snapshot se genera sólo donde se puede leer la red: la PC */
+  const bs = $('#btnSnap'); if (bs) bs.style.display = FSA ? 'block' : 'none';
+  const br = $('#btnSnapRetry'); if (br) br.style.display = FSA ? 'none' : 'block';
+  const bf = $('#btnRedFull'); if (bf) bf.style.display = FSA ? 'block' : 'none';
+  const sn = $('#snapNote');
+  if (sn) {
+    if (ST.snapGenerado) {
+      sn.style.display = 'block';
+      sn.textContent = 'Estás viendo datos publicados del ' + dfmt(new Date(ST.snapGenerado)) +
+        (ST.snapOrigen === 'guardado' ? ' (copia guardada en este dispositivo).' : '.');
+    } else if (FSA) {
+      sn.style.display = 'block';
+      sn.textContent = 'Después de actualizar, generá el snapshot y subilo al repo junto a index.html ' +
+        'para que lo vean los celulares.';
+    } else if (ST.snapDiag) {
+      /* sin datos y sin carpeta de red: hay que decir POR QUÉ, no quedarse mudo */
+      sn.style.display = 'block';
+      sn.style.color = 'var(--crit)';
+      sn.textContent = ST.snapDiag;
+    } else sn.style.display = 'none';
+  }
   const tieneAlgo = ST.rows.length || (ST.ciotMeta && ST.ciotMeta.filas) || (ST.frMeta && ST.frMeta.filas);
   $('#dsSub').textContent = tieneAlgo
     ? 'Los datos quedan guardados en este dispositivo.'
@@ -2059,7 +2246,7 @@ const FSA = typeof window.showDirectoryPicker === 'function';
 function redNote() {
   $('#redNote').innerHTML = FSA
     ? 'Busca sola la subcarpeta de <b>Stock por Producto</b> dentro de <b>C.G BBDD CLAUDE</b>. La carpeta se elige una sola vez.'
-    : 'Este navegador no lee carpetas de red (pasa en el celular). Abrí la app desde una PC con acceso a la red para cargar o actualizar los datos.';
+    : 'Este navegador no lee carpetas de red (pasa en el celular). Los datos del celular llegan publicados: los actualiza Christian desde una PC y bajan solos al abrir la app.';
   $('#btnRed').disabled = !FSA; $('#btnRedChg').disabled = !FSA;
   $('#btnRedChg').style.display = (FSA && ST.dirHandle) ? 'flex' : 'none';
 }
@@ -2091,19 +2278,25 @@ async function obtenerRootRed(forzar) {
   return root;
 }
 
-async function cargarStockDesde(root) {
+async function cargarStockDesde(root, forzarTodo) {
   loading(true, 'Actualizando todo', 'Buscando Stock por Producto…');
   let dir = await buscarCarpeta(root, ['stock']);
   if (!dir) { if (!(await mejorXlsx(root))) throw new Error('No encontré subcarpeta de Stock por Producto ni .xlsx en la carpeta elegida.');
     dir = { h: root, name: '(carpeta elegida)' }; }
   const best = await mejorXlsx(dir.h);
   if (!best) throw new Error('No hay .xlsx en «' + dir.name + '» (Stock). ¿Está abierto en Excel en otra PC?');
+  const firmaSt = firmaDe(best.f);
+  if (!forzarTodo && ST.rowsRaw.length) {
+    const prev = await DB.get('stockFirma');
+    if (prev && prev === firmaSt) return ST.rowsRaw.length;   /* mismo archivo: nada que rehacer */
+  }
   loading(true, 'Actualizando todo', 'Procesando ' + best.name + '…');
   const buf = await best.f.arrayBuffer();
   const wb = XLSX.read(buf, { type: 'array', cellDates: true, cellNF: false, cellStyles: false });
   ST.lastBuf = buf; ST.lastName = best.name;
   const res = parseWorkbook(wb, best.name);
   await applyData(res);
+  await DB.set('stockFirma', firmaSt);
   return res.meta.rows;
 }
 
@@ -2118,13 +2311,52 @@ function mesMinCiot() {
   return d.getFullYear() * 100 + (d.getMonth() + 1);
 }
 
-async function cargarMovimientosDesde(root) {
+/* ══════════════ CACHÉ INCREMENTAL DE MOVIMIENTOS ══════════════════════
+   El costo real de actualizar no está en recorrer filas: está en ABRIR y
+   parsear cada .xlsx. SheetJS tiene que leer el libro entero antes de que
+   se pueda mirar una sola fecha, así que filtrar por fecha no ahorra nada.
+
+   Lo que sí ahorra: no volver a abrir un archivo que ya parseamos y que no
+   cambió. Los meses cerrados de ARGENTINA no se tocan nunca más. Se guarda
+   lo parseado por archivo, con su fecha de modificación y tamaño como firma;
+   si la firma coincide, se reusa sin abrirlo.
+
+   Resultado práctico: la primera vez sigue tardando (hay que leer todo), las
+   siguientes sólo reparsean el rolling del mes en curso.
+   ════════════════════════════════════════════════════════════════════ */
+const firmaDe = f => f ? (f.lastModified + ':' + f.size) : '';
+
+async function archivoDe(x) {
+  return (x && typeof x.getFile === 'function') ? await x.getFile() : x;
+}
+
+async function cargarMovimientosDesde(root, forzarTodo) {
   loading(true, 'Actualizando todo', 'Buscando Movimiento de stock…');
   const dir = await buscarCarpeta(root, ['movimiento']);
   if (!dir) throw new Error('No encontré la carpeta de Movimiento de stock dentro de C.G BBDD CLAUDE.');
+
+  const cache = forzarTodo ? {} : ((await DB.get('ciotFiles')) || {});
+  const nuevo = {};                      /* caché de esta corrida (poda lo viejo) */
+  let leidos = 0, reusados = 0;
+
+  /* devuelve las filas CIOT de un archivo, reusando la caché si no cambió */
+  const filasDe = async (handleOFile, nombre) => {
+    const file = await archivoDe(handleOFile);
+    const firma = firmaDe(file);
+    const hit = cache[nombre];
+    if (hit && hit.firma === firma) { nuevo[nombre] = hit; reusados++; return hit.filas; }
+    loading(true, 'Actualizando todo', 'Procesando ' + nombre + '…');
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array', cellDates: true, cellNF: false, cellStyles: false });
+    const filas = parseMovimientos(wb, nombre);
+    nuevo[nombre] = { firma, filas };
+    leidos++;
+    return filas;
+  };
+
   const acc = [];
   const actual = await mejorXlsx(dir.h);
-  if (actual) { loading(true, 'Actualizando todo', 'Procesando ' + actual.name + '…'); await cargarMovimiento(actual.f, actual.name, acc); }
+  if (actual) for (const f of await filasDe(actual.f, actual.name)) acc.push(f);
   const histDir = await buscarCarpeta(dir.h, ['argentina']);
   if (histDir) {
     /* Ventana ANUAL MÓVIL: los últimos 12 meses contados desde hoy (no desde el
@@ -2136,31 +2368,66 @@ async function cargarMovimientosDesde(root) {
     for (const a of archivos) {
       const m = a.name.match(/(\d{4})-(\d{2})/);
       if (m && (Number(m[1]) * 100 + Number(m[2])) < mesMin) continue; /* fuera de los 12 meses */
-      loading(true, 'Actualizando todo', 'Procesando ' + a.name + '…');
-      await cargarMovimiento(a.h, a.name, acc);
+      for (const f of await filasDe(a.h, a.name)) acc.push(f);
     }
   }
   ST.ciot = acc;
-  ST.ciotMeta = { when: Date.now(), archivos: (actual ? 1 : 0) + (histDir ? 1 : 0), filas: acc.length, desde: ventanaCiotDesde() };
+  ST.ciotMeta = { when: Date.now(), archivos: Object.keys(nuevo).length, filas: acc.length,
+                  desde: ventanaCiotDesde(), leidos, reusados };
+  loading(true, 'Actualizando todo', 'Guardando en memoria del dispositivo…');
+  await DB.set('ciotFiles', nuevo);      /* sólo los de la ventana: se poda solo */
+  await DB.set('ciotMeta', ST.ciotMeta);
   return acc.length;
 }
 
-async function actualizarTodoDesdeRed(forzar) {
+/* Rearma ST.ciot desde la caché local, sin tocar la red. Es lo que hace que
+   una recarga de página no borre nada y arranque en menos de dos segundos. */
+async function ciotDesdeMemoria() {
+  const cache = await DB.get('ciotFiles');
+  if (!cache) return 0;
+  const acc = [];
+  for (const k of Object.keys(cache)) for (const f of (cache[k].filas || [])) acc.push(f);
+  ST.ciot = acc;
+  ST.ciotMeta = (await DB.get('ciotMeta')) ||
+    { when: null, archivos: Object.keys(cache).length, filas: acc.length, desde: ventanaCiotDesde() };
+  return acc.length;
+}
+
+async function actualizarTodoDesdeRed(forzar, forzarTodo) {
   if (!FSA) return false;
   try {
+    const t0 = Date.now();
     const root = await obtenerRootRed(forzar);
-    const nProd = await cargarStockDesde(root);
-    const nCiot = await cargarMovimientosDesde(root);
-    const nFr   = await cargarFillRateDesde(root);
-    loading(false); redNote(); renderChipsMov(); renderPedidos(); renderDatos();
+    const nProd = await cargarStockDesde(root, forzarTodo);
+    const nCiot = await cargarMovimientosDesde(root, forzarTodo);
+    const nFr   = await cargarFillRateDesde(root, forzarTodo);
+    loading(false); redNote(); renderPedidos(); renderDatos();
+    const seg = Math.round((Date.now() - t0) / 1000);
+    const cm = ST.ciotMeta || {};
     toast(nProd.toLocaleString('es-AR') + ' productos · ' + nCiot.toLocaleString('es-AR') +
-      ' consumos CIOT · ' + nFr.toLocaleString('es-AR') + ' líneas de pedidos', 4800);
+      ' consumos CIOT · ' + nFr.toLocaleString('es-AR') + ' líneas de pedidos · ' + seg + 's' +
+      (cm.reusados ? ' (' + cm.reusados + ' archivos desde memoria)' : ''), 5200);
     return true;
   } catch (e) { loading(false); if (e && e.name === 'AbortError') return false;
     alert('No se pudo actualizar desde la red.\n\n' + (e && e.message ? e.message : e)); return false; }
 }
 $('#btnRed').onclick = () => actualizarTodoDesdeRed(false).then(ok => { if (ok) go('vInicio'); });
 $('#btnRedChg').onclick = () => actualizarTodoDesdeRed(true).then(ok => { if (ok) go('vInicio'); });
+$('#btnRedFull').onclick = async () => {
+  if (!confirm('Vuelve a leer TODOS los archivos de la red desde cero, ignorando lo guardado ' +
+               'en este dispositivo.\n\nPuede tardar varios minutos. ¿Seguir?')) return;
+  await DB.del('ciotFiles'); await DB.del('ciotMeta');
+  await DB.del('frCache'); await DB.del('stockFirma');
+  actualizarTodoDesdeRed(false, true).then(ok => { if (ok) go('vInicio'); });
+};
+$('#btnSnap').onclick = () => exportarSnapshot();
+$('#btnSnapRetry').onclick = async () => {
+  loading(true, 'Buscando datos publicados', 'Descargando ' + SNAP_FILE + '…');
+  const ok = await cargarSnapshotPublicado();
+  loading(false); renderDatos();
+  if (ok) { toast('Datos actualizados'); go('vInicio'); }
+  else alert(ST.snapDiag || 'No encontré datos publicados.');
+};
 
 
 /* ══════════════════ PEDIDOS · FILL RATE ══════════════════════════════
@@ -2279,11 +2546,22 @@ async function cargarFillRateDesde(root) {
   if (!dir) { ST.fr = null; ST.frMeta = null; return 0; }   /* sin Fill Rate no se rompe el resto */
   const best = await mejorXlsx(dir.h);
   if (!best) { ST.fr = null; ST.frMeta = null; return 0; }
+  /* si el archivo no cambió desde la última vez, se reusa lo ya parseado */
+  const firma = firmaDe(best.f);
+  if (!forzarTodo) {
+    const prev = await DB.get('frCache');
+    if (prev && prev.firma === firma && prev.filas) {
+      ST.fr = prev.filas;
+      ST.frMeta = prev.meta || { when: null, archivo: best.name, filas: prev.filas.length };
+      return ST.fr.length;
+    }
+  }
   loading(true, 'Actualizando todo', 'Procesando ' + best.name + '…');
   const buf = await best.f.arrayBuffer();
   const wb = XLSX.read(buf, { type: 'array', cellDates: true, cellNF: false, cellStyles: false });
   ST.fr = parseFillRate(wb, best.name);
   ST.frMeta = { when: Date.now(), archivo: best.name, filas: ST.fr.length };
+  await DB.set('frCache', { firma, filas: ST.fr, meta: ST.frMeta });
   return ST.fr.length;
 }
 
@@ -2324,11 +2602,7 @@ function pintarTabPd() {
 }
 
 function renderChipsPd() {
-  const c = $('#pdChips'); if (!c) return; c.innerHTML = '';
-  const b = document.createElement('button');
-  b.className = 'chip'; b.textContent = ST.frMeta ? 'Actualizar todo desde la red' : 'Cargar todo desde la red';
-  b.onclick = () => actualizarTodoDesdeRed(false).then(() => renderPedidos());
-  c.appendChild(b);
+  const c = $('#pdChips'); if (c) c.innerHTML = '';
 }
 
 function renderGrillaBasesPd(bases) {
@@ -2624,12 +2898,11 @@ async function todosLosXlsx(dir) {
   return out;
 }
 
+/* La actualización vive sólo en «Acerca de». Tener el botón acá también hacía
+   que se disparara sin querer una lectura completa de la red desde el celular,
+   donde ni siquiera es posible. */
 function renderChipsMov() {
-  const c = $('#mvChips'); if (!c) return; c.innerHTML = '';
-  const b = document.createElement('button');
-  b.className = 'chip'; b.textContent = ST.ciotMeta ? 'Actualizar todo desde la red' : 'Cargar todo desde la red';
-  b.onclick = () => actualizarTodoDesdeRed(false).then(() => renderMovimientos());
-  c.appendChild(b);
+  const c = $('#mvChips'); if (c) c.innerHTML = '';
 }
 
 /* Bases que este login puede mirar en Movimientos. Nacional/Planificación ve
@@ -3345,6 +3618,8 @@ function abrirDevoluciones() {
 
   openSheet('#shBase');
   ST.baseVista = null;
+  $('#baseTit').textContent = 'Devoluciones';
+  const cn = document.querySelector('#shBase .cn'); if (cn) cn.scrollTop = 0;
   $('#baseBuscar').style.display = 'none';
   $('#baseBack').style.display = 'flex';
   const box = $('#baseDetalle'); box.style.display = 'block';
@@ -3389,6 +3664,8 @@ function abrirDetalleBase(code) {
   for (const r of ST.rows) { const pd = r.porDep && r.porDep[code];
     if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot, ubi: pd.ubi }); }
   items.sort((a, b) => b.cant - a.cant);
+  $('#baseTit').textContent = 'Mi base';
+  const cnB = document.querySelector('#shBase .cn'); if (cnB) cnB.scrollTop = 0;
   $('#baseBuscar').style.display = 'none'; $('#baseBack').style.display = 'flex';
   const box = $('#baseDetalle'); box.style.display = 'block';
   box.innerHTML =
@@ -3423,6 +3700,7 @@ $('#baseDetalle').addEventListener('click', e => {
   else { closeSheet('#shBase'); openFicha(r); }
 });
 $('#baseBack').addEventListener('click', () => {
+  $('#baseTit').textContent = 'Mi base';
   $('#baseDetalle').style.display = 'none'; $('#baseBuscar').style.display = 'block'; $('#baseBack').style.display = 'none'; });
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -3639,7 +3917,7 @@ function renderSup() {
    No toca ningún dato: IndexedDB y localStorage siguen igual que antes,
    porque el origen (dominio) es el mismo antes y después de instalar.
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.9.0';                 /* ← subir junto con APP_VER del service-worker.js */
+const APP_VER = '3.11.0';                 /* ← subir junto con APP_VER del service-worker.js */
 let deferredPrompt = null, swReg = null;
 
 const esStandalone = () => window.matchMedia('(display-mode: standalone)').matches ||
@@ -3777,9 +4055,23 @@ function rutaInicial() {
     await applyData({ rows: window.PQ_DATA.rows, meta: window.PQ_DATA.meta }, false);
     go('vInicio'); initSW(); pintarPWA(); rutaInicial(); return;
   }
+  /* En el celular no hay carpeta de red: los datos llegan publicados al lado
+     de index.html. En la PC, lo que se cargó desde la red manda sobre eso. */
+  let listo = false;
   const rows = await DB.get('rows'), meta = await DB.get('meta');
-  if (rows && rows.length && meta) await applyData({ rows, meta }, false);
-  else { renderDatos(); doSearch(); renderInicio(); renderAlertas(); }
+  if (FSA && rows && rows.length && meta) { await applyData({ rows, meta }, false); listo = true; }
+  /* Movimientos y Pedidos también viven en memoria del dispositivo. Antes sólo
+     se guardaba el stock, así que cualquier recarga de página (o un deslizar
+     hacia abajo sin querer) los borraba y obligaba a rehacer la carga entera. */
+  if (listo) {
+    try { await ciotDesdeMemoria(); } catch (e) {}
+    try { const fc = await DB.get('frCache');
+      if (fc && fc.filas) { ST.fr = fc.filas; ST.frMeta = fc.meta || null; } } catch (e) {}
+  }
+  if (!listo) listo = await cargarSnapshotPublicado();
+  if (!listo && rows && rows.length && meta) { await applyData({ rows, meta }, false); listo = true; }
+  if (!listo) { renderDatos(); doSearch(); renderInicio(); renderAlertas(); }
+  else renderDatos();
   go('vInicio');
   initSW(); pintarPWA(); rutaInicial();          /* capa PWA: no altera ningún dato guardado */
 })();

@@ -695,6 +695,30 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
     </div>
 
     <div class="panel">
+      <h2>Conexión directa a la nube</h2>
+      <p class="sub">Opcional. Si cargás una fuente acá, el celular baja los datos directo de ahí,
+        sin depender de GitHub Pages (y más privado: sólo accede quien tenga el archivo compartido).
+        Orden de prueba: <b>Google Drive → OneDrive → GitHub Pages → copia guardada</b>.</p>
+
+      <div style="font-weight:700;margin:6px 0 4px">Google Drive</div>
+      <input id="drvKey" type="text" autocomplete="off" spellcheck="false" placeholder="API key restringida" style="width:100%;box-sizing:border-box;margin:4px 0;padding:9px 11px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--ink);font-size:13px">
+      <input id="drvFile" type="text" autocomplete="off" spellcheck="false" placeholder="ID del archivo compartido" style="width:100%;box-sizing:border-box;margin:4px 0;padding:9px 11px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--ink);font-size:13px">
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <button class="btn gh" id="btnDrvSave" style="flex:1">Guardar</button>
+        <button class="btn gh" id="btnDrvTest" style="flex:1">Probar conexión</button>
+      </div>
+      <p class="note" id="drvNote" style="display:none"></p>
+
+      <div style="font-weight:700;margin:14px 0 4px">OneDrive</div>
+      <input id="odLink" type="text" autocomplete="off" spellcheck="false" placeholder="Link compartido «cualquiera con el enlace»" style="width:100%;box-sizing:border-box;margin:4px 0;padding:9px 11px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--ink);font-size:13px">
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <button class="btn gh" id="btnOdSave" style="flex:1">Guardar</button>
+        <button class="btn gh" id="btnOdTest" style="flex:1">Probar conexión</button>
+      </div>
+      <p class="note" id="odNote" style="display:none"></p>
+    </div>
+
+    <div class="panel">
       <h2>Directorio y depósitos</h2>
       <p class="sub">Quién trabaja en cada base y a qué depósito devuelve cada nodo. Estos datos vienen
         <b>incluidos en la app</b> — no hay botón de carga acá. Los actualiza Christian regenerando el
@@ -984,7 +1008,7 @@ const ST = {
   sugQ: '', sugRes: [], sugShown: 0, sugPage: 40,
   personal: null, login: null,
   /* snapshot publicado (celular) */
-  snapGenerado: null, snapOrigen: null, snapDiag: null
+  snapGenerado: null, snapOrigen: null, snapDiag: null, sheetStack: []
 };
 
 /* ══════════════ MAPEO DE COLUMNAS ══════════════
@@ -1805,7 +1829,10 @@ function openConteo(r, baseCtx) {
   $('#kMot').innerHTML = MOTIVOS.map(m => '<button data-m="' + esc(m) + '"' +
     (ST.motivo === m ? ' class="on"' : '') + '>' + esc(m) + '</button>').join('');
   $('#kTit').textContent = r.cod; $('#kSub').textContent = r.desc || '';
-  paintSegs(); $('#cnt').value = String(sysVal()); paintDif(); openSheet('#shConteo');
+  /* Conteo ciego: SIEMPRE arranca en 0, nunca precargado con el stock del
+     sistema. El operario cuenta desde cero; el sistema sólo se muestra
+     como referencia en paintDif() una vez que ingresa su propio número. */
+  paintSegs(); $('#cnt').value = '0'; paintDif(); openSheet('#shConteo');
 }
 function paintSegs() {
   const fus = ST.targetFuentes || [];
@@ -1829,7 +1856,7 @@ $('#kMot').addEventListener('click', e => { const b = e.target.closest('button')
   $$('#kMot button').forEach(x => x.classList.toggle('on', x.dataset.m === ST.motivo)); });
 $('#kSegs').addEventListener('click', e => { if ((ST.targetFuentes || []).length <= 1) return;
   const b = e.target.closest('.seg'); if (!b) return;
-  ST.targetIdx = +b.dataset.i; $('#cnt').value = String(sysVal()); paintSegs(); paintDif(); });
+  ST.targetIdx = +b.dataset.i; $('#cnt').value = '0'; paintSegs(); paintDif(); });
 const sysVal = () => ((ST.targetFuentes || [])[ST.targetIdx] || { val: 0 }).val;
 function paintDif() {
   const c = numOf($('#cnt').value) || 0, s = sysVal(), d = c - s, el = $('#kDif');
@@ -2127,43 +2154,148 @@ async function textoDeSnapshot(buf) {
   return new TextDecoder().decode(b);          /* ya venía descomprimido */
 }
 
+/* ── Fuentes de nube (Google Drive / OneDrive) ─────────────────────────
+   Además de GitHub Pages, la app puede bajar el snapshot directo de Google
+   Drive o de OneDrive, sin login de usuario, usando archivos compartidos
+   como "cualquiera con el enlace". La config se guarda en el dispositivo
+   (DB) y se edita desde «Acerca de», nunca tocando código. */
+
+/* Descomprime si hace falta (gzip nativo), valida la versión de formato y
+   devuelve {ok, obj} o {ok:false, motivo}. Reusado por Drive, OneDrive y
+   GitHub Pages para no repetir el parseo. */
+async function parseSnapshotBuf(buf, fuente) {
+  if (!buf || !buf.byteLength) return { ok: false, motivo: fuente + ': el archivo llegó vacío (0 bytes).' };
+  let o = null;
+  try { o = JSON.parse(await textoDeSnapshot(buf)); }
+  catch (err) {
+    return { ok: false, motivo: fuente + ': no pude leer el archivo (' + (buf.byteLength / 1024).toFixed(0) +
+      ' KB). ¿Es el snapshot correcto y completo? Detalle: ' + (err && err.message ? err.message : err) };
+  }
+  if (o && o.v !== SNAP_VER) {
+    return { ok: false, motivo: fuente + ': el snapshot es de otra versión de formato (v' + o.v +
+      ', esta app espera v' + SNAP_VER + '). Regeneralo desde la PC con esta misma versión.' };
+  }
+  return { ok: true, obj: o };
+}
+
+/* Google Drive API v3 con API key restringida (sin OAuth). El archivo tiene
+   que estar compartido como "cualquiera con el enlace — Lector". */
+async function fetchDriveSnapshot(cfg) {
+  if (!cfg || !cfg.key || !cfg.fileId) return { ok: false, motivo: null };   /* no configurado: no es error */
+  const url = 'https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(cfg.fileId) +
+    '?alt=media&key=' + encodeURIComponent(cfg.key) + '&t=' + Date.now();
+  let r;
+  try { r = await fetch(url, { cache: 'no-store' }); }
+  catch (e) { return { ok: false, motivo: 'Google Drive: no se pudo conectar (¿sin señal?). ' + (e && e.message ? e.message : e) }; }
+  if (!r.ok) {
+    let m = 'Google Drive respondió ' + r.status + '.';
+    if (r.status === 403) m = 'Google Drive: 403. La API key está mal restringida, o el archivo no está compartido como «cualquiera con el enlace».';
+    else if (r.status === 404) m = 'Google Drive: 404. El ID de archivo es incorrecto.';
+    return { ok: false, motivo: m };
+  }
+  return parseSnapshotBuf(await r.arrayBuffer(), 'Google Drive');
+}
+
+/* base64url (UTF-8) para el endpoint anónimo de shares de OneDrive. */
+function b64urlUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin).replace(/=+$/, '').replace(/\//g, '_').replace(/\+/g, '-');
+}
+
+/* De un link compartido de OneDrive arma las URLs candidatas de descarga
+   directa, sin registro en Azure AD. Se prueban en orden hasta que una
+   traiga el snapshot:
+     1) variante ?download=1 (SharePoint / OneDrive Business / live / 1drv.ms)
+     2) endpoint anónimo de shares (base64url del link)
+     3) el link tal cual (por si ya es de descarga directa) */
+function oneDriveCandidatos(link) {
+  const l = (link || '').trim();
+  if (!l) return [];
+  const out = [];
+  if (/sharepoint\.com|onedrive\.live\.com|1drv\.ms|onedrive/i.test(l)) {
+    out.push(l + (l.indexOf('?') >= 0 ? '&' : '?') + 'download=1');
+  }
+  try { out.push('https://api.onedrive.com/v1.0/shares/u!' + b64urlUtf8(l) + '/root/content'); } catch (e) {}
+  out.push(l);
+  return out;
+}
+
+async function fetchOneDriveSnapshot(cfg) {
+  if (!cfg || !cfg.link) return { ok: false, motivo: null };   /* no configurado */
+  const cands = oneDriveCandidatos(cfg.link);
+  if (!cands.length) return { ok: false, motivo: 'OneDrive: el link guardado no es válido.' };
+  let ultimo = 'OneDrive: no se pudo conectar.';
+  for (const base of cands) {
+    const url = base + (base.indexOf('?') >= 0 ? '&' : '?') + 't=' + Date.now();
+    let r;
+    try { r = await fetch(url, { cache: 'no-store' }); }
+    catch (e) {
+      ultimo = 'OneDrive: no se pudo leer el link directo desde el navegador. Puede ser falta de señal, o que OneDrive no permita lectura anónima por CORS (en ese caso haría falta ir por Microsoft Graph). Detalle: ' + (e && e.message ? e.message : e);
+      continue;
+    }
+    if (!r.ok) {
+      ultimo = 'OneDrive respondió ' + r.status + '.';
+      if (r.status === 403) ultimo = 'OneDrive: 403. El link no está compartido como «cualquiera con el enlace», o expiró.';
+      else if (r.status === 404) ultimo = 'OneDrive: 404. El link es incorrecto o el archivo ya no existe.';
+      continue;
+    }
+    const p = await parseSnapshotBuf(await r.arrayBuffer(), 'OneDrive');
+    if (p.ok) return p;
+    ultimo = p.motivo || ultimo;
+  }
+  return { ok: false, motivo: ultimo };
+}
+
 async function cargarSnapshotPublicado() {
   const esWeb = location.protocol === 'http:' || location.protocol === 'https:';
+  const diags = [];
   ST.snapDiag = null;
+
+  /* 1) Google Drive (si está configurado) */
+  const driveCfg = await DB.get('driveCfg');
+  if (driveCfg && driveCfg.key && driveCfg.fileId) {
+    const d = await fetchDriveSnapshot(driveCfg);
+    if (d.ok) { await aplicarSnapshot(d.obj, 'drive'); return true; }
+    if (d.motivo) diags.push(d.motivo);
+  }
+
+  /* 2) OneDrive (si está configurado) */
+  const odCfg = await DB.get('oneDriveCfg');
+  if (odCfg && odCfg.link) {
+    const d = await fetchOneDriveSnapshot(odCfg);
+    if (d.ok) { await aplicarSnapshot(d.obj, 'onedrive'); return true; }
+    if (d.motivo) diags.push(d.motivo);
+  }
+
+  /* 3) GitHub Pages: datos.json.gz al lado de index.html (respaldo público) */
   if (!esWeb) {
-    ST.snapDiag = 'La app está abierta como archivo local (' + location.protocol +
-      '), no desde una dirección web. Abrila desde el link de GitHub Pages.';
+    diags.push('La app está abierta como archivo local (' + location.protocol +
+      '), no desde una dirección web. Abrila desde el link de GitHub Pages.');
   } else {
     try {
       const url = SNAP_FILE + '?t=' + Date.now();
       const r = await fetch(url, { cache: 'no-store' });
       if (!r.ok) {
-        ST.snapDiag = 'El servidor respondió ' + r.status + ' al pedir ' + SNAP_FILE +
-          '. Revisá que el archivo esté subido al repo, al lado de index.html, con ese nombre exacto.';
+        diags.push('GitHub Pages respondió ' + r.status + ' al pedir ' + SNAP_FILE +
+          '. Revisá que el archivo esté subido al repo, al lado de index.html, con ese nombre exacto.');
       } else {
-        const buf = await r.arrayBuffer();
-        if (!buf.byteLength) {
-          ST.snapDiag = SNAP_FILE + ' llegó vacío (0 bytes).';
-        } else {
-          let o = null;
-          try { o = JSON.parse(await textoDeSnapshot(buf)); }
-          catch (err) {
-            ST.snapDiag = 'No pude leer ' + SNAP_FILE + ' (' + (buf.byteLength / 1024).toFixed(0) +
-              ' KB). ¿Se subió el archivo correcto y completo? Detalle: ' + (err && err.message ? err.message : err);
-          }
-          if (o && o.v !== SNAP_VER) {
-            ST.snapDiag = 'El snapshot publicado es de otra versión de formato (v' + o.v +
-              ', esta app espera v' + SNAP_VER + '). Regeneralo desde la PC con esta misma versión de la app.';
-          } else if (o) { await aplicarSnapshot(o, 'red'); return true; }
-        }
+        const p = await parseSnapshotBuf(await r.arrayBuffer(), 'GitHub Pages');
+        if (p.ok) { await aplicarSnapshot(p.obj, 'red'); return true; }
+        if (p.motivo) diags.push(p.motivo);
       }
     } catch (e) {
-      ST.snapDiag = 'No se pudo descargar ' + SNAP_FILE + '. Puede ser falta de señal. Detalle: ' +
-        (e && e.message ? e.message : e);
+      diags.push('No se pudo descargar ' + SNAP_FILE + ' de GitHub Pages. Puede ser falta de señal. Detalle: ' +
+        (e && e.message ? e.message : e));
     }
   }
+
+  /* 4) Última copia guardada en el dispositivo */
   const guardado = await DB.get('snap');
   if (guardado && guardado.v === SNAP_VER) { await aplicarSnapshot(guardado, 'guardado'); return true; }
+
+  ST.snapDiag = diags.length ? diags.join('\n\n') : null;
   return false;
 }
 
@@ -2179,7 +2311,11 @@ function renderDatos() {
     if (ST.snapGenerado) {
       sn.style.display = 'block';
       sn.textContent = 'Estás viendo datos publicados del ' + dfmt(new Date(ST.snapGenerado)) +
-        (ST.snapOrigen === 'guardado' ? ' (copia guardada en este dispositivo).' : '.');
+        (ST.snapOrigen === 'drive' ? ' (vía Google Drive).'
+          : ST.snapOrigen === 'onedrive' ? ' (vía OneDrive).'
+          : ST.snapOrigen === 'red' ? ' (vía GitHub Pages).'
+          : ST.snapOrigen === 'guardado' ? ' (copia guardada en este dispositivo).'
+          : '.');
     } else if (FSA) {
       sn.style.display = 'block';
       sn.textContent = 'Después de actualizar, generá el snapshot y subilo al repo junto a index.html ' +
@@ -2427,6 +2563,54 @@ $('#btnSnapRetry').onclick = async () => {
   loading(false); renderDatos();
   if (ok) { toast('Datos actualizados'); go('vInicio'); }
   else alert(ST.snapDiag || 'No encontré datos publicados.');
+};
+
+/* ── Conexión a la nube: Google Drive + OneDrive (config editable en «Acerca de») ── */
+async function cargarCfgNube() {
+  try {
+    const d = await DB.get('driveCfg');
+    if (d) { if ($('#drvKey')) $('#drvKey').value = d.key || ''; if ($('#drvFile')) $('#drvFile').value = d.fileId || ''; }
+    const o = await DB.get('oneDriveCfg');
+    if (o && $('#odLink')) $('#odLink').value = o.link || '';
+  } catch (e) {}
+}
+function notaNube(sel, txt, ok) {
+  const n = $(sel); if (!n) return;
+  n.style.display = 'block';
+  n.style.color = ok ? 'var(--ok)' : 'var(--crit)';
+  n.textContent = txt;
+}
+if ($('#btnDrvSave')) $('#btnDrvSave').onclick = async () => {
+  const key = $('#drvKey').value.trim(), fileId = $('#drvFile').value.trim();
+  await DB.set('driveCfg', { key, fileId });
+  notaNube('#drvNote', (key && fileId) ? 'Guardado. Tocá «Probar conexión».' : 'Guardado vacío: Google Drive queda desactivado.', true);
+};
+if ($('#btnDrvTest')) $('#btnDrvTest').onclick = async () => {
+  const key = $('#drvKey').value.trim(), fileId = $('#drvFile').value.trim();
+  if (!key || !fileId) return notaNube('#drvNote', 'Completá la API key y el ID del archivo.', false);
+  notaNube('#drvNote', 'Probando…', true);
+  const d = await fetchDriveSnapshot({ key, fileId });
+  if (d.ok) {
+    await DB.set('driveCfg', { key, fileId });
+    await aplicarSnapshot(d.obj, 'drive'); renderDatos();
+    notaNube('#drvNote', 'OK ✓ Datos del ' + dfmt(new Date(d.obj.generado)) + ' cargados desde Google Drive.', true);
+  } else notaNube('#drvNote', d.motivo || 'No se pudo conectar.', false);
+};
+if ($('#btnOdSave')) $('#btnOdSave').onclick = async () => {
+  const link = $('#odLink').value.trim();
+  await DB.set('oneDriveCfg', { link });
+  notaNube('#odNote', link ? 'Guardado. Tocá «Probar conexión».' : 'Guardado vacío: OneDrive queda desactivado.', true);
+};
+if ($('#btnOdTest')) $('#btnOdTest').onclick = async () => {
+  const link = $('#odLink').value.trim();
+  if (!link) return notaNube('#odNote', 'Pegá el link compartido de OneDrive.', false);
+  notaNube('#odNote', 'Probando…', true);
+  const d = await fetchOneDriveSnapshot({ link });
+  if (d.ok) {
+    await DB.set('oneDriveCfg', { link });
+    await aplicarSnapshot(d.obj, 'onedrive'); renderDatos();
+    notaNube('#odNote', 'OK ✓ Datos del ' + dfmt(new Date(d.obj.generado)) + ' cargados desde OneDrive.', true);
+  } else notaNube('#odNote', d.motivo || 'No se pudo conectar.', false);
 };
 
 
@@ -3033,14 +3217,63 @@ function go(id) {
   else if (id === 'vBuscar') renderHistQ();
   else if (id === 'vMovimientos') { renderChipsMov(); renderMovimientos(); }
   else if (id === 'vPedidos') renderPedidos();
+  pqNavSetup();
 }
 window.go = go;
 $$('.tabs button').forEach(b => b.onclick = () => go(b.dataset.view));
-function openSheet(s) { $(s).classList.add('on'); document.body.style.overflow = 'hidden'; }
-function closeSheet(s) { $(s).classList.remove('on'); document.body.style.overflow = ''; }
+/* ── Modales + botón Atrás ────────────────────────────────────────────
+   Cada sheet (modal) que se abre empuja una entrada al historial del
+   navegador. Cerrar un modal (X, fondo, Cancelar, Guardar, Escape) hace
+   history.back() en vez de ocultarlo directo: así el gesto/botón «Atrás»
+   del celular SIEMPRE encuentra algo coherente para deshacer, y nunca
+   sale de la PWA de golpe mientras hay un conteo o un detalle abierto. */
+function openSheet(s) {
+  $(s).classList.add('on'); document.body.style.overflow = 'hidden';
+  ST.sheetStack.push(s);
+  history.pushState({ pq: true, sheet: s }, '', location.href);
+}
+function reallyCloseSheet(s) {
+  $(s).classList.remove('on');
+  const i = ST.sheetStack.lastIndexOf(s); if (i >= 0) ST.sheetStack.splice(i, 1);
+  if (!ST.sheetStack.length) document.body.style.overflow = '';
+}
+function closeSheet(s) {
+  /* si el modal que se pide cerrar es el que está arriba de la pila,
+     retrocedemos en el historial (dispara popstate, que lo cierra de
+     verdad) — así "cerrar con la X" y "cerrar con Atrás" son la misma
+     operación y el historial nunca queda desincronizado */
+  if (ST.sheetStack.length && ST.sheetStack[ST.sheetStack.length - 1] === s) history.back();
+  else reallyCloseSheet(s);
+}
 $$('.sheet').forEach(sh => sh.addEventListener('click', e => {
   if (e.target.closest('[data-close]')) closeSheet('#' + sh.id); }));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') $$('.sheet.on').forEach(s => closeSheet('#' + s.id)); });
+
+/* Botón/gesto «Atrás» del celular (history.pushState + popstate):
+     1) si hay un modal abierto (conteo, ficha, ubicación, base, filtro,
+        escáner) → lo cierra y vuelve a la pantalla de atrás, sin salir.
+     2) si no hay modal pero no estás en Inicio → vuelve a Inicio.
+     3) si ya estás en Inicio sin nada abierto → pregunta antes de salir. */
+let pqNavListo = false;
+function pqNavSetup() {
+  if (pqNavListo) return; pqNavListo = true;
+  /* dos entradas base: la 1ª nunca se consume (ancla), la 2ª es la que
+     el primer «Atrás» retrocede — así SIEMPRE hay un popstate que atender,
+     incluso en el primerísimo toque de Atrás apenas se abre la app */
+  history.replaceState({ pq: true, base: true }, '', location.href);
+  history.pushState({ pq: true }, '', location.href);
+  window.addEventListener('popstate', () => {
+    if (ST.sheetStack.length) { reallyCloseSheet(ST.sheetStack[ST.sheetStack.length - 1]); return; }
+    const vAct = document.querySelector('.view.on');
+    if (vAct && vAct.id !== 'vInicio') {
+      go('vInicio');
+      history.pushState({ pq: true }, '', location.href);   /* repone la 2ª entrada */
+      return;
+    }
+    if (confirm('¿Deseas salir de la aplicación?')) history.back();
+    else history.pushState({ pq: true }, '', location.href);  /* cancela: repone y sigue en la app */
+  });
+}
 
 let tq;
 $('#q').addEventListener('input', e => { ST.q = e.target.value;
@@ -3917,7 +4150,7 @@ function renderSup() {
    No toca ningún dato: IndexedDB y localStorage siguen igual que antes,
    porque el origen (dominio) es el mismo antes y después de instalar.
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.11.1';                 /* ← subir junto con APP_VER del service-worker.js */
+const APP_VER = '3.14.0';                 /* ← subir junto con APP_VER del service-worker.js */
 let deferredPrompt = null, swReg = null;
 
 const esStandalone = () => window.matchMedia('(display-mode: standalone)').matches ||
@@ -4049,6 +4282,7 @@ function rutaInicial() {
   renderSesion();
   if (ST.login) cerrarLogin(); else abrirLogin();
   loadPrefs(); ST.hist = null; renderHist(); renderConteos(); redNote();
+  cargarCfgNube();
 
   if (window.PQ_DATA && window.PQ_DATA.rows && window.PQ_DATA.rows.length) {
     /* copia publicada: los datos vienen embebidos, no se pisan con los del dispositivo */

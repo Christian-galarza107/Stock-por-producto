@@ -4,7 +4,7 @@
    PARA PUBLICAR UNA VERSIÓN NUEVA: cambiar SÓLO la constante APP_VER.
    Eso invalida el caché viejo y dispara el aviso "Hay una nueva versión".
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.14.0';
+const APP_VER = '3.15.0';
 const CACHE   = 'stock-en-planta-v' + APP_VER;
 
 /* Desde la v3.0.0 la interfaz usa Tailwind y FontAwesome por CDN.
@@ -77,11 +77,12 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  /* El snapshot de datos SIEMPRE se busca en la red primero: si se sirviera
-     desde caché, el celular seguiría mostrando los datos de la semana pasada
-     aunque ya se hubiera publicado uno nuevo. La copia cacheada queda sólo
-     como respaldo para cuando no hay señal. */
-  if (url.pathname.endsWith('/datos.json.gz') || url.pathname.endsWith('datos.json.gz')) {
+  /* GitHub Data Hub (v3.15.0): todo lo que cuelga de /data/ SIEMPRE se busca
+     en la red primero. Si se sirviera desde caché, el celular seguiría viendo
+     los datos de la semana pasada aunque ya se hubiera publicado un paquete
+     nuevo — y peor: version.json diría que no hay nada nuevo. La copia
+     cacheada queda sólo como respaldo para cuando no hay señal. */
+  if (/\/data\/(database\.json(\.gz)?|version\.json)$/.test(url.pathname)) {
     e.respondWith((async () => {
       try {
         const net = await fetch(req, { cache: 'no-store' });

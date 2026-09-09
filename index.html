@@ -368,6 +368,18 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 #upd p{margin:0 0 11px;font-size:13px;color:var(--ink-muted)}
 #upd .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 #upd .row .btn{margin:0;min-height:44px;font-size:14px}
+/* Aviso de DATOS nuevos (distinto del aviso de versión de la app) */
+#dsync{position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:76;
+  background:var(--surface);border:1.5px solid var(--ok);border-radius:var(--r-lg);
+  box-shadow:0 10px 30px -10px rgba(15,19,48,.55);padding:0;display:none;overflow:hidden}
+#dsync.on{display:flex;align-items:stretch}
+#dsync #dsyncGo{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);
+  text-align:left;padding:13px 8px 13px 14px;cursor:pointer;font:inherit}
+#dsync #dsyncGo b{font-family:var(--f-tit);font-size:14.5px;display:block;margin-bottom:2px;line-height:1.3}
+#dsync #dsyncGo span{display:block;font-size:12.5px;color:var(--ink-muted);line-height:1.4}
+#dsync #dsyncNo{border:0;background:transparent;color:var(--ink-muted);font-size:22px;line-height:1;
+  padding:0 14px;cursor:pointer}
+#dsync.busy{opacity:.6;pointer-events:none}
 .instbox{border:1.5px dashed var(--s1);background:var(--tint-brand);border-radius:var(--r-md);padding:12px;margin-bottom:10px}
 .instbox b{font-family:var(--f-tit);font-size:14px;display:block;margin-bottom:4px}
 .instbox ol{margin:8px 0 0;padding-left:20px;font-size:13px;line-height:1.7;color:var(--ink-2)}
@@ -668,64 +680,23 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 
     <div class="panel">
       <h2>Estado de los datos</h2>
-      <p class="sub" id="dsSub">Todavía no actualizaste los datos.</p>
-      <div class="kv"><span>Stock por Producto</span><b id="dsStock">—</b></div>
-      <div class="kv"><span>Movimientos (CIOT)</span><b id="dsMov">—</b></div>
-      <div class="kv"><span>Pedidos (Fill Rate)</span><b id="dsPed">—</b></div>
       <div class="kv"><span>Última actualización</span><b id="dsWhen">—</b></div>
+      <p class="note" id="snapNote" style="display:none"></p>
+      <button class="btn gh" id="btnDataChk" style="margin-top:10px">Buscar datos nuevos</button>
     </div>
 
-    <div class="panel">
-      <h2>Actualización de datos</h2>
-      <p class="sub">Una sola conexión trae Stock, Movimientos y Pedidos desde <b>C.G BBDD CLAUDE</b> en la red.
-        No hace falta elegir ningún archivo a mano.</p>
+    <div class="panel" id="pnlPub" style="display:none">
+      <h2>Publicación de datos <span class="vtag">sólo PC</span></h2>
+      <p class="sub">Este bloque aparece únicamente en una PC con Chrome/Edge y acceso a
+        <b>C.G BBDD CLAUDE</b>. En el celular no existe: el técnico sólo recibe los datos ya publicados.</p>
       <button class="btn pri" id="btnRed">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h6l2 2h10v10H3z"/></svg>
-        <span>Actualizar desde la carpeta de red</span></button>
+        <span>1 · Actualizar desde la carpeta de red</span></button>
       <button class="btn gh" id="btnRedChg">Cambiar carpeta de red</button>
-      <button class="btn gh" id="btnRedFull" style="font-size:12.5px;opacity:.85">
-        Forzar recarga completa</button>
-      <button class="btn gh" id="btnSnap" style="margin-top:8px;display:none">
-        Generar snapshot para publicar</button>
-      <button class="btn gh" id="btnSnapRetry" style="margin-top:8px;display:none">
-        Reintentar descarga de datos</button>
+      <button class="btn gh" id="btnRedFull" style="font-size:12.5px;opacity:.85">Forzar recarga completa</button>
+      <button class="btn pri" id="btnPub" style="margin-top:12px">2 · Generar paquete para GitHub</button>
       <p class="note" id="redNote"></p>
-      <p class="note" id="snapNote" style="display:none"></p>
-
-    </div>
-
-    <div class="panel">
-      <h2>Conexión directa a la nube</h2>
-      <p class="sub">Opcional. Si cargás una fuente acá, el celular baja los datos directo de ahí,
-        sin depender de GitHub Pages (y más privado: sólo accede quien tenga el archivo compartido).
-        Orden de prueba: <b>Google Drive → OneDrive → GitHub Pages → copia guardada</b>.</p>
-
-      <div style="font-weight:700;margin:6px 0 4px">Google Drive</div>
-      <input id="drvKey" type="text" autocomplete="off" spellcheck="false" placeholder="API key restringida" style="width:100%;box-sizing:border-box;margin:4px 0;padding:9px 11px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--ink);font-size:13px">
-      <input id="drvFile" type="text" autocomplete="off" spellcheck="false" placeholder="ID del archivo compartido" style="width:100%;box-sizing:border-box;margin:4px 0;padding:9px 11px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--ink);font-size:13px">
-      <div style="display:flex;gap:8px;margin-top:6px">
-        <button class="btn gh" id="btnDrvSave" style="flex:1">Guardar</button>
-        <button class="btn gh" id="btnDrvTest" style="flex:1">Probar conexión</button>
-      </div>
-      <p class="note" id="drvNote" style="display:none"></p>
-
-      <div style="font-weight:700;margin:14px 0 4px">OneDrive</div>
-      <input id="odLink" type="text" autocomplete="off" spellcheck="false" placeholder="Link compartido «cualquiera con el enlace»" style="width:100%;box-sizing:border-box;margin:4px 0;padding:9px 11px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--ink);font-size:13px">
-      <div style="display:flex;gap:8px;margin-top:6px">
-        <button class="btn gh" id="btnOdSave" style="flex:1">Guardar</button>
-        <button class="btn gh" id="btnOdTest" style="flex:1">Probar conexión</button>
-      </div>
-      <p class="note" id="odNote" style="display:none"></p>
-    </div>
-
-    <div class="panel">
-      <h2>Directorio y depósitos</h2>
-      <p class="sub">Quién trabaja en cada base y a qué depósito devuelve cada nodo. Estos datos vienen
-        <b>incluidos en la app</b> — no hay botón de carga acá. Los actualiza Christian regenerando el
-        archivo cuando cambia algo en ST - Depósitos Argentina o Supervisores y técnicos.</p>
-      <div class="kv"><span>Depósitos registrados</span><b id="orgDeps" class="num">—</b></div>
-      <div class="kv"><span>Personas en el directorio</span><b id="orgPer" class="num">—</b></div>
-      <div class="kv"><span>Directorio actualizado</span><b id="orgWhen">—</b></div>
+      <p class="note" id="pubNote" style="display:none"></p>
     </div>
 
     <div class="panel">
@@ -909,6 +880,9 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
   <p>Se actualiza en un segundo. Tus conteos, favoritos e historial no se tocan.</p>
   <div class="row"><button class="btn pri" id="updGo">Actualizar ahora</button>
     <button class="btn gh" id="updNo">Más tarde</button></div></div>
+<div id="dsync" role="alertdialog" aria-live="polite">
+  <button id="dsyncGo"><b>🟢 Nueva actualización de datos disponible</b><span id="dsyncSub">Tocar para sincronizar</span></button>
+  <button id="dsyncNo" aria-label="Más tarde">&times;</button></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="load"><div class="bx"><div class="spin"></div><b id="loadT">Procesando</b><p id="loadP"></p></div></div>
 
@@ -1008,7 +982,8 @@ const ST = {
   sugQ: '', sugRes: [], sugShown: 0, sugPage: 40,
   personal: null, login: null,
   /* snapshot publicado (celular) */
-  snapGenerado: null, snapOrigen: null, snapDiag: null, sheetStack: []
+  snapGenerado: null, snapOrigen: null, snapDiag: null, sheetStack: [],
+  /* Data Hub (v3.15.0) */ updatedAt: null, remoteUpdatedAt: null
 };
 
 /* ══════════════ MAPEO DE COLUMNAS ══════════════
@@ -2053,8 +2028,12 @@ $('#btnShare').onclick = async () => {
    se codifica en columnas con diccionarios, porque un JSON plano de los tres
    datasets pesa decenas de MB y no bajaría nunca en una conexión de depósito.
    ════════════════════════════════════════════════════════════════════ */
-const SNAP_FILE = 'datos.json.gz';
-const SNAP_VER  = 1;
+const DATA_DIR  = 'data/';
+const DB_GZ     = DATA_DIR + 'database.json.gz';
+const DB_JSON   = DATA_DIR + 'database.json';
+const VER_JSON  = DATA_DIR + 'version.json';
+const SNAP_VER  = 2;          /* v2 = agrega updated_at en la raíz */
+const SNAP_OK   = [1, 2];     /* v1 = snapshots viejos ya guardados en el celular */
 
 /* Codificación columnar: en vez de repetir la clave y el texto en cada fila,
    se guarda un diccionario y un índice numérico por fila. */
@@ -2092,8 +2071,11 @@ const SNAP_FR   = [['dep','d'], ['cod','d'], ['desc','d'], ['tec','d'], ['grupo'
                    ['dias','n'], ['fSolic','f'], ['fEnt','f']];
 
 function snapshotObj() {
+  const ahora = Date.now();
   return {
-    v: SNAP_VER, generado: Date.now(),
+    /* 'updated_at' es el parámetro raíz que mira el celular para saber si hay
+       datos nuevos. Va en ISO 8601 para que sea comparable sin ambigüedad. */
+    v: SNAP_VER, updated_at: new Date(ahora).toISOString(), generado: ahora,
     meta: ST.meta, rows: ST.rowsRaw,
     ciotMeta: ST.ciotMeta ? { when: ST.ciotMeta.when, filas: ST.ciotMeta.filas } : null,
     frMeta:   ST.frMeta   ? { when: ST.frMeta.when,   filas: ST.frMeta.filas }   : null,
@@ -2115,31 +2097,77 @@ async function gunzip(buf) {
   return new Response(ds.readable).text();
 }
 
-async function exportarSnapshot() {
+/* Genera el paquete que se sube al repo de GitHub:
+     data/database.json.gz   ← la base comprimida (lo que baja el celular)
+     data/database.json      ← la misma base sin comprimir (respaldo)
+     data/version.json       ← archivo mínimo con updated_at
+   El version.json existe por una razón concreta: el celular tiene que poder
+   preguntar "¿hay algo nuevo?" sin bajarse la base entera. Son ~200 bytes
+   contra varios MB. */
+async function publicarDatos() {
   if (!ST.rowsRaw.length && !(ST.ciot || []).length && !(ST.fr || []).length)
-    return alert('No hay datos cargados todavía. Actualizá primero desde la carpeta de red.');
+    return alert('No hay datos cargados todavía. Actualizá primero desde la carpeta de red (paso 1).');
   if (typeof CompressionStream !== 'function')
     return alert('Este navegador no puede comprimir el archivo. Usá Chrome o Edge en la PC.');
-  loading(true, 'Generando snapshot', 'Empaquetando stock, consumos y pedidos…');
+  loading(true, 'Generando paquete', 'Empaquetando stock, consumos y pedidos…');
   try {
-    const json = JSON.stringify(snapshotObj());
-    const gz = await gzip(json);
-    dl(new Blob([gz], { type: 'application/gzip' }), SNAP_FILE);
+    const obj  = snapshotObj();
+    const json = JSON.stringify(obj);
+    const gz   = await gzip(json);
+    const ver  = {
+      v: SNAP_VER,
+      updated_at: obj.updated_at,
+      generado_ms: obj.generado,
+      productos: (ST.rowsRaw || []).length,
+      consumos_ciot: (ST.ciot || []).length,
+      lineas_pedidos: (ST.fr || []).length,
+      bytes_gz: gz.byteLength,
+      bytes_json: json.length
+    };
+    const mbGz = gz.byteLength / 1048576, mbJson = json.length / 1048576;
+    dl(new Blob([gz], { type: 'application/gzip' }), 'database.json.gz');
+    await new Promise(r => setTimeout(r, 700));
+    dl(new Blob([JSON.stringify(ver, null, 2)], { type: 'application/json' }), 'version.json');
+    let plano = false;
+    if (mbJson <= 24) {                       /* GitHub web no deja subir >25 MB por archivo */
+      await new Promise(r => setTimeout(r, 700));
+      dl(new Blob([json], { type: 'application/json' }), 'database.json');
+      plano = true;
+    }
     loading(false);
-    toast('Snapshot generado: ' + (gz.byteLength / 1048576).toFixed(1) + ' MB · subilo al repo junto a index.html', 6000);
-  } catch (e) { loading(false); alert('No se pudo generar el snapshot.\n\n' + (e && e.message ? e.message : e)); }
+    const n = $('#pubNote');
+    if (n) {
+      n.style.display = 'block';
+      n.style.color = 'var(--ok)';
+      n.innerHTML = 'Paquete generado (' + dfmt(new Date(obj.generado)) + '):<br>' +
+        '• <b>database.json.gz</b> — ' + mbGz.toFixed(2) + ' MB<br>' +
+        '• <b>version.json</b> — ' + ver.bytes_gz.toLocaleString('es-AR') + ' bytes declarados<br>' +
+        (plano ? '• <b>database.json</b> — ' + mbJson.toFixed(2) + ' MB<br>'
+               : '• <b>database.json</b> sin comprimir pesa ' + mbJson.toFixed(1) +
+                 ' MB y no se generó: supera el límite de 25 MB de la carga web de GitHub. ' +
+                 'Alcanza con subir el .gz.<br>') +
+        'Subilos a la carpeta <b>data/</b> del repo, pisando los que ya están.';
+    }
+    toast('Paquete listo · subí los archivos a la carpeta data/ del repo', 6000);
+  } catch (e) { loading(false); alert('No se pudo generar el paquete.\n\n' + (e && e.message ? e.message : e)); }
 }
 
-/* Reconstruye el estado desde un snapshot ya parseado */
-async function aplicarSnapshot(o, origen) {
+/* Reconstruye el estado desde una base ya parseada y la deja guardada en el
+   dispositivo, para que la próxima apertura sea instantánea y sin internet. */
+async function aplicarSnapshot(o, origen, persistir) {
   ST.ciot = colDec(o.ciot, SNAP_CIOT);
   ST.fr   = o.fr && o.fr.n ? colDec(o.fr, SNAP_FR) : null;
   ST.ciotMeta = o.ciotMeta ? Object.assign({}, o.ciotMeta, { desde: ventanaCiotDesde(), publicado: o.generado }) : null;
   ST.frMeta   = o.frMeta   ? Object.assign({}, o.frMeta,   { publicado: o.generado }) : null;
-  ST.snapGenerado = o.generado || null;
-  ST.snapOrigen = origen || 'publicado';
+  ST.snapGenerado = o.generado || (o.updated_at ? Date.parse(o.updated_at) : null);
+  /* v1 (bases viejas ya guardadas en el celular) no traía updated_at: se deriva */
+  ST.updatedAt  = o.updated_at || (o.generado ? new Date(o.generado).toISOString() : null);
+  ST.snapOrigen = origen || 'hub';
   await applyData({ rows: o.rows || [], meta: o.meta || {} }, false);
-  await DB.set('snap', o);          /* queda offline para la próxima apertura */
+  if (persistir !== false) {
+    await DB.set('snap', o);
+    await DB.set('dataUpdatedAt', ST.updatedAt || null);
+  }
 }
 
 /* Al arrancar: si la app está servida por http(s), intenta bajar el snapshot
@@ -2154,11 +2182,9 @@ async function textoDeSnapshot(buf) {
   return new TextDecoder().decode(b);          /* ya venía descomprimido */
 }
 
-/* ── Fuentes de nube (Google Drive / OneDrive) ─────────────────────────
-   Además de GitHub Pages, la app puede bajar el snapshot directo de Google
-   Drive o de OneDrive, sin login de usuario, usando archivos compartidos
-   como "cualquiera con el enlace". La config se guarda en el dispositivo
-   (DB) y se edita desde «Acerca de», nunca tocando código. */
+/* ── GitHub Data Hub ───────────────────────────────────────────────────
+   Única fuente de datos del celular. Google Drive y OneDrive fueron
+   removidos por completo en la v3.15.0: el técnico no configura nada. */
 
 /* Descomprime si hace falta (gzip nativo), valida la versión de formato y
    devuelve {ok, obj} o {ok:false, motivo}. Reusado por Drive, OneDrive y
@@ -2171,173 +2197,139 @@ async function parseSnapshotBuf(buf, fuente) {
     return { ok: false, motivo: fuente + ': no pude leer el archivo (' + (buf.byteLength / 1024).toFixed(0) +
       ' KB). ¿Es el snapshot correcto y completo? Detalle: ' + (err && err.message ? err.message : err) };
   }
-  if (o && o.v !== SNAP_VER) {
-    return { ok: false, motivo: fuente + ': el snapshot es de otra versión de formato (v' + o.v +
-      ', esta app espera v' + SNAP_VER + '). Regeneralo desde la PC con esta misma versión.' };
+  if (o && SNAP_OK.indexOf(o.v) < 0) {
+    return { ok: false, motivo: fuente + ': la base es de otra versión de formato (v' + o.v +
+      ', esta app espera v' + SNAP_VER + '). Regenerá el paquete desde la PC con esta misma versión.' };
   }
   return { ok: true, obj: o };
 }
 
-/* Google Drive API v3 con API key restringida (sin OAuth). El archivo tiene
-   que estar compartido como "cualquiera con el enlace — Lector". */
-async function fetchDriveSnapshot(cfg) {
-  if (!cfg || !cfg.key || !cfg.fileId) return { ok: false, motivo: null };   /* no configurado: no es error */
-  const url = 'https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(cfg.fileId) +
-    '?alt=media&key=' + encodeURIComponent(cfg.key) + '&t=' + Date.now();
+/* Consulta el archivo mínimo data/version.json. Es lo único que se pide en
+   segundo plano al abrir la app: pesa ~200 bytes, así que se puede chequear
+   incluso con señal mala sin gastarle datos a nadie. */
+async function fetchVersionRemota() {
+  if (!(location.protocol === 'http:' || location.protocol === 'https:'))
+    return { ok: false, motivo: 'La app está abierta como archivo local (' + location.protocol +
+      '), no desde una dirección web. Abrila desde el enlace publicado.' };
   let r;
-  try { r = await fetch(url, { cache: 'no-store' }); }
-  catch (e) { return { ok: false, motivo: 'Google Drive: no se pudo conectar (¿sin señal?). ' + (e && e.message ? e.message : e) }; }
-  if (!r.ok) {
-    let m = 'Google Drive respondió ' + r.status + '.';
-    if (r.status === 403) m = 'Google Drive: 403. La API key está mal restringida, o el archivo no está compartido como «cualquiera con el enlace».';
-    else if (r.status === 404) m = 'Google Drive: 404. El ID de archivo es incorrecto.';
-    return { ok: false, motivo: m };
-  }
-  return parseSnapshotBuf(await r.arrayBuffer(), 'Google Drive');
+  try { r = await fetch(VER_JSON + '?t=' + Date.now(), { cache: 'no-store' }); }
+  catch (e) { return { ok: false, motivo: 'No se pudo consultar ' + VER_JSON +
+    ' (¿sin señal?). Detalle: ' + (e && e.message ? e.message : e) }; }
+  if (!r.ok) return { ok: false, motivo: 'El servidor respondió ' + r.status + ' al pedir ' + VER_JSON +
+    '. Revisá que el archivo esté subido a la carpeta data/ del repo.' };
+  let j = null;
+  try { j = await r.json(); }
+  catch (e) { return { ok: false, motivo: VER_JSON + ' no es un JSON válido.' }; }
+  if (!j || !j.updated_at) return { ok: false, motivo: VER_JSON + ' no trae el campo updated_at.' };
+  return { ok: true, ver: j };
 }
 
-/* base64url (UTF-8) para el endpoint anónimo de shares de OneDrive. */
-function b64urlUtf8(str) {
-  const bytes = new TextEncoder().encode(str);
-  let bin = '';
-  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-  return btoa(bin).replace(/=+$/, '').replace(/\//g, '_').replace(/\+/g, '-');
-}
-
-/* De un link compartido de OneDrive arma las URLs candidatas de descarga
-   directa, sin registro en Azure AD. Se prueban en orden hasta que una
-   traiga el snapshot:
-     1) variante ?download=1 (SharePoint / OneDrive Business / live / 1drv.ms)
-     2) endpoint anónimo de shares (base64url del link)
-     3) el link tal cual (por si ya es de descarga directa) */
-function oneDriveCandidatos(link) {
-  const l = (link || '').trim();
-  if (!l) return [];
-  const out = [];
-  if (/sharepoint\.com|onedrive\.live\.com|1drv\.ms|onedrive/i.test(l)) {
-    out.push(l + (l.indexOf('?') >= 0 ? '&' : '?') + 'download=1');
-  }
-  try { out.push('https://api.onedrive.com/v1.0/shares/u!' + b64urlUtf8(l) + '/root/content'); } catch (e) {}
-  out.push(l);
-  return out;
-}
-
-async function fetchOneDriveSnapshot(cfg) {
-  if (!cfg || !cfg.link) return { ok: false, motivo: null };   /* no configurado */
-  const cands = oneDriveCandidatos(cfg.link);
-  if (!cands.length) return { ok: false, motivo: 'OneDrive: el link guardado no es válido.' };
-  let ultimo = 'OneDrive: no se pudo conectar.';
-  for (const base of cands) {
-    const url = base + (base.indexOf('?') >= 0 ? '&' : '?') + 't=' + Date.now();
+/* Baja la base completa. Prueba primero el .gz (lo normal) y cae al .json
+   plano si el .gz no está publicado. parseSnapshotBuf mira los bytes mágicos
+   1f 8b, así que el mismo camino sirve para los dos. */
+async function descargarDatabase() {
+  if (!(location.protocol === 'http:' || location.protocol === 'https:'))
+    return { ok: false, motivo: 'La app está abierta como archivo local (' + location.protocol +
+      '). Abrila desde el enlace publicado para que pueda bajar los datos.' };
+  let ultimo = 'No se pudo descargar la base de datos.';
+  for (const u of [DB_GZ, DB_JSON]) {
     let r;
-    try { r = await fetch(url, { cache: 'no-store' }); }
-    catch (e) {
-      ultimo = 'OneDrive: no se pudo leer el link directo desde el navegador. Puede ser falta de señal, o que OneDrive no permita lectura anónima por CORS (en ese caso haría falta ir por Microsoft Graph). Detalle: ' + (e && e.message ? e.message : e);
-      continue;
-    }
-    if (!r.ok) {
-      ultimo = 'OneDrive respondió ' + r.status + '.';
-      if (r.status === 403) ultimo = 'OneDrive: 403. El link no está compartido como «cualquiera con el enlace», o expiró.';
-      else if (r.status === 404) ultimo = 'OneDrive: 404. El link es incorrecto o el archivo ya no existe.';
-      continue;
-    }
-    const p = await parseSnapshotBuf(await r.arrayBuffer(), 'OneDrive');
+    try { r = await fetch(u + '?t=' + Date.now(), { cache: 'no-store' }); }
+    catch (e) { ultimo = 'No se pudo descargar ' + u + ' (¿sin señal?). Detalle: ' +
+      (e && e.message ? e.message : e); continue; }
+    if (!r.ok) { ultimo = 'El servidor respondió ' + r.status + ' al pedir ' + u + '.'; continue; }
+    const p = await parseSnapshotBuf(await r.arrayBuffer(), u);
     if (p.ok) return p;
     ultimo = p.motivo || ultimo;
   }
-  return { ok: false, motivo: ultimo };
+  return { ok: false, motivo: ultimo + ' Revisá que estén subidos a la carpeta data/ del repo.' };
 }
 
-async function cargarSnapshotPublicado() {
-  const esWeb = location.protocol === 'http:' || location.protocol === 'https:';
-  const diags = [];
+/* Descarga + aplica + guarda en el dispositivo. */
+async function sincronizarDatos(silencioso) {
+  const b = $('#dsync'); if (b) b.classList.add('busy');
+  loading(true, 'Sincronizando datos', 'Bajando la base publicada…');
+  const d = await descargarDatabase();
+  loading(false);
+  if (b) b.classList.remove('busy');
+  if (!d.ok) {
+    ST.snapDiag = d.motivo; renderDatos();
+    if (!silencioso) alert(d.motivo);
+    return false;
+  }
+  await aplicarSnapshot(d.obj, 'hub');
   ST.snapDiag = null;
+  ocultarAvisoDatos();
+  renderDatos(); renderPedidos();
+  toast('Datos actualizados al ' + (ST.updatedAt ? dfmt(new Date(ST.updatedAt)) : 'día de hoy'), 5000);
+  return true;
+}
 
-  /* 1) Google Drive (si está configurado) */
-  const driveCfg = await DB.get('driveCfg');
-  if (driveCfg && driveCfg.key && driveCfg.fileId) {
-    const d = await fetchDriveSnapshot(driveCfg);
-    if (d.ok) { await aplicarSnapshot(d.obj, 'drive'); return true; }
-    if (d.motivo) diags.push(d.motivo);
+/* Aviso verde de datos nuevos (no confundir con el aviso de versión de la app) */
+function mostrarAvisoDatos(ver) {
+  const el = $('#dsync'); if (!el) return;
+  const f = ver && ver.updated_at ? new Date(ver.updated_at) : null;
+  const sub = $('#dsyncSub');
+  if (sub) sub.textContent = (f && !isNaN(f) ? 'Publicados el ' + dfmt(f) + '. ' : '') + 'Tocar para sincronizar.';
+  el.classList.add('on');
+}
+function ocultarAvisoDatos() { const el = $('#dsync'); if (el) el.classList.remove('on'); }
+
+/* Chequeo en segundo plano: compara el updated_at remoto contra el que quedó
+   guardado en el dispositivo. No baja nada hasta que el usuario lo pide. */
+async function chequearActualizacion(manual) {
+  if (!navigator.onLine) {
+    if (manual) toast('Sin conexión: no puedo fijarme si hay datos nuevos', 3500);
+    return false;
   }
-
-  /* 2) OneDrive (si está configurado) */
-  const odCfg = await DB.get('oneDriveCfg');
-  if (odCfg && odCfg.link) {
-    const d = await fetchOneDriveSnapshot(odCfg);
-    if (d.ok) { await aplicarSnapshot(d.obj, 'onedrive'); return true; }
-    if (d.motivo) diags.push(d.motivo);
+  const v = await fetchVersionRemota();
+  if (!v.ok) {
+    ST.snapDiag = v.motivo;
+    if (manual) { renderDatos(); toast(v.motivo, 6000); }
+    return false;
   }
-
-  /* 3) GitHub Pages: datos.json.gz al lado de index.html (respaldo público) */
-  if (!esWeb) {
-    diags.push('La app está abierta como archivo local (' + location.protocol +
-      '), no desde una dirección web. Abrila desde el link de GitHub Pages.');
-  } else {
-    try {
-      const url = SNAP_FILE + '?t=' + Date.now();
-      const r = await fetch(url, { cache: 'no-store' });
-      if (!r.ok) {
-        diags.push('GitHub Pages respondió ' + r.status + ' al pedir ' + SNAP_FILE +
-          '. Revisá que el archivo esté subido al repo, al lado de index.html, con ese nombre exacto.');
-      } else {
-        const p = await parseSnapshotBuf(await r.arrayBuffer(), 'GitHub Pages');
-        if (p.ok) { await aplicarSnapshot(p.obj, 'red'); return true; }
-        if (p.motivo) diags.push(p.motivo);
-      }
-    } catch (e) {
-      diags.push('No se pudo descargar ' + SNAP_FILE + ' de GitHub Pages. Puede ser falta de señal. Detalle: ' +
-        (e && e.message ? e.message : e));
-    }
-  }
-
-  /* 4) Última copia guardada en el dispositivo */
-  const guardado = await DB.get('snap');
-  if (guardado && guardado.v === SNAP_VER) { await aplicarSnapshot(guardado, 'guardado'); return true; }
-
-  ST.snapDiag = diags.length ? diags.join('\n\n') : null;
+  ST.remoteUpdatedAt = v.ver.updated_at;
+  const local  = ST.updatedAt ? Date.parse(ST.updatedAt) : 0;
+  const remoto = Date.parse(v.ver.updated_at) || 0;
+  if (remoto > local) { mostrarAvisoDatos(v.ver); return true; }
+  if (manual) toast('Ya tenés los datos más recientes' +
+    (local ? ' (' + dfmt(new Date(local)) + ')' : ''), 3800);
   return false;
 }
 
-/* ══════════════ VISTA DATOS ══════════════ */
+/* Arranque: primero lo guardado en el dispositivo (instantáneo y offline);
+   si no hay nada guardado, se baja la base de una. */
+async function cargarDatosHub() {
+  const guardado = await DB.get('snap');
+  if (guardado && SNAP_OK.indexOf(guardado.v) >= 0) {
+    await aplicarSnapshot(guardado, 'guardado', false);
+    return true;
+  }
+  return sincronizarDatos(true);
+}
+
+/* ══════════════ VISTA DATOS ══════════════
+   Para el técnico queda UNA sola línea: cuándo se actualizaron los datos.
+   Todo el bloque de publicación aparece sólo en la PC (FSA disponible). */
 function renderDatos() {
+  const pn = $('#pnlPub'); if (pn) pn.style.display = FSA ? 'block' : 'none';
+
   const m = ST.meta;
-  /* el snapshot se genera sólo donde se puede leer la red: la PC */
-  const bs = $('#btnSnap'); if (bs) bs.style.display = FSA ? 'block' : 'none';
-  const br = $('#btnSnapRetry'); if (br) br.style.display = FSA ? 'none' : 'block';
-  const bf = $('#btnRedFull'); if (bf) bf.style.display = FSA ? 'block' : 'none';
+  const whens = [ST.updatedAt ? Date.parse(ST.updatedAt) : null,
+                 m && m.when, ST.ciotMeta && ST.ciotMeta.when, ST.frMeta && ST.frMeta.when]
+                .filter(x => x && !isNaN(x));
+  const ultimo = whens.length ? Math.max.apply(null, whens) : null;
+  const dw = $('#dsWhen'); if (dw) dw.textContent = ultimo ? dfmt(new Date(ultimo)) : '—';
+
   const sn = $('#snapNote');
   if (sn) {
-    if (ST.snapGenerado) {
-      sn.style.display = 'block';
-      sn.textContent = 'Estás viendo datos publicados del ' + dfmt(new Date(ST.snapGenerado)) +
-        (ST.snapOrigen === 'drive' ? ' (vía Google Drive).'
-          : ST.snapOrigen === 'onedrive' ? ' (vía OneDrive).'
-          : ST.snapOrigen === 'red' ? ' (vía GitHub Pages).'
-          : ST.snapOrigen === 'guardado' ? ' (copia guardada en este dispositivo).'
-          : '.');
-    } else if (FSA) {
-      sn.style.display = 'block';
-      sn.textContent = 'Después de actualizar, generá el snapshot y subilo al repo junto a index.html ' +
-        'para que lo vean los celulares.';
-    } else if (ST.snapDiag) {
-      /* sin datos y sin carpeta de red: hay que decir POR QUÉ, no quedarse mudo */
-      sn.style.display = 'block';
-      sn.style.color = 'var(--crit)';
-      sn.textContent = ST.snapDiag;
-    } else sn.style.display = 'none';
+    if (ST.snapDiag) { sn.style.display = 'block'; sn.style.color = 'var(--crit)'; sn.textContent = ST.snapDiag; }
+    else if (!ultimo) { sn.style.display = 'block'; sn.style.color = 'var(--ink-muted)';
+      sn.textContent = 'Todavía no hay datos en este dispositivo.'; }
+    else sn.style.display = 'none';
   }
-  const tieneAlgo = ST.rows.length || (ST.ciotMeta && ST.ciotMeta.filas) || (ST.frMeta && ST.frMeta.filas);
-  $('#dsSub').textContent = tieneAlgo
-    ? 'Los datos quedan guardados en este dispositivo.'
-    : 'Todavía no actualizaste los datos.';
-  $('#dsStock').textContent = m.rows ? m.rows.toLocaleString('es-AR') + ' productos (' + (m.raw || 0).toLocaleString('es-AR') + ' filas)' : '—';
-  $('#dsMov').textContent = (ST.ciotMeta && ST.ciotMeta.filas) ? ST.ciotMeta.filas.toLocaleString('es-AR') + ' líneas CIOT' : '—';
-  $('#dsPed').textContent = (ST.frMeta && ST.frMeta.filas) ? ST.frMeta.filas.toLocaleString('es-AR') + ' líneas de pedidos' : '—';
-  const whens = [m.when, ST.ciotMeta && ST.ciotMeta.when, ST.frMeta && ST.frMeta.when].filter(Boolean);
-  const ultimo = whens.length ? Math.max(...whens) : null;
-  $('#dsWhen').textContent = ultimo ? dfmt(new Date(ultimo)) : '—';
-  $('#footTxt').innerHTML = 'Permaquim · Stock en Planta · Coordinación de Abastecimiento<br>' +
+  const ft = $('#footTxt');
+  if (ft) ft.innerHTML = 'Permaquim · Supply Chain Permaquim · Coordinación de Abastecimiento<br>' +
     (ultimo ? 'Datos al ' + dfmt(new Date(ultimo)) : 'Sin datos') +
     ' · v' + APP_VER + ' · Documento interno';
 }
@@ -2380,11 +2372,13 @@ async function reparse() {
 /* ── Carpeta de red (Chrome/Edge en Windows) ── */
 const FSA = typeof window.showDirectoryPicker === 'function';
 function redNote() {
-  $('#redNote').innerHTML = FSA
+  const n = $('#redNote'); if (!n) return;            /* en el celular el panel no existe */
+  n.innerHTML = FSA
     ? 'Busca sola la subcarpeta de <b>Stock por Producto</b> dentro de <b>C.G BBDD CLAUDE</b>. La carpeta se elige una sola vez.'
-    : 'Este navegador no lee carpetas de red (pasa en el celular). Los datos del celular llegan publicados: los actualiza Christian desde una PC y bajan solos al abrir la app.';
-  $('#btnRed').disabled = !FSA; $('#btnRedChg').disabled = !FSA;
-  $('#btnRedChg').style.display = (FSA && ST.dirHandle) ? 'flex' : 'none';
+    : 'Este navegador no lee carpetas de red.';
+  const b1 = $('#btnRed'), b2 = $('#btnRedChg');
+  if (b1) b1.disabled = !FSA;
+  if (b2) { b2.disabled = !FSA; b2.style.display = (FSA && ST.dirHandle) ? 'flex' : 'none'; }
 }
 async function ensurePerm(h) { if (!h) return false;
   if ((await h.queryPermission({ mode:'read' })) === 'granted') return true;
@@ -2547,70 +2541,25 @@ async function actualizarTodoDesdeRed(forzar, forzarTodo) {
   } catch (e) { loading(false); if (e && e.name === 'AbortError') return false;
     alert('No se pudo actualizar desde la red.\n\n' + (e && e.message ? e.message : e)); return false; }
 }
-$('#btnRed').onclick = () => actualizarTodoDesdeRed(false).then(ok => { if (ok) go('vInicio'); });
-$('#btnRedChg').onclick = () => actualizarTodoDesdeRed(true).then(ok => { if (ok) go('vInicio'); });
-$('#btnRedFull').onclick = async () => {
+/* ── Panel de publicación (sólo PC) ── */
+if ($('#btnRed')) $('#btnRed').onclick = () => actualizarTodoDesdeRed(false).then(ok => { if (ok) renderDatos(); });
+if ($('#btnRedChg')) $('#btnRedChg').onclick = () => actualizarTodoDesdeRed(true).then(ok => { if (ok) renderDatos(); });
+if ($('#btnRedFull')) $('#btnRedFull').onclick = async () => {
   if (!confirm('Vuelve a leer TODOS los archivos de la red desde cero, ignorando lo guardado ' +
                'en este dispositivo.\n\nPuede tardar varios minutos. ¿Seguir?')) return;
   await DB.del('ciotFiles'); await DB.del('ciotMeta');
   await DB.del('frCache'); await DB.del('stockFirma');
-  actualizarTodoDesdeRed(false, true).then(ok => { if (ok) go('vInicio'); });
+  actualizarTodoDesdeRed(false, true).then(ok => { if (ok) renderDatos(); });
 };
-$('#btnSnap').onclick = () => exportarSnapshot();
-$('#btnSnapRetry').onclick = async () => {
-  loading(true, 'Buscando datos publicados', 'Descargando ' + SNAP_FILE + '…');
-  const ok = await cargarSnapshotPublicado();
-  loading(false); renderDatos();
-  if (ok) { toast('Datos actualizados'); go('vInicio'); }
-  else alert(ST.snapDiag || 'No encontré datos publicados.');
-};
+if ($('#btnPub')) $('#btnPub').onclick = () => publicarDatos();
 
-/* ── Conexión a la nube: Google Drive + OneDrive (config editable en «Acerca de») ── */
-async function cargarCfgNube() {
-  try {
-    const d = await DB.get('driveCfg');
-    if (d) { if ($('#drvKey')) $('#drvKey').value = d.key || ''; if ($('#drvFile')) $('#drvFile').value = d.fileId || ''; }
-    const o = await DB.get('oneDriveCfg');
-    if (o && $('#odLink')) $('#odLink').value = o.link || '';
-  } catch (e) {}
-}
-function notaNube(sel, txt, ok) {
-  const n = $(sel); if (!n) return;
-  n.style.display = 'block';
-  n.style.color = ok ? 'var(--ok)' : 'var(--crit)';
-  n.textContent = txt;
-}
-if ($('#btnDrvSave')) $('#btnDrvSave').onclick = async () => {
-  const key = $('#drvKey').value.trim(), fileId = $('#drvFile').value.trim();
-  await DB.set('driveCfg', { key, fileId });
-  notaNube('#drvNote', (key && fileId) ? 'Guardado. Tocá «Probar conexión».' : 'Guardado vacío: Google Drive queda desactivado.', true);
-};
-if ($('#btnDrvTest')) $('#btnDrvTest').onclick = async () => {
-  const key = $('#drvKey').value.trim(), fileId = $('#drvFile').value.trim();
-  if (!key || !fileId) return notaNube('#drvNote', 'Completá la API key y el ID del archivo.', false);
-  notaNube('#drvNote', 'Probando…', true);
-  const d = await fetchDriveSnapshot({ key, fileId });
-  if (d.ok) {
-    await DB.set('driveCfg', { key, fileId });
-    await aplicarSnapshot(d.obj, 'drive'); renderDatos();
-    notaNube('#drvNote', 'OK ✓ Datos del ' + dfmt(new Date(d.obj.generado)) + ' cargados desde Google Drive.', true);
-  } else notaNube('#drvNote', d.motivo || 'No se pudo conectar.', false);
-};
-if ($('#btnOdSave')) $('#btnOdSave').onclick = async () => {
-  const link = $('#odLink').value.trim();
-  await DB.set('oneDriveCfg', { link });
-  notaNube('#odNote', link ? 'Guardado. Tocá «Probar conexión».' : 'Guardado vacío: OneDrive queda desactivado.', true);
-};
-if ($('#btnOdTest')) $('#btnOdTest').onclick = async () => {
-  const link = $('#odLink').value.trim();
-  if (!link) return notaNube('#odNote', 'Pegá el link compartido de OneDrive.', false);
-  notaNube('#odNote', 'Probando…', true);
-  const d = await fetchOneDriveSnapshot({ link });
-  if (d.ok) {
-    await DB.set('oneDriveCfg', { link });
-    await aplicarSnapshot(d.obj, 'onedrive'); renderDatos();
-    notaNube('#odNote', 'OK ✓ Datos del ' + dfmt(new Date(d.obj.generado)) + ' cargados desde OneDrive.', true);
-  } else notaNube('#odNote', d.motivo || 'No se pudo conectar.', false);
+/* ── Sincronización de datos (lo único que ve el técnico) ── */
+if ($('#dsyncGo')) $('#dsyncGo').onclick = () => sincronizarDatos(false);
+if ($('#dsyncNo')) $('#dsyncNo').onclick = () => ocultarAvisoDatos();
+if ($('#btnDataChk')) $('#btnDataChk').onclick = async () => {
+  toast('Buscando datos nuevos…', 2000);
+  const hay = await chequearActualizacion(true);
+  if (hay) await sincronizarDatos(false);
 };
 
 
@@ -4150,7 +4099,7 @@ function renderSup() {
    No toca ningún dato: IndexedDB y localStorage siguen igual que antes,
    porque el origen (dominio) es el mismo antes y después de instalar.
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.14.0';                 /* ← subir junto con APP_VER del service-worker.js */
+const APP_VER = '3.15.0';                 /* ← subir junto con APP_VER del service-worker.js */
 let deferredPrompt = null, swReg = null;
 
 const esStandalone = () => window.matchMedia('(display-mode: standalone)').matches ||
@@ -4271,9 +4220,6 @@ function rutaInicial() {
   loadMem(); saveMem();
   ST.mapUser = (await DB.get('mapUser')) || {};
   ST.dirHandle = (await DB.get('dirHandle')) || null;
-  $('#orgDeps').textContent = Object.keys(ORG.deps).length.toLocaleString('es-AR');
-  $('#orgPer').textContent = Object.keys(ORG.personal).length.toLocaleString('es-AR');
-  $('#orgWhen').textContent = ORG.generado || '—';
   ST.login = LS.get('pq_login', null);
   /* migración: un login de una versión anterior pudo haber quedado en estado
      "pendiente" (bases:null) sin ser Planificación — ya no existe ese estado,
@@ -4282,32 +4228,42 @@ function rutaInicial() {
   renderSesion();
   if (ST.login) cerrarLogin(); else abrirLogin();
   loadPrefs(); ST.hist = null; renderHist(); renderConteos(); redNote();
-  cargarCfgNube();
+  ST.updatedAt = (await DB.get('dataUpdatedAt')) || null;
 
   if (window.PQ_DATA && window.PQ_DATA.rows && window.PQ_DATA.rows.length) {
     /* copia publicada: los datos vienen embebidos, no se pisan con los del dispositivo */
     await applyData({ rows: window.PQ_DATA.rows, meta: window.PQ_DATA.meta }, false);
     go('vInicio'); initSW(); pintarPWA(); rutaInicial(); return;
   }
-  /* En el celular no hay carpeta de red: los datos llegan publicados al lado
-     de index.html. En la PC, lo que se cargó desde la red manda sobre eso. */
+  /* ── Datos ───────────────────────────────────────────────────────────
+     El celular es 100% autónomo: arranca con lo que tiene guardado en
+     IndexedDB y recién después, si hay señal, se fija en segundo plano si
+     GitHub publicó algo más nuevo. Nunca baja nada sin que el usuario lo
+     toque, salvo la primera vez (cuando no hay absolutamente nada local).
+     En la PC, lo que se leyó de la carpeta de red manda sobre lo publicado. */
   let listo = false;
   const rows = await DB.get('rows'), meta = await DB.get('meta');
   if (FSA && rows && rows.length && meta) { await applyData({ rows, meta }, false); listo = true; }
-  /* Movimientos y Pedidos también viven en memoria del dispositivo. Antes sólo
-     se guardaba el stock, así que cualquier recarga de página (o un deslizar
-     hacia abajo sin querer) los borraba y obligaba a rehacer la carga entera. */
   if (listo) {
     try { await ciotDesdeMemoria(); } catch (e) {}
     try { const fc = await DB.get('frCache');
       if (fc && fc.filas) { ST.fr = fc.filas; ST.frMeta = fc.meta || null; } } catch (e) {}
   }
-  if (!listo) listo = await cargarSnapshotPublicado();
+  if (!listo) listo = await cargarDatosHub();
   if (!listo && rows && rows.length && meta) { await applyData({ rows, meta }, false); listo = true; }
   if (!listo) { renderDatos(); doSearch(); renderInicio(); renderAlertas(); }
   else renderDatos();
   go('vInicio');
   initSW(); pintarPWA(); rutaInicial();          /* capa PWA: no altera ningún dato guardado */
+
+  /* Chequeo transparente de datos nuevos, en segundo plano y sin bloquear
+     la pantalla. Se repite cada 30 minutos con la app abierta, y cada vez
+     que vuelve la conexión o el usuario vuelve a la app. */
+  const chequeo = () => { chequearActualizacion(false).catch(() => {}); };
+  setTimeout(chequeo, 1200);
+  setInterval(chequeo, 30 * 60 * 1000);
+  window.addEventListener('online', () => setTimeout(chequeo, 1500));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) chequeo(); });
 })();
 </script>
 </body>

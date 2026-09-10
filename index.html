@@ -99,14 +99,20 @@ button{cursor:pointer}
 .sclr{position:absolute;right:6px;width:40px;height:40px;border:0;background:transparent;
   color:var(--ink-muted);font-size:22px;border-radius:var(--r-pill);display:none;place-items:center}
 .sclr.on{display:grid}
-.chips{display:flex;gap:8px;overflow-x:auto;margin-top:8px;padding-bottom:2px;scrollbar-width:none}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:2px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex:none;height:38px;padding:0 14px;border-radius:var(--r-pill);border:1.5px solid var(--border);
-  background:var(--surface);color:var(--ink-2);font-size:14px;display:inline-flex;align-items:center;
-  gap:6px;white-space:nowrap;max-width:64vw;overflow:hidden}
-.chip b{color:var(--ink);font-weight:600;overflow:hidden;text-overflow:ellipsis}
-.chip.on{background:var(--tint-brand);border-color:var(--s1);color:var(--ink)}
-.chip .car{font-size:11px;opacity:.7}
+/* Look más sobrio/ejecutivo: gris neutro por defecto, sin bordes de color;
+   el estado activo pasa a un sólido oscuro con texto blanco (no un tinte
+   celeste "juguetón") para que se lea como un filtro aplicado, no un juego
+   de chips de colores. */
+.chip{flex:none;height:32px;padding:0 12px;border-radius:var(--r-pill);border:1px solid transparent;
+  background:var(--surface-2);color:var(--ink-muted);font-size:12.5px;font-weight:600;
+  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;max-width:56vw;overflow:hidden;
+  letter-spacing:.01em}
+.chip b{color:inherit;font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.chip.on{background:var(--brand-deep);border-color:var(--brand-deep);color:#fff}
+[data-tema="oscuro"] .chip.on{background:var(--ink);color:var(--plane)}
+.chip .car{font-size:10px;opacity:.65}
 
 /* ── LISTA ────────────────────────────────────────────────────────────── */
 main{padding:10px 12px calc(96px + env(safe-area-inset-bottom))}
@@ -194,6 +200,23 @@ mark{background:var(--tint-warn);color:inherit;border-radius:3px;padding:0 1px}
   padding:10px 12px;margin-bottom:10px;font-size:13.5px}
 .sug button{border:0;background:transparent;color:var(--link);font-weight:700;font-size:13.5px;padding:0;text-decoration:underline}
 .hist{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+/* Dropdown de búsquedas recientes (estilo buscador tipo e-commerce): flota
+   debajo del cuadro de búsqueda, sólo cuando está enfocado y vacío. */
+.histdrop{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:40;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);
+  box-shadow:0 14px 34px -12px rgba(15,19,48,.45);overflow:hidden;display:none}
+.histdrop.on{display:block}
+.histdrop .hd{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 6px;font-size:11.5px;font-weight:700;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--ink-muted)}
+.histdrop .hd button{border:0;background:transparent;color:var(--link);font-size:12px;
+  font-weight:600;padding:2px 4px;cursor:pointer}
+.histdrop button.item{display:flex;align-items:center;gap:10px;width:100%;border:0;
+  background:transparent;text-align:left;padding:11px 14px;font-size:14.5px;color:var(--ink);
+  cursor:pointer}
+.histdrop button.item:active{background:var(--surface-2)}
+.histdrop button.item svg{flex:none;width:16px;height:16px;color:var(--ink-muted)}
+.histdrop button.item span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hist button{height:34px;padding:0 12px;border-radius:var(--r-pill);border:1px solid var(--border);
   background:var(--surface);font-size:13px;color:var(--ink-2)}
 .al{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--ink-muted);
@@ -232,10 +255,6 @@ mark{background:var(--tint-warn);color:inherit;border-radius:3px;padding:0 1px}
 .mot button{min-height:46px;border-radius:var(--r-md);border:1.5px solid var(--border);
   background:var(--surface-2);font-size:13px;font-weight:600;color:var(--ink-2);padding:6px 8px}
 .mot button.on{border-color:var(--s1);background:var(--tint-brand);color:var(--ink)}
-#scanBox{position:relative;background:#000;border-radius:var(--r-md);overflow:hidden;aspect-ratio:4/3}
-#scanVid{width:100%;height:100%;object-fit:cover;display:block}
-.scanfr{position:absolute;inset:18% 12%;border:3px solid rgba(255,255,255,.9);border-radius:12px;
-  box-shadow:0 0 0 2000px rgba(0,0,0,.35)}
 .skel{background:linear-gradient(90deg,var(--grid) 25%,var(--surface-2) 50%,var(--grid) 75%);
   background-size:200% 100%;animation:sk 1.2s infinite;border-radius:var(--r-lg);height:150px;margin-bottom:10px}
 @keyframes sk{to{background-position:-200% 0}}
@@ -265,6 +284,19 @@ mark{background:var(--tint-warn);color:inherit;border-radius:3px;padding:0 1px}
 /* ── PANELES ──────────────────────────────────────────────────────────── */
 .view{display:none}.view.on{display:block}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+/* ── Tarjetas de sector en Terminal Panamericana ── */
+.tp-secs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.tp-sec-card{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r-lg);
+  padding:14px 13px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px;width:100%}
+.tp-sec-card:active{opacity:.75}
+.tp-sec-card.sel{border-color:var(--link);background:rgba(37,99,235,.1)}
+.tp-sec-card .snm{font-size:11.5px;font-weight:700;color:var(--ink-muted);letter-spacing:.04em;text-transform:uppercase}
+.tp-sec-card .slb{font-size:14px;font-weight:700;color:var(--ink);line-height:1.25}
+.tp-sec-card .scnt{font-size:12px;color:var(--ink-muted);margin-top:2px}
+/* buscador dentro del detalle de base (encima de la lista de stock) */
+.base-search-wrap{position:sticky;top:0;z-index:5;background:var(--surface);
+  padding:8px 0 10px;margin-bottom:2px}
+.base-search-wrap input{width:100%;box-sizing:border-box}
   box-shadow:var(--shadow);padding:14px;margin-bottom:12px}
 .panel h2{font-size:15px;margin-bottom:3px}
 .panel .sub{font-size:13px;color:var(--ink-muted);margin:0 0 12px}
@@ -303,6 +335,43 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 .sheet .hh .cl{width:40px;height:40px;border:0;background:var(--surface-2);border-radius:var(--r-pill);
   font-size:20px;color:var(--ink-2);flex:none}
 .sheet .cn{overflow-y:auto;padding:12px 16px 18px;-webkit-overflow-scrolling:touch}
+/* Barra fija de acciones al pie de una hoja (Aplicar / Limpiar) */
+.sheet .ff{flex:none;border-top:1px solid var(--border);padding:12px 16px;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:14px;background:var(--surface)}
+.sheet .ff .lnk{border:0;background:transparent;color:var(--ink-muted);font-size:13px;font-weight:600;padding:8px 2px}
+.sheet .ff .btn{flex:1;margin:0}
+/* Pills de orden (scroll horizontal) */
+.sortpills{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;margin-bottom:14px;scrollbar-width:none}
+.sortpills::-webkit-scrollbar{display:none}
+.sortpill{flex:none;height:38px;padding:0 14px;border-radius:var(--r-pill);border:1.5px solid var(--border);
+  background:var(--surface);color:var(--ink-2);font-size:12.5px;font-weight:600;display:inline-flex;
+  align-items:center;white-space:nowrap}
+.sortpill.on{background:var(--brand-deep);border-color:var(--brand-deep);color:#fff}
+[data-tema="oscuro"] .sortpill.on{background:var(--ink);color:var(--plane)}
+/* Tabs de categoría dentro de la hoja de filtros */
+.cattabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none}
+.cattabs::-webkit-scrollbar{display:none}
+.cattab{flex:none;height:34px;padding:0 13px;border-radius:var(--r-md);border:1px solid var(--border);
+  background:var(--surface-2);color:var(--ink-muted);font-size:12.5px;font-weight:700;white-space:nowrap}
+.cattab.on{background:rgba(37,99,235,.15);border-color:var(--link);color:var(--link)}
+/* Filas de checkbox multi-selección (look Excel/ejecutivo) */
+.chkrow{width:100%;display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:var(--r-md);
+  border:1px solid var(--border);background:var(--surface);margin-bottom:7px;text-align:left}
+.chkrow.on{background:var(--surface-2);border-color:var(--s1)}
+.chkrow.selall{border-style:dashed}
+.chkbox{width:21px;height:21px;border-radius:6px;border:2px solid var(--ink-muted);flex:none;
+  display:grid;place-items:center;color:#fff}
+.chkrow.on .chkbox{background:var(--link);border-color:var(--link)}
+.chkrow .chkbox svg{display:none;width:13px;height:13px}
+.chkrow.on .chkbox svg{display:block}
+.chkrow .lb{flex:1;min-width:0;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chkrow .cnt{font-size:11.5px;color:var(--ink-muted);flex:none;font-variant-numeric:tabular-nums}
+/* Rango de fechas dentro de una categoría (Movimientos) */
+.rangofecha{display:flex;gap:10px;margin-bottom:10px}
+.rangofecha label{flex:1;display:block}
+.rangofecha span{display:block;font-size:11.5px;color:var(--ink-muted);margin-bottom:4px;font-weight:600}
+.rangofecha input{width:100%;height:44px;padding:0 10px;border-radius:var(--r-md);border:1.5px solid var(--border);
+  background:var(--surface);color:var(--ink);font-size:13.5px;box-sizing:border-box}
 .opt{width:100%;min-height:var(--tap);display:flex;align-items:center;gap:10px;padding:11px 12px;
   border:1.5px solid var(--border);border-radius:var(--r-md);background:var(--surface);
   margin-bottom:7px;text-align:left;font-size:15px}
@@ -482,6 +551,9 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 .qty.low{background:var(--tint-warn);color:var(--warn);border-color:var(--warn)}
 .qty.zero{background:var(--tint-crit);color:var(--crit);border-color:var(--crit)}
 .qty.lg{font-size:14px} .qty.xl{font-size:11.5px}
+/* En Movimientos la cantidad NO es un semáforo de stock (no aplica acá):
+   un color neutro, sin verde/naranja/rojo. */
+.qty.flat{background:var(--surface-2);color:var(--ink);border-color:var(--border)}
 .chev{flex:none;width:15px;height:15px;color:var(--ink-muted);transition:transform .18s}
 .sku.open .chev{transform:rotate(180deg)}
 .sku-hd .mini{flex:none;height:38px;padding:0 12px;font-size:12.5px}
@@ -493,7 +565,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 .src .sh{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;
   letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted)}
 .src .sh i{width:8px;height:8px;border-radius:2px;flex:none}
-.src.a .sh i{background:var(--s1)} .src.b .sh i{background:var(--s2)}
+.src.a .sh i{background:var(--s1)} .src.b .sh i{background:var(--s2)} .src.c .sh i{background:var(--ink-muted)}
 .src .sh b{margin-left:auto;font-family:var(--f-num);font-size:13.5px;color:var(--ink);letter-spacing:0}
 .src .ubis{margin-top:5px}
 .sku-bar{display:flex;align-items:center;gap:8px;margin-top:11px;padding-top:10px;
@@ -523,26 +595,49 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
     <h1>Supply Chain Permaquim</h1>
     <p class="gl-sub">Identificate para ver el stock de tu base.</p>
 
-    <p class="eyebrow" style="margin:18px 0 8px">Indicá tu responsabilidad</p>
-    <div class="gl-rol" id="glRol">
-      <button data-rol="tecnico"><span class="ic">🔧</span>Técnico Permaquim</button>
-      <button data-rol="supervisor"><span class="ic">🧑‍💼</span>Supervisor Permaquim</button>
-      <button data-rol="responsable"><span class="ic">📦</span>Responsable de Stock</button>
-      <button data-rol="nacional"><span class="ic">🌐</span>Planificación</button>
-    </div>
-
-    <div id="glDatos" style="display:none">
+    <!-- PASO 1 · identidad: nombre + legajo, sin elegir rol a mano -->
+    <div id="glPaso1">
       <label class="lb" style="margin-top:16px">Nombre completo</label>
       <input class="txt" id="glNombre" type="text" placeholder="Nombre y apellido" autocomplete="name">
       <label class="lb">Número de legajo</label>
       <input class="txt" id="glLegajo" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Ej.: 253">
-
-      <div id="glErr" class="al c1" style="display:none;margin:4px 0 10px"><div class="m" id="glErrMsg"></div></div>
-
-      <button class="btn pri" id="glEntrar" style="min-height:56px;font-size:16px">Ingresar</button>
-      <p class="note" id="glNote" style="text-align:center">El legajo se cruza contra los datos ya cargados en el teléfono.</p>
+      <div id="glErr0" class="al c1" style="display:none;margin:10px 0 0"><div class="m" id="glErr0Msg"></div></div>
+      <button class="btn pri" id="glContinuar" style="min-height:56px;font-size:16px;margin-top:14px">Continuar</button>
+      <p class="note" id="glNote" style="text-align:center">Tu legajo se busca solo en el directorio de la empresa.</p>
     </div>
-    <div id="glErr0" class="al c1" style="display:none;margin:10px 0 0"><div class="m" id="glErr0Msg"></div></div>
+
+    <!-- PASO 2 · sólo aparece si el legajo tiene más de un rol asignado -->
+    <div id="glPaso2" style="display:none">
+      <p class="eyebrow" style="margin:18px 0 6px">Tu legajo tiene más de un rol asignado</p>
+      <p class="note" style="margin:0 0 10px">¿Con cuál entrás hoy?</p>
+      <div class="gl-rol" id="glCandidatos"></div>
+      <button class="btn gh" id="glVolver1" style="margin-top:12px">← Volver</button>
+    </div>
+
+    <!-- PASO 3 · contraseña del dispositivo (se crea la primera vez) -->
+    <div id="glPaso3" style="display:none">
+      <div class="note" id="glIdentRes" style="text-align:center;margin:16px 0 4px;font-weight:600"></div>
+
+      <div id="glCrear" style="display:none">
+        <label class="lb" style="margin-top:8px">Crear contraseña</label>
+        <input class="txt" id="glPass1" type="password" placeholder="Mínimo 4 caracteres" autocomplete="new-password">
+        <label class="lb">Confirmar contraseña</label>
+        <input class="txt" id="glPass2" type="password" placeholder="Repetila" autocomplete="new-password">
+        <p class="note">Primera vez en este teléfono: elegí una contraseña para la próxima. Queda guardada
+          únicamente en este dispositivo, no en ningún servidor.</p>
+      </div>
+
+      <div id="glIngresar" style="display:none">
+        <label class="lb" style="margin-top:8px">Contraseña</label>
+        <input class="txt" id="glPass3" type="password" placeholder="Tu contraseña" autocomplete="current-password">
+        <button class="btn gh" id="glOlvide" type="button"
+          style="margin-top:8px;font-size:12.5px;min-height:38px">¿Olvidaste tu contraseña? Reiniciarla en este teléfono</button>
+      </div>
+
+      <div id="glErr" class="al c1" style="display:none;margin:10px 0 0"><div class="m" id="glErrMsg"></div></div>
+      <button class="btn pri" id="glEntrar" style="min-height:56px;font-size:16px;margin-top:12px">Ingresar</button>
+      <button class="btn gh" id="glVolver2" style="margin-top:8px">← Volver</button>
+    </div>
   </div>
 </div>
 
@@ -567,7 +662,6 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
     <div class="sechd"><h2>¿Qué necesitás hacer?</h2></div>
     <div class="qa">
       <button data-qa="buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM20 20l-3.5-3.5"/></svg>Buscar producto</button>
-      <button data-qa="escanear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3M4 12h16"/></svg>Escanear código</button>
       <button data-qa="ubicacion"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Buscar ubicación</button>
       <button data-qa="mibase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/></svg>Mi base</button>
       <button data-qa="conteo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM5 7h14v13H5zM8 12h8M8 16h5"/></svg>Iniciar conteo</button>
@@ -593,11 +687,16 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <input id="q" type="search" inputmode="search" autocomplete="off" autocapitalize="off"
              spellcheck="false" placeholder="Código, descripción o ubicación…" aria-label="Buscar producto">
       <button class="sclr" id="qClear" aria-label="Borrar búsqueda">&times;</button>
+      <div class="histdrop" id="histQ"></div>
     </div>
     <div class="chips" id="chips"></div>
-    <div class="hist" id="histQ"></div>
   </div>
   <main>
+    <div class="al" id="tpEntry" role="button" tabindex="0"
+      style="display:none;cursor:pointer;margin-bottom:10px;border-left-color:var(--link)">
+      <div class="m" style="margin-top:0"><b>📦 Terminal Panamericana</b><br>
+        <span style="font-weight:400">Serie, despacho y pallets por sector — tocá para verlo</span></div>
+    </div>
     <div id="sugBox"></div>
     <div class="count"><span id="cntTxt">—</span><span id="cntSum"></span></div>
     <div id="list"></div>
@@ -741,6 +840,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <input id="mvQ" type="search" inputmode="search" autocomplete="off" autocapitalize="off"
              spellcheck="false" placeholder="Repuesto o cliente…" aria-label="Buscar consumo de repuestos">
       <button class="sclr" id="mvQClear" aria-label="Borrar búsqueda">&times;</button>
+      <div class="histdrop" id="mvHistQ"></div>
     </div>
     <div class="chips" id="mvChips"></div>
     <div id="mvBaseBar" style="display:none;padding:0 14px 4px">
@@ -772,6 +872,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <input id="sugQ" type="search" inputmode="search" autocomplete="off" autocapitalize="off"
              spellcheck="false" placeholder="Filtrar por SKU o descripción…" aria-label="Filtrar stock sugerido">
       <button class="sclr" id="sugQClear" aria-label="Borrar filtro">&times;</button>
+      <div class="histdrop" id="sugHistQ"></div>
     </div>
     <div class="chips" id="pdChips"></div>
     <div id="pdBaseBar" style="display:none;padding:0 0 4px">
@@ -804,8 +905,18 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 </nav>
 
 <div class="sheet" id="shFiltro"><div class="bk" data-close></div><div class="bd">
-  <div class="hh"><h2 id="fTit" style="flex:1">Filtro</h2><button class="cl" data-close aria-label="Cerrar">&times;</button></div>
-  <div class="cn"><input class="fsearch" id="fSearch" type="search" placeholder="Buscar…" autocomplete="off"><div id="fOpts"></div></div>
+  <div class="hh"><h2 style="flex:1">Filtrar y ordenar</h2><button class="cl" data-close aria-label="Cerrar">&times;</button></div>
+  <div class="cn">
+    <p class="eyebrow" style="margin:0 0 8px">Ordenar por</p>
+    <div class="sortpills" id="fSort"></div>
+    <div class="cattabs" id="fCats"></div>
+    <input class="fsearch" id="fSearch" type="search" placeholder="Buscar…" autocomplete="off">
+    <div id="fOpts" style="margin-top:10px"></div>
+  </div>
+  <div class="ff">
+    <button type="button" class="lnk" id="fLimpiar">Limpiar todo</button>
+    <button type="button" class="btn pri" id="fAplicar">Aplicar filtros</button>
+  </div>
 </div></div>
 
 <div class="sheet" id="shConteo"><div class="bk" data-close></div><div class="bd">
@@ -841,6 +952,53 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
   <div class="cn" id="fkBody"></div>
 </div></div>
 
+<div class="sheet" id="shTP"><div class="bk" data-close></div><div class="bd">
+  <div class="hh"><h2 style="flex:1">Terminal Panamericana</h2><button class="cl" data-close aria-label="Cerrar">&times;</button></div>
+  <div class="cn">
+    <p class="note" style="margin:0 0 10px">Elegí el sector para ver serie, despacho y pallets de cada máquina o repuesto.</p>
+    <div class="chips" id="tpSecs" style="margin:0 0 10px"></div>
+    <input class="fsearch" id="tpQ" type="search" placeholder="Código, descripción o máquina…" autocomplete="off">
+    <div class="count" style="margin:10px 0 4px"><span id="tpCnt">—</span></div>
+    <div id="tpList"></div>
+  </div>
+</div></div>
+
+<div class="sheet" id="shFiltroPd"><div class="bk" data-close></div><div class="bd">
+  <div class="hh"><h2 style="flex:1">Filtrar y ordenar</h2><button class="cl" data-close aria-label="Cerrar">&times;</button></div>
+  <div class="cn">
+    <p class="eyebrow" style="margin:0 0 8px">Ordenar por</p>
+    <div class="sortpills" id="pdfSort"></div>
+    <div class="cattabs" id="pdfCats"></div>
+    <input class="fsearch" id="pdfSearch" type="search" placeholder="Buscar…" autocomplete="off">
+    <div id="pdfBody" style="margin-top:10px"></div>
+  </div>
+  <div class="ff">
+    <button type="button" class="lnk" id="pdfLimpiar">Limpiar todo</button>
+    <button type="button" class="btn pri" id="pdfAplicar">Aplicar filtros</button>
+  </div>
+</div></div>
+
+<div class="sheet" id="shFiltroMov"><div class="bk" data-close></div><div class="bd">
+  <div class="hh"><h2 style="flex:1">Filtrar y ordenar</h2><button class="cl" data-close aria-label="Cerrar">&times;</button></div>
+  <div class="cn">
+    <p class="eyebrow" style="margin:0 0 8px">Ordenar por</p>
+    <div class="sortpills" id="mvfSort"></div>
+    <div class="cattabs" id="mvfCats"></div>
+    <div id="mvfBody"></div>
+  </div>
+  <div class="ff">
+    <button type="button" class="lnk" id="mvfLimpiar">Limpiar todo</button>
+    <button type="button" class="btn pri" id="mvfAplicar">Aplicar filtros</button>
+  </div>
+</div></div>
+
+<div class="sheet" id="shMovDet"><div class="bk" data-close></div><div class="bd">
+  <div class="hh"><span style="flex:1;min-width:0"><h2 id="mdCod">—</h2>
+    <span id="mdDesc" style="font-size:12.5px;color:var(--ink-muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span></span>
+    <button class="cl" data-close aria-label="Cerrar">&times;</button></div>
+  <div class="cn" id="mdBody"></div>
+</div></div>
+
 <div class="sheet" id="shUbi"><div class="bk" data-close></div><div class="bd">
   <div class="hh"><h2 style="flex:1">Buscar ubicación</h2><button class="cl" data-close aria-label="Cerrar">&times;</button></div>
   <div class="cn">
@@ -860,18 +1018,6 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <div id="baseRes"></div>
     </div>
     <div id="baseDetalle" style="display:none"></div>
-  </div>
-</div></div>
-
-<div class="sheet" id="shScan"><div class="bk" data-close></div><div class="bd">
-  <div class="hh"><h2 style="flex:1">Escanear código</h2><button class="cl" data-close aria-label="Cerrar">&times;</button></div>
-  <div class="cn">
-    <div id="scanWrap"><div id="scanBox"><video id="scanVid" playsinline muted></video><div class="scanfr"></div></div>
-      <p class="note" id="scanMsg" style="text-align:center">Apuntá al código de barras o QR.</p></div>
-    <div id="scanAlt" style="display:none"></div>
-    <label class="lb" style="margin-top:12px">O ingresá el código a mano</label>
-    <input class="txt" id="scanMan" type="text" inputmode="text" autocapitalize="characters" placeholder="Código de producto">
-    <button class="btn pri" id="scanGo">Buscar</button>
   </div>
 </div></div>
 
@@ -968,16 +1114,19 @@ const DB = (() => { let p;
 /* ══════════════ ESTADO ══════════════ */
 const ST = {
   rows: [], meta: {}, mapUser: {}, conteos: [], dirHandle: null,
-  filtros: { tipo: '', marca: '', maquina: '', unidad: '' }, q: '', res: [], shown: 0, page: 50,
+  filtros: { tipo: [], marca: [], maquina: [], unidad: [] }, q: '', res: [], shown: 0, page: 50,
   target: null, targetSec: 'C', tpl: null, lastBuf: null, lastName: '',
   /* V2 */ fav: [], recientes: [], vistas: {}, busq: [], vocab: [], byCod: null,
   alertas: [], alFiltro: 'todas', alShown: 0, cfg: { sup: false, bloq: false },
-  fkRow: null, scanStream: null, scanTimer: null, baseVista: null, kpiFiltro: '', cntSoloDif: false,
+  fkRow: null, baseVista: null, kpiFiltro: '', cntSoloDif: false,
   rowsRaw: [], scope: null, orden: '', sinRot: false,
   /* Movimientos / Consumo de Repuestos (CIOT) */
   ciot: [], ciotMeta: null, mvQ: '', mvRes: [], mvShown: 0, mvPage: 50, mvBase: null,
+  mvFiltros: { desde: '', hasta: '', bases: [] }, mvOrden: '',
   /* Pedidos (Fill Rate) */
   fr: null, frMeta: null, pdBase: null, pdTab: 'prep', pdRes: [], pdShown: 0, pdPage: 40,
+  pdFiltros: { tec: [], clas: [] }, pdOrden: '',
+  /* Terminal Panamericana */ tpSector: '', tpQ: '',
   /* Pedidos → Stock sugerido por base */
   sugQ: '', sugRes: [], sugShown: 0, sugPage: 40,
   personal: null, login: null,
@@ -1008,15 +1157,54 @@ const CAMPOS = [
   { k:'marca',   lb:'Marca',                   letra:'AH', re:[/^marca/] },
   { k:'segmento',lb:'Segmento',                letra:'AI', re:[/^segmento$/] },
   { k:'detseg',  lb:'Detalle de segmento',     letra:'AJ', re:[/^detalle segmento$/, /detalle de segmento/] },
-  { k:'maquina', lb:'Máquina unificada',       letra:'AK', re:[/^maquina unificada$/] }
+  { k:'maquina', lb:'Máquina unificada',       letra:'AK', re:[/^maquina unificada$/] },
+  /* Sólo se usan para Terminal Panamericana (base 07) — el resto de la app
+     los ignora. Christian dio las columnas exactas de memoria, así que se
+     confía en la LETRA primero (no hay nombre de encabezado confirmado). */
+  { k:'serie',    lb:'Serie',                   letra:'I',  re:[/^serie$/] },
+  { k:'despacho', lb:'Despacho',                letra:'K',  re:[/^despacho$/] },
+  { k:'uxpallet', lb:'Unidades por pallet',      letra:'N',  num:1, re:[/unidades? por pallet/, /^ux ?pallet$/] },
+  { k:'pallets',  lb:'Pallets en stock',         letra:'O',  num:1, re:[/pallets? en stock/, /^pallets?$/] }
 ];
 
 /* Sectores clave dentro del depósito Permaquim - Haedo */
 const esHaedo  = (dep, depDesc) => norm(depDesc).indexOf('haedo') >= 0 || String(dep).trim() === '1';
 const esCentral = sd => norm(sd).indexOf('almacen de repuestos central') >= 0;
 const esAlta    = sd => norm(sd).indexOf('planta alta') >= 0;
+/* ── Terminal Panamericana (base 07) ────────────────────────────────────
+   Único caso en toda la app que necesita, además del stock, la serie, el
+   despacho y el desglose por pallet — y un filtro por SECTOR (columna G)
+   con las 6 secciones reales del depósito, no el genérico Central/Alta. */
+const TP_DEP_CODE = '7';
+const esTP = dep => String(dep || '').trim().replace(/^0+(?=\d)/, '') === TP_DEP_CODE;
+/* El código de sector puede venir "9", "09" (cero adelante) o "9.0" (Excel lo
+   guardó como número) según cómo esté formateada esa columna en el archivo.
+   Sin normalizar esto, un sector como "09" nunca calzaba contra la clave '9'
+   de SECTORES_TP y ese chip no aparecía nunca — era el bug real de por qué
+   no se podía elegir cierto sector. */
+function normSector(v) {
+  let s = String(v == null ? '' : v).trim();
+  s = s.replace(/\.0+$/, '');
+  s = s.replace(/^0+(?=\d)/, '');
+  return s;
+}
+const SECTORES_TP = { '1': 'Recepción', '3': 'Cuarentena', '4': 'Disponible',
+  '9': 'NO USAR (EX TALLER TP)', '10': 'Máquinas con faltantes', '13': 'Scrap' };
+const ORDEN_SECTORES_TP = ['1', '3', '4', '9', '10', '13'];
+
 const SEC = { C: { lb: 'Almacén Repuestos CENTRAL', corto: 'Almacén CENTRAL' },
               A: { lb: 'Disponible - Planta Alta',  corto: 'Planta alta' } };
+
+/* Depósitos que se ignoran por completo en toda la app — a pedido de
+   Christian. No cuentan para el total del producto, ni aparecen en "otros
+   depósitos", ni en ningún desglose. Se comparan por texto (no por código),
+   sin acentos/mayúsculas ni separadores, para no depender de que el Excel
+   escriba el guion de "Fiscal - Ezeiza" siempre igual. */
+const DEPOSITOS_IGNORADOS = ['fiscal ezeiza', 'zona franca', 'fiscal puerto'];
+function depoIgnorado(depDesc) {
+  const n = norm(depDesc).replace(/[^a-z0-9]+/g, ' ').trim();
+  return DEPOSITOS_IGNORADOS.some(x => n.indexOf(x) >= 0);
+}
 
 /* Ubicación = Atributo · Estante · Ubicación → "00E-011-001".
    Los numéricos se rellenan a 3 dígitos; los alfanuméricos van tal cual.
@@ -1117,6 +1305,8 @@ function parseWorkbook(wb, fileName) {
     leidas++;
     const q = N(rr, rf, map.stock) || 0;
     const depDesc = T(rf, map.depDesc), secDesc = T(rf, map.secDesc);
+    const depCod = T(rf, map.dep);
+    if (depoIgnorado(depDesc)) continue;   /* Fiscal Ezeiza / Zona Franca / Fiscal Puerto Bs As: afuera */
     const ubi = fmtUbi(T(rf, map.atrib), T(rf, map.estante), T(rf, map.ubic));
 
     let o = byCod.get(cod);
@@ -1124,11 +1314,23 @@ function parseWorkbook(wb, fileName) {
       o = { cod, desc: T(rf, map.desc), tipo: T(rf, map.tipo), marca: T(rf, map.marca),
             seg: T(rf, map.segmento), det: T(rf, map.detseg), maq: T(rf, map.maquina),
             un: T(rf, map.unidad), mat: T(rf, map.material), rot: N(rr, rf, map.rot),
-            C: 0, A: 0, tot: 0, uC: [], uA: [], otros: [], porDep: {} };
+            C: 0, A: 0, tot: 0, uC: [], uA: [], otros: [], porDep: {}, tp: null };
       byCod.set(cod, o);
     }
     if (!o.desc) o.desc = T(rf, map.desc);
     o.tot += q;
+
+    /* Terminal Panamericana: una línea por cada fila real del Excel (no se
+       suma con otras), porque serie/despacho/pallets son propios de esa
+       línea puntual — sumarlos perdería el dato que se pidió. */
+    if (esTP(depCod)) {
+      if (!o.tp) o.tp = [];
+      o.tp.push({
+        sector: normSector(T(rf, map.sec)), secDesc, cant: q,
+        serie: T(rf, map.serie), despacho: T(rf, map.despacho),
+        uxpallet: N(rr, rf, map.uxpallet), pallets: N(rr, rf, map.pallets)
+      });
+    }
 
     if (esHaedo(T(rf, map.dep), depDesc) && esCentral(secDesc)) {
       o.C += q; if (q > 0) o.uC.push([ubi, q]);
@@ -1145,11 +1347,16 @@ function parseWorkbook(wb, fileName) {
          (no por el texto armado) — así "Mi base" y la alerta de devolución
          pueden identificar la base exacta sin depender del formato del texto. */
       const depCodRow = T(rf, map.dep) || '(sin código)';
-      if (!o.porDep[depCodRow]) o.porDep[depCodRow] = { desc: depDesc, cant: 0, rot: null, ubi: '' };
+      if (!o.porDep[depCodRow]) o.porDep[depCodRow] = { desc: depDesc, cant: 0, rot: null, ubi: '', ubis: [] };
       const pd = o.porDep[depCodRow];
       pd.cant += q;
       if (rotRow != null) pd.rot = pd.rot == null ? rotRow : Math.max(pd.rot, rotRow);
       if (ubi && !pd.ubi) pd.ubi = ubi;
+      /* `ubi` (arriba) sólo guarda la PRIMERA ubicación por compatibilidad con
+         lo que ya usaba el resto de la app; `ubis` guarda TODAS — hace falta
+         para el desglose completo de "Ver stock de una base". */
+      if (ubi) { const exU = pd.ubis.find(x => x[0] === ubi);
+        if (exU) exU[1] += q; else pd.ubis.push([ubi, q]); }
     }
   }
   if (!byCod.size) throw new Error('No se encontró ningún código de producto. Revisá el mapeo de columnas.');
@@ -1372,7 +1579,7 @@ function aplicarModoRol() {
 function stockDeBase(code) {
   const items = [];
   for (const r of ST.rows) { const pd = r.porDep && r.porDep[code];
-    if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot, ubi: pd.ubi }); }
+    if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot, ubi: pd.ubi, ubis: pd.ubis || [] }); }
   items.sort((a, b) => b.cant - a.cant);
   return items;
 }
@@ -1393,11 +1600,15 @@ function bloqueBase(base, abierta) {
     (abierta ? renderListaStock(items) : '<button class="btn gh basetoggle" style="margin-top:10px">Ver stock de esta base</button>') +
     '</div>';
 }
+/* Desglose COMPLETO: cada producto se abre mostrando todas sus ubicaciones
+   dentro de esta base (no sólo la primera), el total, y los botones de
+   Ver ficha + Contar — igual que en el buscador general de Stock. */
 function renderListaStock(items) {
-  return '<p class="eyebrow" style="margin:14px 0 6px">Stock — tocá para ver la ficha o contar</p>' +
+  return '<p class="eyebrow" style="margin:14px 0 6px">Stock — tocá cada producto para ver el desglose completo</p>' +
     (items.length ? items.map(it => filaSKU(it.r, {
-      cant: it.cant, contar: true,
-      fuentes: [{ cant: it.cant, ubis: it.ubi ? [[it.ubi, it.cant]] : [] }],
+      cant: it.cant, expandible: true,
+      fuentes: [{ lb: 'Ubicaciones en esta base', cls: 'a', cant: it.cant, ubis: it.ubis }],
+      totLb: 'Total en esta base', tot: it.cant,
       extra: (it.rot != null && it.rot > 3)
         ? '<span class="sku-meta" style="color:var(--crit);font-weight:700">' +
           it.rot.toFixed(0) + ' meses sin rotación</span>' : ''
@@ -1427,14 +1638,25 @@ $('#miStock').addEventListener('click', e => {
   if (tg) { const panel = tg.closest('[data-basecode]'); const code = panel.dataset.code;
     const base = (ST.login.bases || []).find(b => b.code === panel.dataset.basecode);
     if (base) { panel.outerHTML = bloqueBase(base, true); } return; }
-  const cnt = e.target.closest('[data-act="contar"]');
-  const row = e.target.closest('[data-cod]'); if (!row) return;
-  const r = ST.byCod.get(row.dataset.cod); if (!r) return;
-  const panel = row.closest('[data-basecode]');
+  const art = e.target.closest('[data-cod]'); if (!art) return;
+  const r = ST.byCod.get(art.dataset.cod); if (!r) return;
+  const panel = art.closest('[data-basecode]');
   const code = panel ? panel.dataset.basecode : (ST.login.bases[0] || {}).code;
   const base = (ST.login.bases || []).find(b => b.code === code) || ST.login.bases[0];
-  if (cnt) openConteo(r, { code: base.code, desc: base.desc });
-  else openFicha(r);
+  const b = e.target.closest('[data-act]');
+  if (b) {
+    if (b.dataset.act === 'ficha') openFicha(r);
+    else { verProducto(r.cod); openConteo(r, { code: base.code, desc: base.desc }); }
+    return;
+  }
+  const hd = e.target.closest('.sku-hd'); if (!hd) return;
+  const abierta = art.classList.toggle('open');
+  hd.setAttribute('aria-expanded', abierta ? 'true' : 'false');
+});
+$('#miStock').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const hd = e.target.closest('.sku-hd'); if (!hd) return;
+  e.preventDefault(); hd.click();
 });
 function renderSesion() {
   const l = ST.login;
@@ -1444,40 +1666,131 @@ function renderSesion() {
     ? l.bases.map(b => b.desc || b.code).join(' · ') : (l ? 'Sin resolver todavía' : '—');
   aplicarModoRol();
 }
+/* ══════════════════════════════════════════════════════════════════════
+   LOGIN v3.16.0 — identidad automática por legajo (sin elegir rol a mano)
+   más una contraseña que vive únicamente en este dispositivo.
+   IMPORTANTE (limitación real, no un detalle menor): no hay backend, así
+   que esto NO es seguridad de verdad — es sólo para que la app reconozca
+   en el mismo teléfono que sos la misma persona la próxima vez. Cualquiera
+   con acceso físico al teléfono puede tocar «¿Olvidaste tu contraseña?» y
+   crear una nueva. Si cambia de teléfono, la vuelve a crear de cero.
+   ══════════════════════════════════════════════════════════════════════ */
+const ROLES_LOGIN = ['tecnico', 'supervisor', 'responsable', 'nacional'];
+function candidatosPorLegajo(legajo) {
+  const out = [];
+  for (const rol of ROLES_LOGIN) { const r = resolverLogin(rol, legajo); if (r.ok) out.push({ rol, r }); }
+  return out;
+}
+function labelCandidato(rol, r) {
+  const base = ROL_LB[rol] || rol;
+  if (rol === 'nacional') return base;
+  const d = r.bases && r.bases[0] ? (r.bases[0].desc || r.bases[0].code) : '';
+  return base + (d ? ' — ' + d : '');
+}
+
+/* Hash + salt sólo para no guardar la contraseña en texto plano dentro de
+   IndexedDB. crypto.subtle exige contexto seguro (https); si no está
+   disponible (http local, navegador viejo) cae a un hash simple — sigue
+   sin ser criptografía real, pero tampoco hace falta que lo sea acá. */
+async function hashPass(pass, salt) {
+  const txt = salt + ':' + pass;
+  if (window.crypto && crypto.subtle && location.protocol !== 'file:') {
+    try {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (e) {}
+  }
+  let h = 0x811c9dc5;
+  for (let i = 0; i < txt.length; i++) { h ^= txt.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return (h >>> 0).toString(16);
+}
+const nuevoSalt = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+const claveGuardada = legajo => DB.get('auth:' + legajo);
+async function guardarClave(legajo, pass) {
+  const salt = nuevoSalt(); await DB.set('auth:' + legajo, { salt, hash: await hashPass(pass, salt) });
+}
+async function verificarClave(legajo, pass) {
+  const g = await claveGuardada(legajo); if (!g) return false;
+  return (await hashPass(pass, g.salt)) === g.hash;
+}
+
+let glPend = null;   /* { legajo, nombreTip, cands } o { legajo, nombreTip, rol, r } */
+
 function abrirLogin() {
-  glRolSel = '';
-  $$('#glRol button').forEach(x => x.classList.remove('on'));
-  $('#glDatos').style.display = 'none';
+  glPend = null;
+  $('#glPaso1').style.display = 'block'; $('#glPaso2').style.display = 'none'; $('#glPaso3').style.display = 'none';
   $('#glNombre').value = ''; $('#glLegajo').value = '';
+  $('#glPass1').value = ''; $('#glPass2').value = ''; $('#glPass3').value = '';
   $('#glErr').style.display = 'none'; $('#glErr0').style.display = 'none';
   $('#gateLogin').classList.remove('off');
+  setTimeout(() => $('#glNombre').focus(), 60);
 }
 function cerrarLogin() { $('#gateLogin').classList.add('off'); }
-let glRolSel = '';
-$('#glRol').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
-  glRolSel = b.dataset.rol;
-  $$('#glRol button').forEach(x => x.classList.toggle('on', x === b));
-  /* recién ahí se habilita el resto del formulario */
-  $('#glErr0').style.display = 'none';
-  $('#glDatos').style.display = 'block';
-  setTimeout(() => $('#glNombre').focus(), 60); });
-$('#glEntrar').onclick = () => {
+
+async function irAClave(legajo, nombreTip, rol, r) {
+  glPend = { legajo, nombreTip, rol, r };
+  $('#glPaso1').style.display = 'none'; $('#glPaso2').style.display = 'none'; $('#glPaso3').style.display = 'block';
+  $('#glIdentRes').textContent = (r.nombre || nombreTip) + ' · ' + labelCandidato(rol, r);
+  $('#glErr').style.display = 'none';
+  const g = await claveGuardada(legajo);
+  $('#glCrear').style.display = g ? 'none' : 'block';
+  $('#glIngresar').style.display = g ? 'block' : 'none';
+  $('#glPass1').value = ''; $('#glPass2').value = ''; $('#glPass3').value = '';
+  setTimeout(() => (g ? $('#glPass3') : $('#glPass1')).focus(), 60);
+}
+
+$('#glContinuar').onclick = () => {
   const nombre = $('#glNombre').value.trim(), legajo = $('#glLegajo').value.trim();
-  if (!glRolSel) return mostrarErrGl0('Elegí primero tu responsabilidad.');
-  if (nombre.length < 5 || nombre.indexOf(' ') < 0)
-    return mostrarErrGl('Ingresá tu nombre y apellido completos.');
-  if (!/^\d+$/.test(legajo)) return mostrarErrGl('Ingresá tu número de legajo (sólo números).');
-  const r = resolverLogin(glRolSel, legajo);
-  if (r.ok) {
-    ST.login = { rol: glRolSel, legajo, nombre: r.nombre || nombre, bases: r.bases,
-      basesAbastecidas: r.basesAbastecidas || null };
-    LS.set('pq_login', ST.login);
-    cerrarLogin(); renderSesion();
-    if (ST.rowsRaw.length) aplicarScope(); else renderInicio();
-    toast('Hola, ' + (r.nombre || nombre).split(' ')[0] +
-      (r.bases && r.bases.length ? ' · ' + r.bases[0].desc + (r.bases.length > 1 ? ' y ' + (r.bases.length - 1) + ' más' : '')
-        : ' · acceso a todo el país'));
-  } else mostrarErrGl(r.motivo);
+  $('#glErr0').style.display = 'none';
+  if (nombre.length < 5 || nombre.indexOf(' ') < 0) return mostrarErrGl0('Ingresá tu nombre y apellido completos.');
+  if (!/^\d+$/.test(legajo)) return mostrarErrGl0('Ingresá tu número de legajo (sólo números).');
+  const cands = candidatosPorLegajo(legajo);
+  if (!cands.length) return mostrarErrGl0('Ese legajo no figura en el directorio. Verificá el número o hablá con Abastecimiento.');
+  if (cands.length === 1) { irAClave(legajo, nombre, cands[0].rol, cands[0].r); return; }
+  glPend = { legajo, nombreTip: nombre, cands };
+  $('#glCandidatos').innerHTML = cands.map((c, i) =>
+    '<button data-i="' + i + '"><span class="ic">👤</span>' + esc(labelCandidato(c.rol, c.r)) + '</button>').join('');
+  $('#glPaso1').style.display = 'none'; $('#glPaso2').style.display = 'block';
+};
+$('#glCandidatos').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || !glPend || !glPend.cands) return;
+  const c = glPend.cands[+b.dataset.i]; irAClave(glPend.legajo, glPend.nombreTip, c.rol, c.r);
+});
+$('#glVolver1').onclick = () => { $('#glPaso2').style.display = 'none'; $('#glPaso1').style.display = 'block'; };
+$('#glVolver2').onclick = () => { $('#glPaso3').style.display = 'none';
+  if (glPend && glPend.cands && glPend.cands.length > 1) $('#glPaso2').style.display = 'block';
+  else $('#glPaso1').style.display = 'block'; };
+
+$('#glOlvide').onclick = async () => {
+  if (!glPend) return;
+  if (!confirm('Esto borra la contraseña guardada en este teléfono para tu legajo y te deja crear una nueva ahora. ¿Seguir?')) return;
+  await DB.del('auth:' + glPend.legajo);
+  $('#glCrear').style.display = 'block'; $('#glIngresar').style.display = 'none';
+  $('#glPass1').value = ''; $('#glPass2').value = ''; setTimeout(() => $('#glPass1').focus(), 60);
+};
+
+$('#glEntrar').onclick = async () => {
+  if (!glPend || !glPend.rol) return;
+  const { legajo, nombreTip, rol, r } = glPend;
+  const creando = $('#glCrear').style.display !== 'none';
+  if (creando) {
+    const p1 = $('#glPass1').value, p2 = $('#glPass2').value;
+    if (p1.length < 4) return mostrarErrGl('La contraseña tiene que tener al menos 4 caracteres.');
+    if (p1 !== p2) return mostrarErrGl('Las dos contraseñas no coinciden.');
+    await guardarClave(legajo, p1);
+  } else {
+    const p3 = $('#glPass3').value;
+    if (!p3) return mostrarErrGl('Ingresá tu contraseña.');
+    if (!(await verificarClave(legajo, p3))) return mostrarErrGl('Contraseña incorrecta.');
+  }
+  ST.login = { rol, legajo, nombre: r.nombre || nombreTip, bases: r.bases,
+    basesAbastecidas: r.basesAbastecidas || null };
+  LS.set('pq_login', ST.login);
+  cerrarLogin(); renderSesion();
+  if (ST.rowsRaw.length) aplicarScope(); else renderInicio();
+  toast('Hola, ' + (r.nombre || nombreTip).split(' ')[0] +
+    (r.bases && r.bases.length ? ' · ' + r.bases[0].desc + (r.bases.length > 1 ? ' y ' + (r.bases.length - 1) + ' más' : '')
+      : ' · acceso a todo el país'));
 };
 function mostrarErrGl(m) { $('#glErrMsg').textContent = m; $('#glErr').style.display = 'block'; }
 function mostrarErrGl0(m) { $('#glErr0Msg').textContent = m; $('#glErr0').style.display = 'block'; }
@@ -1486,6 +1799,34 @@ $('#btnCambiarUser').onclick = () => { ST.login = null; LS.set('pq_login', null)
   if (ST.rowsRaw.length) aplicarScope(); abrirLogin(); };
 
 /* ══════════════ FACETAS Y BÚSQUEDA ══════════════ */
+/* ══════════════════════════════════════════════════════════════════════
+   Hojas de «Filtrar y ordenar» — helpers compartidos por Stock, Movimientos
+   y Pedidos. Cada sección arma su propia hoja (categorías/orden propios),
+   pero las tres usan el mismo look: pills de orden, tabs de categoría,
+   filas de checkbox multi-selección, y una barra fija con «Limpiar todo» +
+   «Aplicar filtros (N)». Los cambios quedan en un borrador (draft) hasta
+   tocar Aplicar — cerrar la hoja sin aplicar descarta el borrador.
+   ══════════════════════════════════════════════════════════════════════ */
+const CHK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" ' +
+  'stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
+function chkRow(val, lb, n, on, selall) {
+  return '<button type="button" class="chkrow' + (on ? ' on' : '') + (selall ? ' selall' : '') +
+    '" data-v="' + esc(val) + '"' + (selall ? ' data-selall="1"' : '') + '>' +
+    '<span class="chkbox">' + CHK_SVG + '</span><span class="lb">' + esc(lb) + '</span>' +
+    (n != null ? '<span class="cnt">' + nfmt(n) + '</span>' : '') + '</button>';
+}
+function sortPill(val, lb, on) {
+  return '<button type="button" class="sortpill' + (on ? ' on' : '') + '" data-sort="' + esc(val) + '">' + esc(lb) + '</button>';
+}
+function catTab(key, lb, on, badge) {
+  return '<button type="button" class="cattab' + (on ? ' on' : '') + '" data-cat="' + esc(key) + '">' + esc(lb) +
+    (badge ? ' (' + badge + ')' : '') + '</button>';
+}
+/* alterna un valor dentro de un array del borrador (in-place) */
+function toggleEnArray(arr, v) {
+  const i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); return arr;
+}
+
 const FAC = { tipo: [], marca: [], maquina: [], unidad: [] };
 function buildFacets() {
   const f = { tipo: new Map(), marca: new Map(), maquina: new Map(), unidad: new Map() };
@@ -1501,22 +1842,10 @@ function buildFacets() {
 
 function doSearch() {
   const toks = norm(ST.q).split(' ').filter(Boolean);
-  const { tipo, marca, maquina, unidad } = ST.filtros, res = [];
-  const kf = ST.kpiFiltro;
+  const res = [];
   for (const r of ST.rows) {
-    if (tipo && r.tipo !== tipo) continue;
-    if (marca && r.marca !== marca) continue;
-    if (maquina && r.maq !== maquina) continue;
-    if (unidad && r.un !== unidad) continue;
-    if (kf === 'con-stock' && !(r.C + r.A > 0)) continue;
-    if (kf === 'sin-stock' && !(r.C + r.A === 0)) continue;
-    if (kf === 'sin-rotacion' && !(r.rot != null && r.rot >= 24 && (r.C + r.A) > 0)) continue;
-    if (kf === 'sin-rotacion-3' && !(r.rot != null && r.rot > 3 && (r.C + r.A) > 0)) continue;
-    if (kf === 'central' && !(r.C > 0)) continue;
-    if (kf === 'planta-alta' && !(r.A > 0)) continue;
-    if (ST.sinRot && !(r.rot != null && r.rot > 3 && (r.C + r.A) > 0)) continue;
-    /* roles acotados: ocultar productos con 0 stock en sus bases */
-    if (ST.scope !== null && !kf && (r.C + r.A) <= 0) continue;
+    if (!pasaFiltrosStock(r, { tipo: ST.filtros.tipo, marca: ST.filtros.marca,
+      maquina: ST.filtros.maquina, unidad: ST.filtros.unidad, sinRot: ST.sinRot })) continue;
     if (toks.length) { let ok = true;
       for (const t of toks) if (r._s.indexOf(t) < 0) { ok = false; break; } if (!ok) continue; }
     res.push(r);
@@ -1526,6 +1855,10 @@ function doSearch() {
   const sug = $('#sugBox');
   if (ST.orden === 'az') {
     res.sort((a, b) => (a.desc || a.cod).localeCompare(b.desc || b.cod, 'es', { sensitivity: 'base' }));
+  } else if (ST.orden === 'stock') {
+    res.sort((a, b) => (b.C + b.A) - (a.C + a.A) || a.cod.localeCompare(b.cod, 'es', { numeric: true }));
+  } else if (ST.orden === 'cod') {
+    res.sort((a, b) => a.cod.localeCompare(b.cod, 'es', { numeric: true }));
   } else if (toks.length) {
     for (const r of res) r._sc = scoreRow(r, qn0, qnn, toks);
     res.sort((a, b) => b._sc - a._sc || a.cod.localeCompare(b.cod, 'es', { numeric: true }));
@@ -1548,7 +1881,73 @@ function doSearch() {
     '<p>Andá a <b>Datos</b> y elegí el Excel de Stock por Producto.</p>' +
     '<button class="mini pri" onclick="go(\'vDatos\')">Ir a Datos</button></div>';
   else if (!n) $('#list').innerHTML = '<div class="empty"><h3>Sin resultados</h3><p>Probá con menos palabras o sacá algún filtro.</p></div>';
+  renderTPEntry();
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   TERMINAL PANAMERICANA (base 07) — único caso de la app con serie,
+   despacho y desglose por pallet, y con sectores propios (no Central/Alta
+   Planta). Banner de entrada visible en Stock sólo cuando el Excel cargado
+   trae líneas de esa base (ST.rows[].tp).
+   ══════════════════════════════════════════════════════════════════════ */
+function tpDisponible() { return ST.rows.some(r => r.tp && r.tp.length); }
+function renderTPEntry() {
+  const el = $('#tpEntry'); if (el) el.style.display = tpDisponible() ? 'block' : 'none';
+}
+function tpLineas() {
+  const out = [];
+  for (const r of ST.rows) { if (!r.tp || !r.tp.length) continue;
+    for (const l of r.tp) out.push({ cod: r.cod, desc: r.desc, maq: r.maq, tipo: r.tipo,
+      sector: l.sector, secDesc: l.secDesc, cant: l.cant, serie: l.serie,
+      despacho: l.despacho, uxpallet: l.uxpallet, pallets: l.pallets }); }
+  return out;
+}
+function pintarTPSecs() {
+  const box = $('#tpSecs'); if (!box) return;
+  const todas = tpLineas();
+  const conteo = {};
+  for (const l of todas) { const s = l.sector || '?'; conteo[s] = (conteo[s] || 0) + 1; }
+  const btn = (sec, lb, n) => '<button type="button" class="chip' + (ST.tpSector === sec ? ' on' : '') +
+    '" data-sec="' + esc(sec) + '"><b>' + esc(lb) + '</b>' + (n ? ' <span class="car">' + n + '</span>' : '') + '</button>';
+  let h = btn('', 'Todas', todas.length);
+  for (const cod of ORDEN_SECTORES_TP) if (conteo[cod]) h += btn(cod, cod + ' · ' + SECTORES_TP[cod], conteo[cod]);
+  box.innerHTML = h;
+}
+function abrirTP() {
+  if (!tpDisponible()) return;
+  ST.tpSector = ''; ST.tpQ = ''; $('#tpQ').value = '';
+  pintarTPSecs(); doSearchTP(); openSheet('#shTP');
+  setTimeout(() => $('#tpQ').focus(), 150);
+}
+function doSearchTP() {
+  const toks = norm(ST.tpQ).split(' ').filter(Boolean);
+  let items = tpLineas();
+  if (ST.tpSector) items = items.filter(l => l.sector === ST.tpSector);
+  if (toks.length) items = items.filter(l => {
+    const hay = norm(l.cod + ' ' + l.desc + ' ' + l.maq); return toks.every(t => hay.indexOf(t) >= 0);
+  });
+  items.sort((a, b) => a.cod.localeCompare(b.cod, 'es', { numeric: true }) || a.sector.localeCompare(b.sector));
+  $('#tpCnt').textContent = items.length.toLocaleString('es-AR') + (items.length === 1 ? ' línea' : ' líneas');
+  $('#tpList').innerHTML = items.length ? items.map(it =>
+    '<div class="panel" style="margin-bottom:10px">' +
+      '<div class="sku-hd" style="margin-bottom:6px">' +
+        '<span class="sku-i"><span class="sku-cod">' + esc(it.cod) + '</span>' +
+        '<span class="sku-dsc">' + esc(it.desc || it.maq || '—') + '</span></span>' +
+        '<span class="qty flat" style="font-size:10.5px;height:auto;padding:4px 8px;border-radius:8px">' +
+          esc(SECTORES_TP[it.sector] || it.secDesc || it.sector || '—') + '</span></div>' +
+      '<div class="kv"><span>Cantidad</span><b class="num">' + nfmt(it.cant) + '</b></div>' +
+      '<div class="kv"><span>Unidades por pallet</span><b>' + (it.uxpallet != null ? nfmt(it.uxpallet) : '—') + '</b></div>' +
+      '<div class="kv"><span>Pallets en stock</span><b>' + (it.pallets != null ? nfmt(it.pallets) : '—') + '</b></div>' +
+      '<div class="kv"><span>Serie</span><b>' + (it.serie ? esc(it.serie) : '—') + '</b></div>' +
+      '<div class="kv"><span>Despacho</span><b>' + (it.despacho ? esc(it.despacho) : '—') + '</b></div>' +
+    '</div>').join('')
+    : '<p class="note">Sin líneas para este filtro.</p>';
+}
+$('#tpEntry').addEventListener('click', abrirTP);
+$('#tpEntry').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirTP(); } });
+$('#tpSecs').addEventListener('click', e => { const b = e.target.closest('[data-sec]'); if (!b) return;
+  ST.tpSector = b.dataset.sec; pintarTPSecs(); doSearchTP(); });
+$('#tpQ').addEventListener('input', e => { ST.tpQ = e.target.value; doSearchTP(); });
 
 const depCls = v => v <= 0 ? 'zero' : v < 3 ? 'low' : 'has';
 const depSt  = v => v <= 0 ? { t:'Sin stock', i:'✕' } : v < 3 ? { t:'Stock bajo', i:'!' } : { t:'Disponible', i:'✓' };
@@ -1651,19 +2050,28 @@ function renderPage() {
   const buf = [];
   for (let i = ST.shown; i < end; i++) {
     const r = ST.res[i];
-    const fuentes = ST.scope === null
-      ? [{ lb: 'Almac\u00e9n CENTRAL', cls: 'a', cant: r.C, ubis: r.uC },
-         { lb: 'Planta alta',        cls: 'b', cant: r.A, ubis: r.uA }]
-      : [{ lb: (ST.scope.length > 1 ? 'Tus bases'
+    let fuentes, totExtra;
+    if (ST.scope === null) {
+      /* Planificación/nacional ve el país entero, no sólo Central/Alta: cada
+         base que tenga stock aparece nombrada en el desglose — nunca un
+         "otros: N" genérico que obliga a abrir la ficha para saber cuál. */
+      fuentes = [
+        { lb: 'Almac\u00e9n CENTRAL', cls: 'a', cant: r.C, ubis: r.uC },
+        { lb: 'Planta alta',        cls: 'b', cant: r.A, ubis: r.uA }
+      ];
+      for (const o of (r.otros || [])) if (o[1] > 0)
+        fuentes.push({ lb: o[0], cls: 'c', cant: o[1], ubis: o[2] ? [[o[2], o[1]]] : [] });
+      totExtra = r.tot === 0 ? ' \u00b7 <b style="color:var(--crit)">Sin stock pa\u00eds</b>' : '';
+    } else {
+      fuentes = [{ lb: (ST.scope.length > 1 ? 'Tus bases'
               : ((depInfo(ST.scope[0]) || {}).desc || ST.scope[0])),
            cls: 'a', cant: r.C, ubis: r.uC }];
-    const otros = r.tot - r.C - r.A;
+      totExtra = '';
+    }
     buf.push(filaSKU(r, {
       i: i, toks: toks, cant: r.C + r.A, fuentes: fuentes, expandible: true,
       totLb: ST.scope === null ? 'Pa\u00eds' : (ST.scope.length > 1 ? 'Tus bases' : 'Tu base'),
-      tot: r.tot,
-      totExtra: (ST.scope === null && otros > 0)
-        ? ' \u00b7 otros <b class="num">' + nfmt(otros) + '</b>' : ''
+      tot: r.tot, totExtra: totExtra
     }));
   }
   const tmp = document.createElement('div');
@@ -1691,6 +2099,37 @@ const lblStock = () => ST.scope === null ? 'en Haedo' : (ST.scope.length > 1 ? '
 const KPI_LB = { get 'con-stock'() { return 'Con stock ' + lblStock(); }, 'sin-stock': 'Sin stock',
   'sin-rotacion': 'Sin rotación +24m', 'sin-rotacion-3': 'Material sin rotación (>3 meses)',
   'central': 'Almacén Central', 'planta-alta': 'Planta Alta' };
+/* Predicado único de filtros de Stock — lo usan doSearch() (con ST.filtros,
+   ya aplicados) Y el contador en vivo de la hoja (con el borrador, antes de
+   aplicar). f es siempre { tipo:[], marca:[], maquina:[], unidad:[], sinRot } */
+function pasaFiltrosStock(r, f) {
+  if (f.tipo.length && !f.tipo.includes(r.tipo)) return false;
+  if (f.marca.length && !f.marca.includes(r.marca)) return false;
+  if (f.maquina.length && !f.maquina.includes(r.maq)) return false;
+  if (f.unidad.length && !f.unidad.includes(r.un)) return false;
+  const kf = ST.kpiFiltro;
+  if (kf === 'con-stock' && !(r.C + r.A > 0)) return false;
+  if (kf === 'sin-stock' && !(r.C + r.A === 0)) return false;
+  if (kf === 'sin-rotacion' && !(r.rot != null && r.rot >= 24 && (r.C + r.A) > 0)) return false;
+  if (kf === 'sin-rotacion-3' && !(r.rot != null && r.rot > 3 && (r.C + r.A) > 0)) return false;
+  if (kf === 'central' && !(r.C > 0)) return false;
+  if (kf === 'planta-alta' && !(r.A > 0)) return false;
+  if (f.sinRot && !(r.rot != null && r.rot > 3 && (r.C + r.A) > 0)) return false;
+  if (ST.scope !== null && !kf && (r.C + r.A) <= 0) return false;
+  return true;
+}
+function contarStockFiltro(f, q) {
+  const toks = norm(q != null ? q : ST.q).split(' ').filter(Boolean);
+  let n = 0;
+  for (const r of ST.rows) { if (!pasaFiltrosStock(r, f)) continue;
+    if (toks.length) { let ok = true; for (const t of toks) if (r._s.indexOf(t) < 0) { ok = false; break; } if (!ok) continue; }
+    n++; }
+  return n;
+}
+
+/* Barra superior de Stock: ya no hay un chip por categoría — sólo el punto
+   de entrada a la hoja de filtros (con contador de activos), el toggle
+   rápido de KPI (si viene de Inicio) y «Limpiar». */
 function renderChips() {
   const c = $('#chips'); c.innerHTML = '';
   if (ST.kpiFiltro) {
@@ -1700,49 +2139,88 @@ function renderChips() {
     b.onclick = () => { ST.kpiFiltro = ''; renderChips(); doSearch(); };
     c.appendChild(b);
   }
-  for (const d of [{k:'tipo',lb:'Tipo'},{k:'marca',lb:'Marca'},{k:'maquina',lb:'Máquina'},{k:'unidad',lb:'Unidad negocio'}]) {
-    if (!FAC[d.k].length) continue;
-    const on = !!ST.filtros[d.k], b = document.createElement('button');
-    b.className = 'chip' + (on ? ' on' : '');
-    b.innerHTML = on ? '<b>' + esc(ST.filtros[d.k]) + '</b><span>&times;</span>'
-                     : esc(d.lb) + ' <span class="car">▾</span>';
-    b.onclick = () => { if (on) { ST.filtros[d.k] = ''; renderChips(); doSearch(); } else openFiltro(d.k, d.lb); };
-    c.appendChild(b);
-  }
-  const az = document.createElement('button');
-  az.className = 'chip' + (ST.orden === 'az' ? ' on' : '');
-  az.innerHTML = ST.orden === 'az' ? '<b>A → Z</b><span>&times;</span>' : 'Ordenar A → Z';
-  az.onclick = () => { ST.orden = ST.orden === 'az' ? '' : 'az'; renderChips(); doSearch(); };
-  c.appendChild(az);
+  const activos = ST.filtros.tipo.length + ST.filtros.marca.length + ST.filtros.maquina.length +
+    ST.filtros.unidad.length + (ST.sinRot ? 1 : 0) + (ST.orden ? 1 : 0);
+  const fb = document.createElement('button');
+  fb.className = 'chip' + (activos ? ' on' : '');
+  fb.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" ' +
+    'stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>' +
+    '<b>Filtrar y ordenar' + (activos ? ' (' + activos + ')' : '') + '</b>';
+  fb.onclick = abrirFiltroStock;
+  c.appendChild(fb);
 
-  const sr = document.createElement('button');
-  sr.className = 'chip' + (ST.sinRot ? ' on' : '');
-  sr.innerHTML = ST.sinRot ? '<b>Sin rotación</b><span>&times;</span>' : 'Sin rotación (+3m)';
-  sr.onclick = () => { ST.sinRot = !ST.sinRot; renderChips(); doSearch(); };
-  c.appendChild(sr);
-
-  if (ST.kpiFiltro || ST.orden || ST.sinRot || Object.values(ST.filtros).some(Boolean)) {
+  if (ST.kpiFiltro || activos) {
     const b = document.createElement('button');
-    b.className = 'chip'; b.textContent = 'Limpiar filtros';
+    b.className = 'chip'; b.textContent = 'Limpiar todo';
     b.onclick = () => { ST.kpiFiltro = ''; ST.orden = ''; ST.sinRot = false;
-      ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' }; renderChips(); doSearch(); };
+      ST.filtros = { tipo: [], marca: [], maquina: [], unidad: [] }; renderChips(); doSearch(); };
     c.appendChild(b);
   }
 }
-let fKey = '';
-function openFiltro(k, lb) { fKey = k; $('#fTit').textContent = lb; $('#fSearch').value = '';
-  paintOpts(''); openSheet('#shFiltro'); setTimeout(() => $('#fSearch').focus(), 120); }
-function paintOpts(term) {
-  const t = norm(term), list = FAC[fKey].filter(o => !t || norm(o.v).includes(t)).slice(0, 300);
-  let h = '<button class="opt' + (ST.filtros[fKey] ? '' : ' on') + '" data-v=""><span class="n">Todas</span></button>';
-  for (const o of list) h += '<button class="opt' + (ST.filtros[fKey] === o.v ? ' on' : '') + '" data-v="' + esc(o.v) +
-    '"><span class="n">' + esc(o.v) + '</span><span class="c">' + o.n.toLocaleString('es-AR') + '</span></button>';
-  if (!list.length) h += '<p class="note">Sin coincidencias.</p>';
-  $('#fOpts').innerHTML = h;
+
+const ORDEN_OPTS_STOCK = [
+  { k: '', lb: 'Relevancia' }, { k: 'stock', lb: 'Stock: mayor a menor' },
+  { k: 'az', lb: 'Descripción A-Z' }, { k: 'cod', lb: 'Código' }
+];
+const FILTRO_CATS_STOCK = [
+  { k: 'tipo', lb: 'Tipo' }, { k: 'marca', lb: 'Marca' },
+  { k: 'maquina', lb: 'Máquina' }, { k: 'unidad', lb: 'Unidad negocio' }
+];
+let fCatSel = 'tipo', fDraft = null, fDraftOrden = '', fDraftSinRot = false;
+
+function abrirFiltroStock() {
+  fDraft = { tipo: ST.filtros.tipo.slice(), marca: ST.filtros.marca.slice(),
+    maquina: ST.filtros.maquina.slice(), unidad: ST.filtros.unidad.slice() };
+  fDraftOrden = ST.orden; fDraftSinRot = ST.sinRot; fCatSel = 'tipo';
+  pintarFiltroSheetStock(); openSheet('#shFiltro');
+  setTimeout(() => $('#fSearch').focus(), 150);
 }
-$('#fSearch').addEventListener('input', e => paintOpts(e.target.value));
-$('#fOpts').addEventListener('click', e => { const b = e.target.closest('.opt'); if (!b) return;
-  ST.filtros[fKey] = b.dataset.v; closeSheet('#shFiltro'); renderChips(); doSearch(); });
+function pintarFiltroSheetStock() {
+  $('#fSort').innerHTML = ORDEN_OPTS_STOCK.map(o => sortPill(o.k, o.lb, fDraftOrden === o.k)).join('');
+  $('#fCats').innerHTML = FILTRO_CATS_STOCK.map(c =>
+    catTab(c.k, c.lb, fCatSel === c.k, fDraft[c.k].length || '')).join('') +
+    catTab('sinRot', 'Rotación', fCatSel === 'sinRot', fDraftSinRot ? '1' : '');
+  $('#fSearch').value = '';
+  $('#fSearch').style.display = fCatSel === 'sinRot' ? 'none' : 'block';
+  pintarFOpts('');
+  actualizarBarraFiltroStock();
+}
+function pintarFOpts(term) {
+  if (fCatSel === 'sinRot') {
+    $('#fOpts').innerHTML = chkRow('sinRot', 'Sin rotación hace más de 3 meses', null, fDraftSinRot);
+    return;
+  }
+  const t = norm(term), list = FAC[fCatSel].filter(o => !t || norm(o.v).includes(t)).slice(0, 300);
+  const sel = fDraft[fCatSel];
+  let h = chkRow('', '(Todas)', list.length, sel.length === 0, true);
+  for (const o of list) h += chkRow(o.v, o.v, o.n, sel.includes(o.v));
+  $('#fOpts').innerHTML = h || '<p class="note">Sin coincidencias.</p>';
+}
+function actualizarBarraFiltroStock() {
+  const previo = { tipo: fDraft.tipo, marca: fDraft.marca, maquina: fDraft.maquina, unidad: fDraft.unidad, sinRot: fDraftSinRot };
+  $('#fAplicar').textContent = 'Aplicar filtros (' + nfmt(contarStockFiltro(previo)) + ')';
+}
+$('#fSearch').addEventListener('input', e => pintarFOpts(e.target.value));
+$('#fCats').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (!b) return;
+  fCatSel = b.dataset.cat; pintarFiltroSheetStock(); });
+$('#fSort').addEventListener('click', e => { const b = e.target.closest('[data-sort]'); if (!b) return;
+  fDraftOrden = b.dataset.sort; pintarFiltroSheetStock(); });
+$('#fOpts').addEventListener('click', e => {
+  const b = e.target.closest('[data-selall]');
+  if (b) { if (fCatSel !== 'sinRot') fDraft[fCatSel] = []; pintarFiltroSheetStock(); return; }
+  const opt = e.target.closest('.chkrow'); if (!opt) return;
+  if (fCatSel === 'sinRot') { fDraftSinRot = !fDraftSinRot; }
+  else toggleEnArray(fDraft[fCatSel], opt.dataset.v);
+  pintarFiltroSheetStock();
+});
+$('#fLimpiar').onclick = () => {
+  fDraft = { tipo: [], marca: [], maquina: [], unidad: [] }; fDraftOrden = ''; fDraftSinRot = false;
+  pintarFiltroSheetStock();
+};
+$('#fAplicar').onclick = () => {
+  ST.filtros = fDraft; ST.orden = fDraftOrden; ST.sinRot = fDraftSinRot;
+  closeSheet('#shFiltro'); renderChips(); doSearch();
+};
 
 /* ══════════════ MEMORIA LOCAL DEL DÍA ══════════════
    Todo en localStorage del propio celular: sin nube, sin servidor, sin internet.
@@ -2336,7 +2814,7 @@ function renderDatos() {
 
 /* ══════════════ CARGA ══════════════ */
 async function applyData(res, persist) {
-  ST.rowsRaw = res.rows; ST.meta = res.meta; ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' };
+  ST.rowsRaw = res.rows; ST.meta = res.meta; ST.filtros = { tipo: [], marca: [], maquina: [], unidad: [] };
   aplicarScope();                     /* arma ST.rows según el login actual y re-renderiza todo */
   if (persist !== false) { await DB.set('rows', ST.rowsRaw); await DB.set('meta', ST.meta); }
 }
@@ -2731,11 +3209,27 @@ function renderPedidos() {
 function pintarTabPd() {
   const esSug = ST.pdTab === 'sug';
   $('#sugBox2').style.display = esSug ? 'flex' : 'none';
+  renderChipsPd();
   if (esSug) doSearchSug(); else doSearchPd();
 }
 
 function renderChipsPd() {
-  const c = $('#pdChips'); if (c) c.innerHTML = '';
+  const c = $('#pdChips'); if (!c) return; c.innerHTML = '';
+  if (!ST.fr || !ST.pdBase || ST.pdTab === 'sug') return;   /* Stock sugerido no sale del Fill Rate */
+  const f = ST.pdFiltros;
+  const activos = f.tec.length + (ST.pdTab === 'prep' ? f.clas.length : 0) + (ST.pdOrden ? 1 : 0);
+  const fb = document.createElement('button');
+  fb.className = 'chip' + (activos ? ' on' : '');
+  fb.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" ' +
+    'stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>' +
+    '<b>Filtrar y ordenar' + (activos ? ' (' + activos + ')' : '') + '</b>';
+  fb.onclick = abrirFiltroPd;
+  c.appendChild(fb);
+  if (activos) {
+    const b = document.createElement('button'); b.className = 'chip'; b.textContent = 'Limpiar todo';
+    b.onclick = () => { ST.pdFiltros = { tec: [], clas: [] }; ST.pdOrden = ''; renderChipsPd(); pintarTabPd(); };
+    c.appendChild(b);
+  }
 }
 
 function renderGrillaBasesPd(bases) {
@@ -2906,20 +3400,102 @@ $('#pdList').addEventListener('click', e => {
 
 let tsug;
 $('#sugQ').addEventListener('input', e => { ST.sugQ = e.target.value;
-  $('#sugQClear').classList.toggle('on', !!ST.sugQ);
-  clearTimeout(tsug); tsug = setTimeout(doSearchSug, 120); });
+  $('#sugQClear').classList.toggle('on', !!ST.sugQ); histPd.ocultarYa();
+  clearTimeout(tsug); tsug = setTimeout(() => { doSearchSug(); histPd.registrar(ST.sugQ); }, 120); });
 $('#sugQClear').addEventListener('click', () => { ST.sugQ = ''; $('#sugQ').value = '';
   $('#sugQClear').classList.remove('on'); doSearchSug(); });
 
+/* Predicado de Técnico + Clasificación — lo usan doSearchPd (filtros ya
+   aplicados) y el contador en vivo de la hoja (con el borrador). La
+   clasificación sólo existe en la solapa Preparados; en las demás se ignora. */
+function pasaFiltrosPd(r, f) {
+  if (f.tec.length && !f.tec.includes(r.tec)) return false;
+  if (ST.pdTab === 'prep' && f.clas.length && !f.clas.includes(r.clase)) return false;
+  return true;
+}
+function contarPdFiltro(f) {
+  if (!ST.fr || !ST.pdBase) return 0;
+  let n = 0;
+  for (const r of ST.fr) { if (r.grupo !== ST.pdTab || r.dep !== ST.pdBase) continue;
+    if (!pasaFiltrosPd(r, f)) continue; n++; }
+  return n;
+}
 function doSearchPd() {
-  const res = ST.fr.filter(r => r.grupo === ST.pdTab && r.dep === ST.pdBase);
-  res.sort((a, b) => (b.fSolic ? +b.fSolic : 0) - (a.fSolic ? +a.fSolic : 0));
+  const f = ST.pdFiltros;
+  const res = ST.fr.filter(r => r.grupo === ST.pdTab && r.dep === ST.pdBase && pasaFiltrosPd(r, f));
+  if (ST.pdOrden === 'sol') res.sort((a, b) => b.sol - a.sol);
+  else if (ST.pdOrden === 'tec') res.sort((a, b) => nombreCompleto(a.tec).localeCompare(nombreCompleto(b.tec), 'es'));
+  else res.sort((a, b) => (b.fSolic ? +b.fSolic : 0) - (a.fSolic ? +a.fSolic : 0));
   ST.pdRes = res; ST.pdShown = 0; $('#pdList').innerHTML = '';
   renderPagePd();
   const n = res.length;
   $('#pdCntTxt').textContent = (n === 0 ? 'Sin resultados' : n.toLocaleString('es-AR') + (n === 1 ? ' línea' : ' líneas')) +
     ' · base ' + ST.pdBase;
 }
+
+/* ── Hoja «Filtrar y ordenar» de Pedidos: Técnico + Clasificación ── */
+const ORDEN_OPTS_PD = [
+  { k: '', lb: 'Fecha solicitud: más reciente' }, { k: 'sol', lb: 'Cantidad solicitada: mayor a menor' },
+  { k: 'tec', lb: 'Técnico A-Z' }
+];
+let pdfCatSel = 'tec', pdfDraft = null, pdfDraftOrden = '';
+function pdCategorias() {
+  const cats = [{ k: 'tec', lb: 'Técnico' }];
+  if (ST.pdTab === 'prep') cats.push({ k: 'clas', lb: 'Clasificación' });
+  return cats;
+}
+function pdTecnicos() {
+  const counts = new Map();
+  for (const r of ST.fr) { if (r.grupo !== ST.pdTab || r.dep !== ST.pdBase) continue;
+    const k = r.tec || ''; counts.set(k, (counts.get(k) || 0) + 1); }
+  return Array.from(counts, ([v, n]) => ({ v, n })).sort((a, b) => b.n - a.n || a.v.localeCompare(b.v, 'es'));
+}
+function abrirFiltroPd() {
+  pdfDraft = { tec: ST.pdFiltros.tec.slice(), clas: ST.pdFiltros.clas.slice() };
+  pdfDraftOrden = ST.pdOrden; pdfCatSel = 'tec';
+  pintarFiltroSheetPd(); openSheet('#shFiltroPd');
+  setTimeout(() => $('#pdfSearch').focus(), 150);
+}
+function pintarPdfBody(term) {
+  const box = $('#pdfBody');
+  if (pdfCatSel === 'clas') {
+    box.innerHTML = chkRow('', '(Todas)', null, pdfDraft.clas.length === 0, true) +
+      chkRow('ON_TIME', 'ON TIME', null, pdfDraft.clas.includes('ON_TIME')) +
+      chkRow('LATE', 'LATE', null, pdfDraft.clas.includes('LATE'));
+    return;
+  }
+  const t = norm(term || ''), list = pdTecnicos().filter(o => !t || norm(nombreCompleto(o.v)).includes(t));
+  const total = list.reduce((a, o) => a + o.n, 0);
+  let h = chkRow('', '(Todas)', total, pdfDraft.tec.length === 0, true);
+  for (const o of list) h += chkRow(o.v, nombreCompleto(o.v) || '(sin técnico)', o.n, pdfDraft.tec.includes(o.v));
+  $('#pdfBody').innerHTML = h || '<p class="note">Sin coincidencias.</p>';
+}
+function pintarFiltroSheetPd() {
+  $('#pdfSort').innerHTML = ORDEN_OPTS_PD.map(o => sortPill(o.k, o.lb, pdfDraftOrden === o.k)).join('');
+  $('#pdfCats').innerHTML = pdCategorias().map(c => catTab(c.k, c.lb, pdfCatSel === c.k,
+    (c.k === 'tec' ? pdfDraft.tec.length : pdfDraft.clas.length) || '')).join('');
+  $('#pdfSearch').value = ''; $('#pdfSearch').style.display = pdfCatSel === 'clas' ? 'none' : 'block';
+  pintarPdfBody('');
+  actualizarBarraFiltroPd();
+}
+function actualizarBarraFiltroPd() { $('#pdfAplicar').textContent = 'Aplicar filtros (' + nfmt(contarPdFiltro(pdfDraft)) + ')'; }
+$('#pdfSearch').addEventListener('input', e => { pintarPdfBody(e.target.value); actualizarBarraFiltroPd(); });
+$('#pdfCats').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (!b) return;
+  pdfCatSel = b.dataset.cat; pintarFiltroSheetPd(); });
+$('#pdfSort').addEventListener('click', e => { const b = e.target.closest('[data-sort]'); if (!b) return;
+  pdfDraftOrden = b.dataset.sort; pintarFiltroSheetPd(); });
+$('#pdfBody').addEventListener('click', e => {
+  const key = pdfCatSel === 'clas' ? 'clas' : 'tec';
+  if (e.target.closest('[data-selall]')) { pdfDraft[key] = []; pintarFiltroSheetPd(); return; }
+  const opt = e.target.closest('.chkrow'); if (!opt) return;
+  toggleEnArray(pdfDraft[key], opt.dataset.v);
+  pintarFiltroSheetPd();
+});
+$('#pdfLimpiar').onclick = () => { pdfDraft = { tec: [], clas: [] }; pdfDraftOrden = ''; pintarFiltroSheetPd(); };
+$('#pdfAplicar').onclick = () => {
+  ST.pdFiltros = pdfDraft; ST.pdOrden = pdfDraftOrden;
+  closeSheet('#shFiltroPd'); renderChipsPd(); doSearchPd();
+};
 
 function renderPagePd() {
   const end = Math.min(ST.pdShown + ST.pdPage, ST.pdRes.length);
@@ -3034,10 +3610,6 @@ async function todosLosXlsx(dir) {
 /* La actualización vive sólo en «Acerca de». Tener el botón acá también hacía
    que se disparara sin querer una lectura completa de la red desde el celular,
    donde ni siquiera es posible. */
-function renderChipsMov() {
-  const c = $('#mvChips'); if (c) c.innerHTML = '';
-}
-
 /* Bases que este login puede mirar en Movimientos. Nacional/Planificación ve
    todas las que aparezcan en el CIOT; el resto, sólo las de su scope.
    Nodos y Haedo nunca generan CIOT, así que quedan fuera siempre. */
@@ -3048,17 +3620,41 @@ function basesMovimientos() {
   return enDatos.filter(c => permitidas.has(c)).sort();
 }
 
-/* Un técnico con una sola base entra directo; supervisor/nacional elige primero. */
+/* Barra de entrada a la hoja de filtros de Movimientos (fecha + base). */
+function renderChipsMov() {
+  const c = $('#mvChips'); if (!c) return; c.innerHTML = '';
+  if (!ST.ciot.length) return;
+  const f = ST.mvFiltros;
+  const activos = (f.desde ? 1 : 0) + (f.hasta ? 1 : 0) + f.bases.length + (ST.mvOrden ? 1 : 0);
+  const fb = document.createElement('button');
+  fb.className = 'chip' + (activos ? ' on' : '');
+  fb.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" ' +
+    'stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>' +
+    '<b>Filtrar y ordenar' + (activos ? ' (' + activos + ')' : '') + '</b>';
+  fb.onclick = abrirFiltroMov;
+  c.appendChild(fb);
+  if (activos) {
+    const b = document.createElement('button'); b.className = 'chip'; b.textContent = 'Limpiar todo';
+    b.onclick = () => { ST.mvFiltros = { desde: '', hasta: '', bases: [] }; ST.mvOrden = ''; renderMovimientos(); };
+    c.appendChild(b);
+  }
+}
+
+/* Un técnico con una sola base entra directo; supervisor/nacional elige
+   primero — salvo que ya haya elegido varias bases desde el filtro
+   («combinada»), en cuyo caso se saltea la grilla de selección. */
 function renderMovimientos() {
   const bases = basesMovimientos();
   const unaSola = bases.length === 1;
   if (unaSola) ST.mvBase = bases[0];
-  const eligiendo = !ST.mvBase && ST.ciot.length > 0;
+  const combinada = ST.mvFiltros.bases.length > 0;
+  const eligiendo = !ST.mvBase && !combinada && ST.ciot.length > 0;
 
   $('#mvBases').style.display = eligiendo ? 'block' : 'none';
   $('#mvDetalle').style.display = eligiendo ? 'none' : 'block';
-  $('#mvBaseBar').style.display = (!eligiendo && !unaSola && ST.mvBase) ? 'block' : 'none';
+  $('#mvBaseBar').style.display = (!eligiendo && !unaSola && (ST.mvBase || combinada)) ? 'block' : 'none';
   document.querySelector('#vMovimientos .sbox').style.display = eligiendo ? 'none' : 'flex';
+  renderChipsMov();
 
   if (eligiendo) { renderGrillaBasesMov(bases); return; }
   doSearchMov();
@@ -3089,22 +3685,48 @@ $('#mvBases').addEventListener('click', e => {
   renderMovimientos();
 });
 $('#mvBack').addEventListener('click', () => {
-  ST.mvBase = null; ST.mvQ = ''; $('#mvQ').value = ''; renderMovimientos();
+  ST.mvBase = null; ST.mvFiltros.bases = []; ST.mvQ = ''; $('#mvQ').value = ''; renderMovimientos();
 });
 
+/* Predicado de fecha + base — lo usan doSearchMov (filtros ya aplicados) y
+   el contador en vivo de la hoja (con el borrador, antes de aplicar). */
+function pasaFiltrosMov(r, f) {
+  if (f.desde && (!r.fecha || +r.fecha < +new Date(f.desde + 'T00:00:00'))) return false;
+  if (f.hasta && (!r.fecha || +r.fecha > +new Date(f.hasta + 'T23:59:59'))) return false;
+  return true;
+}
+function contarMovFiltro(f, q) {
+  const toks = norm(q != null ? q : ST.mvQ).split(' ').filter(Boolean);
+  const permitidas = new Set(basesMovimientos());
+  let n = 0;
+  for (const r of ST.ciot) {
+    if (!esBaseTecnico(r.dep) || !permitidas.has(r.dep)) continue;
+    if (f.bases.length ? !f.bases.includes(r.dep) : (ST.mvBase && r.dep !== ST.mvBase)) continue;
+    if (!pasaFiltrosMov(r, f)) continue;
+    if (toks.length) { const hay = norm(r.cod + ' ' + r.desc + ' ' + r.cliente);
+      if (!toks.every(t => hay.indexOf(t) >= 0)) continue; }
+    n++;
+  }
+  return n;
+}
 function doSearchMov() {
   $('#mvSinDatos').style.display = ST.ciot.length ? 'none' : 'block';
   const toks = norm(ST.mvQ).split(' ').filter(Boolean);
   const permitidas = new Set(basesMovimientos());
+  const f = ST.mvFiltros;
   let res = ST.ciot.filter(r => esBaseTecnico(r.dep) && permitidas.has(r.dep) &&
-    (!ST.mvBase || r.dep === ST.mvBase));
+    (f.bases.length ? f.bases.includes(r.dep) : (!ST.mvBase || r.dep === ST.mvBase)) &&
+    pasaFiltrosMov(r, f));
   if (toks.length) {
     res = res.filter(r => {
       const hay = norm(r.cod + ' ' + r.desc + ' ' + r.cliente);
       return toks.every(t => hay.indexOf(t) >= 0);
     });
   }
-  res = res.slice().sort((a, b) => (b.fecha ? +b.fecha : 0) - (a.fecha ? +a.fecha : 0));
+  res = res.slice();
+  if (ST.mvOrden === 'cant') res.sort((a, b) => b.cant - a.cant);
+  else if (ST.mvOrden === 'cliente') res.sort((a, b) => (a.cliente || '').localeCompare(b.cliente || '', 'es'));
+  else res.sort((a, b) => (b.fecha ? +b.fecha : 0) - (a.fecha ? +a.fecha : 0));
   ST.mvRes = res; ST.mvShown = 0; $('#mvList').innerHTML = '';
   /* última visita: como ya está ordenado por fecha desc, la primera fila es la más reciente */
   const ult = $('#mvUltima');
@@ -3122,20 +3744,82 @@ function doSearchMov() {
       (ST.mvBase ? ' · base ' + ST.mvBase : '');
 }
 
+/* ── Hoja «Filtrar y ordenar» de Movimientos: fecha + base combinada ── */
+const ORDEN_OPTS_MOV = [
+  { k: '', lb: 'Fecha: más reciente' }, { k: 'cant', lb: 'Cantidad: mayor a menor' },
+  { k: 'cliente', lb: 'Cliente A-Z' }
+];
+let mvfCatSel = 'fecha', mvfDraft = null, mvfDraftOrden = '';
+function mvCategorias() {
+  const cats = [{ k: 'fecha', lb: 'Fecha' }];
+  if (basesMovimientos().length > 1) cats.push({ k: 'base', lb: 'Base' });
+  return cats;
+}
+function abrirFiltroMov() {
+  mvfDraft = { desde: ST.mvFiltros.desde, hasta: ST.mvFiltros.hasta, bases: ST.mvFiltros.bases.slice() };
+  mvfDraftOrden = ST.mvOrden; mvfCatSel = 'fecha';
+  pintarFiltroSheetMov(); openSheet('#shFiltroMov');
+}
+function pintarMvfCats() {
+  $('#mvfCats').innerHTML = mvCategorias().map(c => catTab(c.k, c.lb, mvfCatSel === c.k,
+    c.k === 'fecha' ? ((mvfDraft.desde || mvfDraft.hasta) ? '1' : '') : (mvfDraft.bases.length || ''))).join('');
+}
+function pintarMvfBody() {
+  const box = $('#mvfBody');
+  if (mvfCatSel === 'fecha') {
+    box.innerHTML =
+      '<div class="rangofecha"><label><span>Desde</span><input type="date" id="mvfDesde" value="' + esc(mvfDraft.desde) + '"></label>' +
+      '<label><span>Hasta</span><input type="date" id="mvfHasta" value="' + esc(mvfDraft.hasta) + '"></label></div>' +
+      '<p class="note">Se filtra por la fecha del movimiento. Dejá un campo vacío para no acotar ese lado del rango.</p>';
+    $('#mvfDesde').addEventListener('input', e => { mvfDraft.desde = e.target.value; pintarMvfCats(); actualizarBarraFiltroMov(); });
+    $('#mvfHasta').addEventListener('input', e => { mvfDraft.hasta = e.target.value; pintarMvfCats(); actualizarBarraFiltroMov(); });
+    return;
+  }
+  const bases = basesMovimientos();
+  const porBase = {}; for (const r of ST.ciot) if (esBaseTecnico(r.dep)) porBase[r.dep] = (porBase[r.dep] || 0) + 1;
+  let h = chkRow('', '(Todas)', bases.length, mvfDraft.bases.length === 0, true);
+  for (const c of bases) { const info = depInfo(c); h += chkRow(c, (info && info.desc) || c, porBase[c] || 0, mvfDraft.bases.includes(c)); }
+  box.innerHTML = h;
+}
+function pintarFiltroSheetMov() {
+  $('#mvfSort').innerHTML = ORDEN_OPTS_MOV.map(o => sortPill(o.k, o.lb, mvfDraftOrden === o.k)).join('');
+  pintarMvfCats(); pintarMvfBody(); actualizarBarraFiltroMov();
+}
+function actualizarBarraFiltroMov() { $('#mvfAplicar').textContent = 'Aplicar filtros (' + nfmt(contarMovFiltro(mvfDraft)) + ')'; }
+$('#mvfCats').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (!b) return;
+  mvfCatSel = b.dataset.cat; pintarMvfBody(); pintarMvfCats(); });
+$('#mvfSort').addEventListener('click', e => { const b = e.target.closest('[data-sort]'); if (!b) return;
+  mvfDraftOrden = b.dataset.sort; pintarFiltroSheetMov(); });
+$('#mvfBody').addEventListener('click', e => {
+  if (mvfCatSel !== 'base') return;
+  if (e.target.closest('[data-selall]')) { mvfDraft.bases = []; pintarMvfBody(); pintarMvfCats(); actualizarBarraFiltroMov(); return; }
+  const opt = e.target.closest('.chkrow'); if (!opt) return;
+  toggleEnArray(mvfDraft.bases, opt.dataset.v);
+  pintarMvfBody(); pintarMvfCats(); actualizarBarraFiltroMov();
+});
+$('#mvfLimpiar').onclick = () => { mvfDraft = { desde: '', hasta: '', bases: [] }; mvfDraftOrden = ''; pintarFiltroSheetMov(); };
+$('#mvfAplicar').onclick = () => {
+  ST.mvFiltros = mvfDraft; ST.mvOrden = mvfDraftOrden;
+  closeSheet('#shFiltroMov'); renderMovimientos();
+};
+
 function renderPageMov() {
   const toks = norm(ST.mvQ).split(' ').filter(Boolean);
   const end = Math.min(ST.mvShown + ST.mvPage, ST.mvRes.length);
   const buf = [];
   for (let i = ST.mvShown; i < end; i++) {
     const r = ST.mvRes[i];
-    buf.push('<div class="sku compact"><div class="sku-hd">' +
+    /* Acá la cantidad no es un semáforo de stock disponible/bajo/agotado —
+       es sólo lo que se descargó en ese movimiento puntual. Un color neutro,
+       y toda la fila es tocable para ver el detalle completo. */
+    buf.push('<div class="sku compact" data-mvidx="' + i + '" role="button" tabindex="0" style="cursor:pointer"><div class="sku-hd">' +
       '<span class="loc">' + esc(r.dep) + '</span>' +
       '<span class="sku-i"><span class="sku-cod">' + hl(r.cod, toks) + '</span>' +
       '<span class="sku-dsc">' + hl(r.desc || '—', toks) + '</span>' +
       '<span class="sku-meta">' + (r.fecha ? dfmtSolo(r.fecha) : 'sin fecha') +
       (r.cliente ? ' · ' + esc(r.cliente) : '') + '</span></span>' +
 
-      '<span class="qty ' + depCls(r.cant) + '">' + nfmt(r.cant) + '</span>' +
+      '<span class="qty flat">' + nfmt(r.cant) + '</span>' +
       '</div></div>');
   }
   const tmp = document.createElement('div'); tmp.innerHTML = buf.join('');
@@ -3147,10 +3831,42 @@ function renderPageMov() {
   b.textContent = 'Ver más (quedan ' + (ST.mvRes.length - ST.mvShown).toLocaleString('es-AR') + ')';
 }
 
+/* ── Detalle de un movimiento (CIOT) ────────────────────────────────────
+   Repuesto, máquina asociada (si el maestro de Stock la trae), cliente
+   visitado y cantidad descargada — lo que pidió Christian en vez del
+   semáforo de colores, que en Movimientos no representaba nada real. */
+function abrirDetalleMov(r) {
+  const prod = ST.byCod && ST.byCod.get(r.cod);
+  const maq = (prod && prod.maq) ? prod.maq : '';
+  const d = depInfo(r.dep);
+  $('#mdCod').textContent = r.cod;
+  $('#mdDesc').textContent = r.desc || prod && prod.desc || '';
+  $('#mdBody').innerHTML =
+    '<div class="kv"><span>Repuesto</span><b>' + esc(r.cod) + '</b></div>' +
+    '<div class="kv"><span>Descripción</span><b style="text-align:right;max-width:62%">' + esc(r.desc || prod && prod.desc || '—') + '</b></div>' +
+    '<div class="kv"><span>Máquina asociada</span><b style="text-align:right;max-width:62%">' +
+      (maq ? esc(maq) : '<span style="color:var(--ink-muted)">Sin máquina asociada en el maestro de Stock</span>') + '</b></div>' +
+    '<div class="kv"><span>Cliente visitado</span><b style="text-align:right;max-width:62%">' +
+      (r.cliente ? esc(r.cliente) + (r.clienteCod ? ' · ' + esc(r.clienteCod) : '') : '<span style="color:var(--ink-muted)">Sin cliente registrado</span>') + '</b></div>' +
+    '<div class="kv"><span>Cantidad descargada</span><b class="num">' + nfmt(r.cant) + '</b></div>' +
+    '<div class="kv"><span>Fecha</span><b>' + (r.fecha ? dfmtSolo(r.fecha) : 'sin fecha') + '</b></div>' +
+    '<div class="kv"><span>Base</span><b>' + esc(r.dep) + (d && d.desc ? ' · ' + esc(d.desc) : '') + '</b></div>';
+  openSheet('#shMovDet');
+}
+$('#mvList').addEventListener('click', e => {
+  const b = e.target.closest('[data-mvidx]'); if (!b) return;
+  const r = ST.mvRes[+b.dataset.mvidx]; if (r) abrirDetalleMov(r);
+});
+$('#mvList').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const b = e.target.closest('[data-mvidx]'); if (!b) return;
+  e.preventDefault(); const r = ST.mvRes[+b.dataset.mvidx]; if (r) abrirDetalleMov(r);
+});
+
 let tmv;
 $('#mvQ').addEventListener('input', e => { ST.mvQ = e.target.value;
-  $('#mvQClear').classList.toggle('on', !!ST.mvQ);
-  clearTimeout(tmv); tmv = setTimeout(doSearchMov, 120); });
+  $('#mvQClear').classList.toggle('on', !!ST.mvQ); histMov.ocultarYa();
+  clearTimeout(tmv); tmv = setTimeout(() => { doSearchMov(); histMov.registrar(ST.mvQ); }, 120); });
 $('#mvQClear').addEventListener('click', () => { ST.mvQ = ''; $('#mvQ').value = '';
   $('#mvQClear').classList.remove('on'); doSearchMov(); });
 $('#mvBtnMore').addEventListener('click', renderPageMov);
@@ -3163,7 +3879,6 @@ function go(id) {
   /* cada pantalla conserva su estado; sólo se repintan las derivadas */
   if (id === 'vInicio') renderInicio();
   else if (id === 'vAlertas') renderAlertas();
-  else if (id === 'vBuscar') renderHistQ();
   else if (id === 'vMovimientos') { renderChipsMov(); renderMovimientos(); }
   else if (id === 'vPedidos') renderPedidos();
   pqNavSetup();
@@ -3224,10 +3939,65 @@ function pqNavSetup() {
   });
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   Historial de búsquedas — dropdown reutilizable (Stock, Movimientos,
+   Pedidos). Aparece debajo del cuadro sólo con foco y sin texto, con un
+   ícono de reloj por ítem, y se oculta apenas se escribe algo — mismo
+   patrón que el buscador de cualquier e-commerce grande.
+   ══════════════════════════════════════════════════════════════════════ */
+const HIST_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+  'stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>';
+function crearHistorial(storageKey, inputSel, boxSel, onPick) {
+  /* OJO: LS (localStorage.helper) se declara más abajo en el archivo, así
+     que acá NUNCA se lo llama en el momento de construir el componente —
+     sólo dentro de funciones que se disparan por eventos del usuario
+     (focus, click, etc.), que ocurren bien después de que todo el script
+     ya terminó de cargar. Cargar «items» de forma perezosa (recién la
+     primera vez que hace falta) evita depender del orden de declaración. */
+  let items = null;
+  function cargar() { if (items === null) items = LS.get(storageKey, []); return items; }
+  function pintar() {
+    const box = $(boxSel); if (!box) return;
+    const list = cargar();
+    if (!list.length) { box.classList.remove('on'); box.innerHTML = ''; return; }
+    box.innerHTML = '<div class="hd"><span>Búsquedas recientes</span><button type="button" data-clr>Borrar</button></div>' +
+      list.map(x => '<button type="button" class="item" data-q="' + esc(x) + '">' + HIST_ICON +
+        '<span>' + esc(x) + '</span></button>').join('');
+  }
+  function mostrarSiCorresponde() {
+    const inp = $(inputSel), box = $(boxSel); if (!inp || !box) return;
+    if (!inp.value && cargar().length) { pintar(); box.classList.add('on'); }
+  }
+  function ocultar() { setTimeout(() => { const b = $(boxSel); if (b) b.classList.remove('on'); }, 150); }
+  const inp = $(inputSel);
+  if (inp) { inp.addEventListener('focus', mostrarSiCorresponde); inp.addEventListener('blur', ocultar); }
+  const box = $(boxSel);
+  if (box) box.addEventListener('click', e => {
+    if (e.target.closest('[data-clr]')) { items = []; LS.set(storageKey, items); pintar(); return; }
+    const b = e.target.closest('[data-q]'); if (!b) return;
+    box.classList.remove('on'); onPick(b.dataset.q);
+  });
+  return {
+    registrar(q) { q = (q || '').trim(); if (q.length < 2) return;
+      cargar(); items = [q].concat(items.filter(x => x.toLowerCase() !== q.toLowerCase())).slice(0, 8);
+      LS.set(storageKey, items); pintar(); },
+    ocultarYa() { const b = $(boxSel); if (b) b.classList.remove('on'); }
+  };
+}
+const histStock = crearHistorial('pq_busq', '#q', '#histQ', v => {
+  $('#q').value = v; ST.q = v; $('#qClear').classList.add('on'); doSearch();
+});
+const histMov = crearHistorial('pq_busq_mov', '#mvQ', '#mvHistQ', v => {
+  $('#mvQ').value = v; ST.mvQ = v; $('#mvQClear').classList.add('on'); doSearchMov();
+});
+const histPd = crearHistorial('pq_busq_pd', '#sugQ', '#sugHistQ', v => {
+  $('#sugQ').value = v; ST.sugQ = v; $('#sugQClear').classList.add('on'); doSearchSug();
+});
+
 let tq;
 $('#q').addEventListener('input', e => { ST.q = e.target.value;
-  $('#qClear').classList.toggle('on', !!ST.q);
-  clearTimeout(tq); tq = setTimeout(() => { doSearch(); recordBusq(ST.q); },
+  $('#qClear').classList.toggle('on', !!ST.q); histStock.ocultarYa();
+  clearTimeout(tq); tq = setTimeout(() => { doSearch(); histStock.registrar(ST.q); },
     ST.rows.length > 5000 ? 220 : 90); });
 $('#qClear').onclick = () => { $('#q').value = ''; ST.q = ''; $('#qClear').classList.remove('on'); doSearch(); $('#q').focus(); };
 $('#btnMore').onclick = renderPage;
@@ -3314,18 +4084,6 @@ function toggleFav(cod) {
   if (esFav(cod)) ST.fav = ST.fav.filter(c => c !== cod); else ST.fav = [cod].concat(ST.fav).slice(0, 60);
   LS.set('pq_fav', ST.fav); return esFav(cod);
 }
-function recordBusq(q) {
-  q = q.trim(); if (q.length < 2) return;
-  ST.busq = [q].concat(ST.busq.filter(x => x.toLowerCase() !== q.toLowerCase())).slice(0, 8);
-  LS.set('pq_busq', ST.busq); renderHistQ();
-}
-function renderHistQ() {
-  const b = $('#histQ');
-  b.innerHTML = ST.busq.length && !ST.q
-    ? ST.busq.map(x => '<button data-q="' + esc(x) + '">' + esc(x) + '</button>').join('') : '';
-}
-$('#histQ').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
-  $('#q').value = b.dataset.q; ST.q = b.dataset.q; $('#qClear').classList.add('on'); doSearch(); });
 
 /* ══════════════════════════════════════════════════════════════════════
    V2 · MÓDULO 2 — MOTOR DE BÚSQUEDA
@@ -3517,7 +4275,6 @@ function renderInicio() {
     const qaE = $('#qaAl'); if (qaE) qaE.textContent = ST.alertas.length ? ST.alertas.length + ' pendientes' : 'todo en orden';
     $('.qa', main).innerHTML =
       '<button data-qa="buscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM20 20l-3.5-3.5"/></svg>Buscar producto</button>' +
-      '<button data-qa="escanear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3M4 12h16"/></svg>Escanear código</button>' +
       '<button data-qa="ubicacion"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Buscar ubicación</button>' +
       '<button data-qa="mibase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/></svg>Ver stock de una base</button>' +
       '<button data-qa="filtro-central"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>Almacén Central</button>' +
@@ -3569,16 +4326,15 @@ $('#vInicio').addEventListener('click', e => {
   if (qa) {
     const a = qa.dataset.qa;
     if (a === 'buscar') { go('vBuscar'); setTimeout(() => $('#q').focus(), 150); }
-    else if (a === 'escanear') openScan();
     else if (a === 'ubicacion') openUbi();
     else if (a === 'mibase') openBase();
     else if (a === 'conteo') { go('vBuscar'); toast('Buscá el producto y tocá Contar', 3000); setTimeout(() => $('#q').focus(), 150); }
     else if (a === 'alertas') go('vAlertas');
     else if (a === 'verbase') { const code = qa.dataset.code; if (code) { openSheet('#shBase'); abrirDetalleBase(code); } }
     else if (a === 'filtro-central') { ST.kpiFiltro = 'central'; ST.q = ''; $('#q').value = '';
-      ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' }; go('vBuscar'); renderChips(); doSearch(); }
+      ST.filtros = { tipo: [], marca: [], maquina: [], unidad: [] }; go('vBuscar'); renderChips(); doSearch(); }
     else if (a === 'filtro-planta') { ST.kpiFiltro = 'planta-alta'; ST.q = ''; $('#q').value = '';
-      ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' }; go('vBuscar'); renderChips(); doSearch(); }
+      ST.filtros = { tipo: [], marca: [], maquina: [], unidad: [] }; go('vBuscar'); renderChips(); doSearch(); }
     return;
   }
   const rec = e.target.closest('.rec');
@@ -3598,7 +4354,7 @@ $('#kpis').addEventListener('click', e => {
   }
   if (act === 'ver-devoluciones') { abrirDevoluciones(); return; }
   ST.kpiFiltro = act === 'todos' ? '' : act;
-  ST.q = ''; $('#q').value = ''; ST.filtros = { tipo:'', marca:'', maquina:'', unidad:'' };
+  ST.q = ''; $('#q').value = ''; ST.filtros = { tipo: [], marca: [], maquina: [], unidad: [] };
   go('vBuscar'); renderChips(); doSearch();
 });
 $('#recClr').onclick = () => { ST.recientes = []; LS.set('pq_recientes', []); renderInicio(); toast('Historial borrado'); };
@@ -3835,6 +4591,23 @@ function abrirDevoluciones() {
     ).join('');
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   DETALLE DE BASE — "Ver stock de una base" en shBase
+   Para Terminal Panamericana (código 7): flujo de dos pasos:
+     1) se muestran las tarjetas de sector (Recepción, Disponible, Scrap…)
+     2) al elegir uno se filtra el stock + buscador por código
+   Para cualquier otra base: buscador + lista expandible directa.
+   ══════════════════════════════════════════════════════════════════════ */
+function _baseHeader(code, desc, nd, tecnicos) {
+  return '<p class="eyebrow" style="margin:0 0 2px">Base</p>' +
+    '<h2 style="font-size:18px;margin:0 0 2px;font-weight:800">' + esc(desc) + '</h2>' +
+    '<p class="note" style="margin:0 0 6px">Código ' + esc(code) +
+      (tecnicos.length ? ' · ' + tecnicos.join(', ') : '') + '</p>' +
+    (nd ? '<p class="note" style="margin:0 0 10px">📍 Devoluciones a <b>' + esc(nd.largo) + '</b></p>'
+        : '<p class="note" style="margin:0 0 10px">📍 Sin depósito abastecedor registrado</p>') +
+    cartelDevolucion(code);
+}
+
 function abrirDetalleBase(code) {
   ST.baseVista = code;
   const info = depInfo(code);
@@ -3842,104 +4615,251 @@ function abrirDetalleBase(code) {
   const desc = (info && info.desc) ||
     (ST.login && ST.login.bases && (ST.login.bases.find(b => b.code === code) || {}).desc) || code;
   const nd = nodoDeBase(code);
-  const items = [];
-  for (const r of ST.rows) { const pd = r.porDep && r.porDep[code];
-    if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot, ubi: pd.ubi }); }
-  items.sort((a, b) => b.cant - a.cant);
-  $('#baseTit').textContent = 'Mi base';
+  $('#baseTit').textContent = desc;
   const cnB = document.querySelector('#shBase .cn'); if (cnB) cnB.scrollTop = 0;
   $('#baseBuscar').style.display = 'none'; $('#baseBack').style.display = 'flex';
   const box = $('#baseDetalle'); box.style.display = 'block';
-  box.innerHTML =
-    '<p class="eyebrow" style="margin:0 0 4px">Base</p>' +
-    '<h2 style="font-size:17px;margin-bottom:2px">' + esc(desc) + '</h2>' +
-    '<p class="note" style="margin:0 0 12px">Código ' + esc(code) + (tecnicos.length ?
-      ' · ' + tecnicos.join(', ') : '') + '</p>' +
-    (nd ? '<p class="note" style="margin:0 0 12px">📍 Las devoluciones de esta base van a <b>' +
-      esc(nd.largo) + '</b>.</p>'
-        : '<p class="note" style="margin:0 0 12px">📍 Sin depósito abastecedor registrado para esta base.</p>') +
-    cartelDevolucion(code) +
-    '<div class="kv"><span>Productos con stock</span><b class="num">' + items.length.toLocaleString('es-AR') + '</b></div>' +
-    '<div class="kv"><span>Unidades en total</span><b class="num">' + nfmt(items.reduce((a, x) => a + x.cant, 0)) + '</b></div>' +
-    '<p class="eyebrow" style="margin:14px 0 6px">Stock actual — tocá para ver la ficha o contar</p>' +
-    (items.length ? items.slice(0, 200).map(it => filaSKU(it.r, {
-      cant: it.cant, contar: true,
-      fuentes: [{ cant: it.cant, ubis: it.ubi ? [[it.ubi, it.cant]] : [] }],
-      extra: (it.rot != null && it.rot > 3)
-        ? '<span class="sku-meta" style="color:var(--crit);font-weight:700">' +
-          it.rot.toFixed(0) + ' meses sin rotación</span>' : ''
-    })).join('')
-      : '<p class="note">No hay stock cargado en esta base en el archivo actual.</p>') +
-    (items.length > 200 ? '<p class="note">Se muestran los primeros 200.</p>' : '');
   box.dataset.code = code; box.dataset.desc = desc;
+
+  if (esTP(code)) {
+    /* ── Terminal Panamericana: mostrar sectores primero ── */
+    abrirDetalleBaseTP(code, desc, nd, tecnicos, box);
+  } else {
+    /* ── Cualquier otra base: buscador + lista completa ── */
+    abrirDetalleBaseNormal(code, desc, nd, tecnicos, box);
+  }
+}
+
+/* ── Terminal Panamericana: pantalla de sectores ── */
+function abrirDetalleBaseTP(code, desc, nd, tecnicos, box) {
+  /* Agrupamos las líneas TP por sector para armar las tarjetas */
+  const lineasTP = [];
+  for (const r of ST.rows) if (r.tp && r.tp.length) r.tp.forEach(l => lineasTP.push({ r, l }));
+
+  const porSector = {};
+  for (const { r, l } of lineasTP) {
+    const sec = l.sector || '?';
+    if (!porSector[sec]) porSector[sec] = { cant: 0, prods: new Set() };
+    porSector[sec].cant += l.cant;
+    porSector[sec].prods.add(r.cod);
+  }
+  const secConDatos = ORDEN_SECTORES_TP.filter(s => porSector[s]);
+  const otrosSec = Object.keys(porSector).filter(s => !ORDEN_SECTORES_TP.includes(s));
+
+  const totProd = new Set(lineasTP.map(x => x.r.cod)).size;
+  const totUn = lineasTP.reduce((a, x) => a + x.l.cant, 0);
+
+  let secsHtml = [...secConDatos, ...otrosSec].map(sec => {
+    const lb = SECTORES_TP[sec] || ('Sector ' + sec);
+    const d = porSector[sec];
+    return '<button class="tp-sec-card" data-sec="' + esc(sec) + '">' +
+      '<span class="snm">SECTOR ' + esc(sec) + '</span>' +
+      '<span class="slb">' + esc(lb) + '</span>' +
+      '<span class="scnt">' + d.prods.size.toLocaleString('es-AR') + ' productos · ' + nfmt(d.cant) + ' un.</span>' +
+      '</button>';
+  }).join('');
+  if (!secsHtml) secsHtml = '<p class="note">No hay datos de sector en el archivo cargado.</p>';
+
+  box.innerHTML =
+    _baseHeader(code, desc, nd, tecnicos) +
+    '<div class="kv"><span>Productos con stock</span><b class="num">' + totProd.toLocaleString('es-AR') + '</b></div>' +
+    '<div class="kv" style="margin-bottom:14px"><span>Unidades en total</span><b class="num">' + nfmt(totUn) + '</b></div>' +
+    '<p class="eyebrow" style="margin:0 0 8px">Elegí un sector para ver el stock</p>' +
+    '<div class="tp-secs">' + secsHtml + '</div>';
+}
+
+/* ── Terminal Panamericana: stock filtrado por sector ── */
+let _tpSectorActivo = '';
+function abrirSectorTP(sec) {
+  _tpSectorActivo = sec;
+  const box = $('#baseDetalle');
+  const code = box.dataset.code;
+  const lb = SECTORES_TP[sec] || ('Sector ' + sec);
+
+  const lineas = [];
+  for (const r of ST.rows) {
+    if (!r.tp) continue;
+    const match = r.tp.filter(l => l.sector === sec);
+    if (match.length) lineas.push({ r, match });
+  }
+  lineas.sort((a, b) => {
+    const ca = a.match.reduce((s, l) => s + l.cant, 0);
+    const cb = b.match.reduce((s, l) => s + l.cant, 0);
+    return cb - ca;
+  });
+  const totUn = lineas.reduce((a, x) => a + x.match.reduce((s, l) => s + l.cant, 0), 0);
+
+  /* La función de render se llama con el valor de búsqueda para permitir
+     actualización en vivo mientras el usuario tipea */
+  box.dataset.tpsec = sec;
+  _pintarStockSectorTP(lineas, lb, totUn, '');
+}
+
+function _pintarStockSectorTP(lineas, lb, totUn, q) {
+  const box = $('#baseDetalle');
+  const toks = norm(q).split(' ').filter(Boolean);
+  const filtradas = toks.length
+    ? lineas.filter(x => toks.every(t => norm(x.r.cod + ' ' + x.r.desc + ' ' + (x.r.maq || '')).includes(t)))
+    : lineas;
+
+  /* Reemplaza sólo el contenido de la lista (deja el header + buscador) */
+  const lista = box.querySelector('.tp-sec-lista');
+  if (!lista) return;
+
+  lista.innerHTML =
+    '<div class="kv" style="margin:8px 0 0"><span>Mostrando</span><b class="num">' +
+      filtradas.length.toLocaleString('es-AR') + ' productos · ' + nfmt(
+        filtradas.reduce((a, x) => a + x.match.reduce((s, l) => s + l.cant, 0), 0)) + ' un.</b></div>' +
+    (filtradas.length ? filtradas.map(({ r, match }) => {
+      const cantSec = match.reduce((s, l) => s + l.cant, 0);
+      return '<div class="panel" style="margin:10px 0 0;padding:12px 13px">' +
+        '<div style="display:flex;align-items:flex-start;gap:10px">' +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="font-family:var(--f-num);font-size:13px;font-weight:700;color:var(--link);margin-bottom:2px">' + esc(r.cod) + '</div>' +
+            '<div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px;line-height:1.3">' + esc(r.desc || '—') + '</div>' +
+            (r.maq ? '<div style="font-size:12px;color:var(--ink-muted);margin-bottom:4px">🔧 ' + esc(r.maq) + '</div>' : '') +
+            (r.marca ? '<div style="font-size:12px;color:var(--ink-muted)">' + esc(r.marca) + '</div>' : '') +
+          '</div>' +
+          '<div style="flex:none;min-width:52px;text-align:right">' +
+            '<div style="font-size:22px;font-weight:800;color:' + (cantSec > 0 ? 'var(--ok)' : 'var(--ink-muted)') + '">' + nfmt(cantSec) + '</div>' +
+            '<div style="font-size:11px;color:var(--ink-muted)">unidades</div>' +
+          '</div>' +
+        '</div>' +
+        match.map(l =>
+          '<div style="margin-top:8px;padding:8px 10px;background:var(--surface-2);border-radius:var(--r-md)">' +
+            '<div class="kv" style="border:0;padding:2px 0"><span>Serie</span><b>' + esc(l.serie || '—') + '</b></div>' +
+            '<div class="kv" style="border:0;padding:2px 0"><span>Despacho</span><b>' + esc(l.despacho || '—') + '</b></div>' +
+            '<div class="kv" style="border:0;padding:2px 0"><span>Unidades por pallet</span><b>' + (l.uxpallet != null ? nfmt(l.uxpallet) : '—') + '</b></div>' +
+            '<div class="kv" style="border:0;padding:2px 0"><span>Pallets en stock</span><b>' + (l.pallets != null ? nfmt(l.pallets) : '—') + '</b></div>' +
+          '</div>'
+        ).join('') +
+        '<div style="display:flex;gap:8px;margin-top:10px">' +
+          '<button class="mini pri" data-act="ficha" data-cod="' + esc(r.cod) + '" style="flex:1">Ver ficha</button>' +
+        '</div>' +
+      '</div>';
+    }).join('')
+    : '<p class="note" style="margin-top:14px">Sin resultados para esta búsqueda en el sector.</p>');
+}
+
+/* ── Cualquier otra base: buscador + lista expandible ── */
+let _baseSearchTimer = null;
+function abrirDetalleBaseNormal(code, desc, nd, tecnicos, box) {
+  const items = [];
+  for (const r of ST.rows) { const pd = r.porDep && r.porDep[code];
+    if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot, ubi: pd.ubi, ubis: pd.ubis || [] }); }
+  items.sort((a, b) => b.cant - a.cant);
+  const totUn = items.reduce((a, x) => a + x.cant, 0);
+
+  box.innerHTML =
+    _baseHeader(code, desc, nd, tecnicos) +
+    '<div class="kv"><span>Productos con stock</span><b class="num">' + items.length.toLocaleString('es-AR') + '</b></div>' +
+    '<div class="kv"><span>Unidades en total</span><b class="num">' + nfmt(totUn) + '</b></div>' +
+    '<div class="base-search-wrap">' +
+      '<input class="fsearch base-q" type="search" placeholder="Buscar código o descripción…" autocomplete="off">' +
+    '</div>' +
+    '<div class="base-lista">' + _listaBaseNormal(items, '') + '</div>';
+}
+function _listaBaseNormal(items, q) {
+  const toks = norm(q).split(' ').filter(Boolean);
+  const vis = toks.length
+    ? items.filter(it => toks.every(t => norm(it.r.cod + ' ' + it.r.desc + ' ' + (it.r.maq || '')).includes(t)))
+    : items;
+  return (vis.length
+    ? vis.slice(0, 300).map(it => filaSKU(it.r, {
+        cant: it.cant, expandible: true,
+        fuentes: [{ lb: 'Ubicaciones en esta base', cls: 'a', cant: it.cant, ubis: it.ubis }],
+        totLb: 'Total en esta base', tot: it.cant,
+        extra: (it.rot != null && it.rot > 3)
+          ? '<span class="sku-meta" style="color:var(--crit);font-weight:700">' + it.rot.toFixed(0) + ' meses sin rotación</span>' : ''
+      })).join('') +
+      (vis.length > 300 ? '<p class="note">Mostrando los primeros 300. Usá el buscador para filtrar.</p>' : '')
+    : '<p class="note">Sin resultados.</p>');
 }
 $('#baseDetalle').addEventListener('click', e => {
-  const cnt = e.target.closest('[data-act="contar"]');
-  const row = e.target.closest('[data-cod]'); if (!row) return;
-  const r = ST.byCod.get(row.dataset.cod); if (!r) return;
   const box = $('#baseDetalle');
-  if (cnt) { closeSheet('#shBase'); openConteo(r, { code: box.dataset.code, desc: box.dataset.desc }); }
-  else { closeSheet('#shBase'); openFicha(r); }
+
+  /* ── TP: tarjeta de sector ── */
+  const secCard = e.target.closest('.tp-sec-card');
+  if (secCard) {
+    /* marcar seleccionada */
+    box.querySelectorAll('.tp-sec-card').forEach(b => b.classList.remove('sel'));
+    secCard.classList.add('sel');
+    const sec = secCard.dataset.sec;
+    const lb = SECTORES_TP[sec] || ('Sector ' + sec);
+    const lineas = [];
+    for (const r of ST.rows) {
+      if (!r.tp) continue;
+      const match = r.tp.filter(l => l.sector === sec);
+      if (match.length) lineas.push({ r, match });
+    }
+    lineas.sort((a, b) => b.match.reduce((s,l)=>s+l.cant,0) - a.match.reduce((s,l)=>s+l.cant,0));
+    const totUn = lineas.reduce((a,x)=>a+x.match.reduce((s,l)=>s+l.cant,0),0);
+
+    /* si ya hay un bloque de sector activo, lo reemplazamos; si no, lo añadimos */
+    let bloque = box.querySelector('.tp-sec-bloque');
+    if (!bloque) { bloque = document.createElement('div'); bloque.className = 'tp-sec-bloque'; box.appendChild(bloque); }
+    bloque.innerHTML =
+      '<p class="eyebrow" style="margin:14px 0 4px">Sector ' + esc(sec) + ' · ' + esc(lb) + '</p>' +
+      '<p class="note" style="margin:0 0 10px">' + lineas.length.toLocaleString('es-AR') + ' productos · ' + nfmt(totUn) + ' unidades</p>' +
+      '<div class="base-search-wrap">' +
+        '<input class="fsearch tp-sec-q" type="search" placeholder="Buscar código, descripción o máquina…" autocomplete="off">' +
+      '</div>' +
+      '<div class="tp-sec-lista"></div>';
+
+    bloque.querySelector('.tp-sec-q').addEventListener('input', ev => {
+      _pintarStockSectorTP(lineas, lb, totUn, ev.target.value);
+    });
+    _tpSectorActivo = sec;
+    bloque.dataset.lineas = JSON.stringify(lineas.map(x => x.r.cod)); /* referencia para repintado */
+    _pintarStockSectorTP(lineas, lb, totUn, '');
+
+    /* scroll al bloque */
+    setTimeout(() => { if (bloque.scrollIntoView) bloque.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
+    return;
+  }
+
+  /* ── TP: Ver ficha desde el listado de sector ── */
+  const actBtn = e.target.closest('[data-act][data-cod]');
+  if (actBtn) {
+    const r = ST.byCod.get(actBtn.dataset.cod); if (!r) return;
+    if (actBtn.dataset.act === 'ficha') { closeSheet('#shBase'); openFicha(r); }
+    return;
+  }
+
+  /* ── Base normal: expandir fila ── */
+  const art = e.target.closest('[data-cod]'); if (!art) return;
+  const r = ST.byCod.get(art.dataset.cod); if (!r) return;
+  const b = e.target.closest('[data-act]');
+  if (b) {
+    if (b.dataset.act === 'ficha') { closeSheet('#shBase'); openFicha(r); }
+    else { closeSheet('#shBase'); openConteo(r, { code: box.dataset.code, desc: box.dataset.desc }); }
+    return;
+  }
+  const hd = e.target.closest('.sku-hd'); if (!hd) return;
+  const abierta = art.classList.toggle('open');
+  hd.setAttribute('aria-expanded', abierta ? 'true' : 'false');
+});
+$('#baseDetalle').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const hd = e.target.closest('.sku-hd'); if (!hd) return;
+  e.preventDefault(); hd.click();
+});
+
+/* Buscador en tiempo real para bases normales */
+$('#baseDetalle').addEventListener('input', e => {
+  const inp = e.target.closest('.base-q'); if (!inp) return;
+  const box = $('#baseDetalle');
+  const code = box.dataset.code; if (!code) return;
+  const items = [];
+  for (const r of ST.rows) { const pd = r.porDep && r.porDep[code];
+    if (pd && pd.cant > 0) items.push({ r, cant: pd.cant, rot: pd.rot, ubi: pd.ubi, ubis: pd.ubis || [] }); }
+  items.sort((a, b) => b.cant - a.cant);
+  const lista = box.querySelector('.base-lista'); if (!lista) return;
+  lista.innerHTML = _listaBaseNormal(items, inp.value);
 });
 $('#baseBack').addEventListener('click', () => {
   $('#baseTit').textContent = 'Mi base';
   $('#baseDetalle').style.display = 'none'; $('#baseBuscar').style.display = 'block'; $('#baseBack').style.display = 'none'; });
-
-/* ══════════════════════════════════════════════════════════════════════
-   V2 · MÓDULO 6 — ESCÁNER (BarcodeDetector nativo)
-   Requiere permiso de cámara Y contexto seguro (https o localhost).
-   Abierto como archivo local, el navegador bloquea la cámara: se avisa.
-   ══════════════════════════════════════════════════════════════════════ */
-async function openScan() {
-  openSheet('#shScan'); $('#scanMan').value = '';
-  const wrap = $('#scanWrap'), alt = $('#scanAlt');
-  const seguro = window.isSecureContext;
-  const soporta = 'BarcodeDetector' in window && navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
-  if (!seguro || !soporta) {
-    wrap.style.display = 'none'; alt.style.display = 'block';
-    alt.innerHTML = '<div class="al c3"><div class="m">📷 El escaneo no está disponible acá.</div><div class="rc">' +
-      (!seguro ? 'El navegador sólo habilita la cámara en páginas servidas por https. Abierto como archivo local queda bloqueado.'
-               : 'Este navegador no tiene detector de códigos integrado (hoy funciona en Chrome/Edge Android).') +
-      ' Ingresá el código a mano abajo.</div></div>';
-    setTimeout(() => $('#scanMan').focus(), 150); return;
-  }
-  wrap.style.display = 'block'; alt.style.display = 'none';
-  try {
-    const det = new window.BarcodeDetector();
-    const st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-    ST.scanStream = st;
-    const v = $('#scanVid'); v.srcObject = st; await v.play();
-    $('#scanMsg').textContent = 'Apuntá al código de barras o QR.';
-    ST.scanTimer = setInterval(async () => {
-      try { const codes = await det.detect(v);
-        if (codes && codes.length) { const val = String(codes[0].rawValue || '').trim();
-          if (val) { stopScan(); closeSheet('#shScan'); buscarCodigo(val); } }
-      } catch (e) {}
-    }, 400);
-  } catch (e) {
-    wrap.style.display = 'none'; alt.style.display = 'block';
-    alt.innerHTML = '<div class="al c1"><div class="m">No se pudo abrir la cámara.</div>' +
-      '<div class="rc">' + esc(e.message || '') + ' Ingresá el código a mano.</div></div>';
-  }
-}
-function stopScan() {
-  if (ST.scanTimer) { clearInterval(ST.scanTimer); ST.scanTimer = null; }
-  if (ST.scanStream) { ST.scanStream.getTracks().forEach(t => t.stop()); ST.scanStream = null; }
-  const v = $('#scanVid'); if (v) v.srcObject = null;
-}
-/* del escáner o del ingreso manual → ficha directa si hay match exacto */
-function buscarCodigo(val) {
-  const v = String(val).trim();
-  let r = ST.byCod && ST.byCod.get(v);
-  if (!r) { const n = soloAlnum(v); r = ST.rows.find(x => x._codn === n); }
-  if (r) { openFicha(r); toast('Encontrado: ' + r.cod); return; }
-  go('vBuscar'); $('#q').value = v; ST.q = v; $('#qClear').classList.add('on'); doSearch();
-  toast('Sin coincidencia exacta: te muestro lo parecido', 3200);
-}
-$('#scanGo').onclick = () => { const v = $('#scanMan').value.trim();
-  if (!v) return; stopScan(); closeSheet('#shScan'); buscarCodigo(v); };
-$('#scanMan').addEventListener('keydown', e => { if (e.key === 'Enter') $('#scanGo').click(); });
-$('#shScan').addEventListener('click', e => { if (e.target.closest('[data-close]')) stopScan(); });
 
 /* ══════════════════════════════════════════════════════════════════════
    V2 · MÓDULO 7 — ALERTAS Y MODO SUPERVISOR
@@ -4099,7 +5019,7 @@ function renderSup() {
    No toca ningún dato: IndexedDB y localStorage siguen igual que antes,
    porque el origen (dominio) es el mismo antes y después de instalar.
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.15.0';                 /* ← subir junto con APP_VER del service-worker.js */
+const APP_VER = '3.20.0';                 /* ← subir junto con APP_VER del service-worker.js */
 let deferredPrompt = null, swReg = null;
 
 const esStandalone = () => window.matchMedia('(display-mode: standalone)').matches ||
@@ -4201,12 +5121,11 @@ $('#btnBuscarUpd').onclick = async () => {
   catch (e) { toast('No se pudo verificar (¿sin conexión?)'); }
 };
 
-/* — accesos directos del ícono largo: ?ir=buscar|escanear|ubicacion|alertas — */
+/* — accesos directos del ícono largo: ?ir=buscar|ubicacion|alertas — */
 function rutaInicial() {
   const ir = new URLSearchParams(location.search).get('ir');
   if (!ir) return;
   if (ir === 'buscar') { go('vBuscar'); setTimeout(() => $('#q').focus(), 200); }
-  else if (ir === 'escanear') openScan();
   else if (ir === 'ubicacion') openUbi();
   else if (ir === 'alertas') go('vAlertas');
 }

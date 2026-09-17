@@ -73,7 +73,15 @@ button{cursor:pointer}
 /* ── ENCABEZADO ───────────────────────────────────────────────────────── */
 .hd{position:sticky;top:0;z-index:40;background:var(--header-bg);color:#fff;
   padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;display:flex;align-items:center;gap:10px}
-.hd .iso{height:26px;width:auto;color:#fff;flex:none}
+/* Insignia circular del logo: antes el símbolo iba suelto contra el fondo
+   del header, sin ningún círculo detrás, y con un viewBox que recortaba un
+   poco el trazo (mismo bug que ya se había corregido para el logo del
+   login, .gl-iso, con este viewBox más generoso). A tamaño chico eso se
+   veía como "cortado" porque el ojo busca el contorno circular completo
+   -el que sí tiene el ícono de instalación de la app- y no lo encontraba. */
+.hd .isowrap{width:34px;height:34px;border-radius:50%;background:var(--brand);
+  display:grid;place-items:center;flex:none;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.hd .iso{height:18px;width:auto;color:#fff;flex:none}
 .hd .sep{width:1px;height:22px;background:rgba(255,255,255,.28);flex:none}
 .hd .t{display:flex;flex-direction:column;line-height:1.15;min-width:0;flex:1}
 .hd .t b{font-family:var(--f-tit);font-size:15px;font-weight:600}
@@ -675,7 +683,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 </div>
 
 <header class="hd">
-  <svg class="iso" viewBox="0 0 109.6 100" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M51.1 98.8C41.1 97 34.7 92.9 28.2 84.1C27.2 82.8 26.1 81.7 25.6 81.7C24 81.7 20.3 80.2 17.4 78.3C15.7 77.3 14.1 76.3 13.8 76.2C11.7 75.5 7 70.2 4 65.1C-1.7 55.5 -1.3 42 4.8 32.3C8.2 27.1 9.3 25.8 13.8 22.4C16.1 20.6 19.3 18.1 20.8 16.8C22.4 15.5 24.9 13.4 26.5 12.1C28.1 10.8 30.3 9 31.4 8C32.5 7 33.8 6 34.2 5.8C34.6 5.5 35.3 5 35.9 4.5C36.4 4.1 38.4 2.9 40.4 1.8L44.1 0L55.6 0L67.1 -0L69.7 1.2C75.9 4.1 79.3 7.1 83.8 13.4C85.3 15.4 86.7 16.9 87.7 17.4C98.2 22.3 100.5 24.1 104.9 30.3C109.5 36.7 109.4 36 109.4 49.3L109.4 61L107.8 64C106.9 65.7 106.1 67.1 105.9 67.1C105.8 67.1 105.2 67.9 104.7 68.8C103.5 70.9 99.8 74.6 96.3 77.3C86.1 84.9 80.7 89 78.6 90.9C75.9 93.3 69 97 65.3 98C62.8 98.6 53.3 99.2 51.1 98.8ZM63 91.2C67.2 90 76.5 84 75.5 83.1C75.3 82.9 73.6 82.5 71.7 82.2C61.3 80.3 51.7 72.9 47.4 63.5C46.7 62 46.2 60.6 44.7 55.3C44.4 54.4 44.3 51.3 44.4 48.5C44.5 42.4 44.4 42.2 40.7 45C31.3 51.9 27.5 63.8 31.4 74.4C36 87.2 50.5 94.9 63 91.2ZM81.1 73.9C82.3 71.7 82.3 61.5 81.1 57.9C80 54.3 79.6 54.3 74.2 59.3C73.2 60.2 70.2 62.9 67.5 65.2C64.7 67.7 62.6 69.8 62.6 70.3C62.6 70.8 63.5 71.5 65.6 72.5C71.3 75 72 75.2 77.3 75.3C80.3 75.3 80.4 75.3 81.1 73.9ZM22.9 65.5C23.1 58.7 23.1 58.6 24.8 54.6C27.2 48.9 27.2 48.8 25.7 45.6C22.7 39.5 21.6 34 22.2 28.8C22.6 25.5 22.1 25.3 19.2 27.4C11.2 33.2 7.6 39.9 7.6 49.1C7.5 57.4 10 63.1 15.9 68.6C18.9 71.3 21.9 73.2 22.5 72.7C22.6 72.5 22.8 69.3 22.9 65.5ZM96.6 67.4C101.6 62.4 103.4 57.5 103.4 49.3C103.4 39.9 100.8 34.5 93.5 28.7C89.6 25.6 88.8 25.6 89.2 29C89.7 33.7 87.5 43.8 85.6 46.1C84.6 47.4 84.6 48.2 85.8 50.5C88.5 55.5 89.5 59.5 89.5 66.5C89.5 69.5 89.6 72.1 89.8 72.3C90.2 72.7 94 70 96.6 67.4ZM57.1 60.8C58.6 57.4 58.9 56.6 59.4 53C60.3 47 57.9 36.1 55.6 36.1C53.3 36.1 50.7 46.8 51.6 52.4C53 61 55.4 64.8 57.1 60.8ZM71.6 51.8C87 39.4 84.7 16.7 67 8C62.8 5.9 59.7 5.3 53.9 5.6C49.3 5.8 48.9 5.9 44.7 7.9C40.4 10 34.6 14.7 35.4 15.5C35.7 15.7 37.3 16.1 39 16.4C42.4 17.1 43.5 17.5 48.6 19.9C59.6 25.2 67.3 37.6 67.1 50C67 54.7 67 54.8 67.5 54.8C67.8 54.8 69.6 53.5 71.6 51.8ZM33.7 41.2C34.4 40.8 36.2 39.3 37.7 37.9C39.2 36.5 42.2 33.9 44.4 32.2C46.6 30.4 48.4 28.8 48.4 28.5C48.4 26.7 40.9 23.8 35.2 23.4L31.1 23.2L30.4 24.6C28.9 27.4 29.7 39.2 31.6 41.4C32.2 42.2 32.2 42.2 33.7 41.2Z"/></svg>
+  <span class="isowrap"><svg class="iso" viewBox="-1.5 -1.5 112.6 103" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M51.1 98.8C41.1 97 34.7 92.9 28.2 84.1C27.2 82.8 26.1 81.7 25.6 81.7C24 81.7 20.3 80.2 17.4 78.3C15.7 77.3 14.1 76.3 13.8 76.2C11.7 75.5 7 70.2 4 65.1C-1.7 55.5 -1.3 42 4.8 32.3C8.2 27.1 9.3 25.8 13.8 22.4C16.1 20.6 19.3 18.1 20.8 16.8C22.4 15.5 24.9 13.4 26.5 12.1C28.1 10.8 30.3 9 31.4 8C32.5 7 33.8 6 34.2 5.8C34.6 5.5 35.3 5 35.9 4.5C36.4 4.1 38.4 2.9 40.4 1.8L44.1 0L55.6 0L67.1 -0L69.7 1.2C75.9 4.1 79.3 7.1 83.8 13.4C85.3 15.4 86.7 16.9 87.7 17.4C98.2 22.3 100.5 24.1 104.9 30.3C109.5 36.7 109.4 36 109.4 49.3L109.4 61L107.8 64C106.9 65.7 106.1 67.1 105.9 67.1C105.8 67.1 105.2 67.9 104.7 68.8C103.5 70.9 99.8 74.6 96.3 77.3C86.1 84.9 80.7 89 78.6 90.9C75.9 93.3 69 97 65.3 98C62.8 98.6 53.3 99.2 51.1 98.8ZM63 91.2C67.2 90 76.5 84 75.5 83.1C75.3 82.9 73.6 82.5 71.7 82.2C61.3 80.3 51.7 72.9 47.4 63.5C46.7 62 46.2 60.6 44.7 55.3C44.4 54.4 44.3 51.3 44.4 48.5C44.5 42.4 44.4 42.2 40.7 45C31.3 51.9 27.5 63.8 31.4 74.4C36 87.2 50.5 94.9 63 91.2ZM81.1 73.9C82.3 71.7 82.3 61.5 81.1 57.9C80 54.3 79.6 54.3 74.2 59.3C73.2 60.2 70.2 62.9 67.5 65.2C64.7 67.7 62.6 69.8 62.6 70.3C62.6 70.8 63.5 71.5 65.6 72.5C71.3 75 72 75.2 77.3 75.3C80.3 75.3 80.4 75.3 81.1 73.9ZM22.9 65.5C23.1 58.7 23.1 58.6 24.8 54.6C27.2 48.9 27.2 48.8 25.7 45.6C22.7 39.5 21.6 34 22.2 28.8C22.6 25.5 22.1 25.3 19.2 27.4C11.2 33.2 7.6 39.9 7.6 49.1C7.5 57.4 10 63.1 15.9 68.6C18.9 71.3 21.9 73.2 22.5 72.7C22.6 72.5 22.8 69.3 22.9 65.5ZM96.6 67.4C101.6 62.4 103.4 57.5 103.4 49.3C103.4 39.9 100.8 34.5 93.5 28.7C89.6 25.6 88.8 25.6 89.2 29C89.7 33.7 87.5 43.8 85.6 46.1C84.6 47.4 84.6 48.2 85.8 50.5C88.5 55.5 89.5 59.5 89.5 66.5C89.5 69.5 89.6 72.1 89.8 72.3C90.2 72.7 94 70 96.6 67.4ZM57.1 60.8C58.6 57.4 58.9 56.6 59.4 53C60.3 47 57.9 36.1 55.6 36.1C53.3 36.1 50.7 46.8 51.6 52.4C53 61 55.4 64.8 57.1 60.8ZM71.6 51.8C87 39.4 84.7 16.7 67 8C62.8 5.9 59.7 5.3 53.9 5.6C49.3 5.8 48.9 5.9 44.7 7.9C40.4 10 34.6 14.7 35.4 15.5C35.7 15.7 37.3 16.1 39 16.4C42.4 17.1 43.5 17.5 48.6 19.9C59.6 25.2 67.3 37.6 67.1 50C67 54.7 67 54.8 67.5 54.8C67.8 54.8 69.6 53.5 71.6 51.8ZM33.7 41.2C34.4 40.8 36.2 39.3 37.7 37.9C39.2 36.5 42.2 33.9 44.4 32.2C46.6 30.4 48.4 28.8 48.4 28.5C48.4 26.7 40.9 23.8 35.2 23.4L31.1 23.2L30.4 24.6C28.9 27.4 29.7 39.2 31.6 41.4C32.2 42.2 32.2 42.2 33.7 41.2Z"/></svg></span>
   <span class="sep"></span>
   <span class="t"><b>Supply Chain Permaquim</b><span id="hdSub">Sin datos cargados</span></span>
   <button class="ib" id="btnTema" aria-label="Modo claro / oscuro">
@@ -980,10 +988,10 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
     <div id="kMotBox" style="display:none">
       <p class="eyebrow" style="margin:6px 0 6px">Motivo de la diferencia</p>
       <div class="mot" id="kMot"></div>
-      <label class="lb" style="margin-top:10px">Observación (opcional)</label>
-      <input class="txt" id="kObs" type="text" placeholder="Ej.: estaba en el estante de al lado">
     </div>
-    <button class="btn pri" id="kSave">Guardar conteo</button>
+    <label class="lb" style="margin-top:12px">Observación / mensaje (opcional)</label>
+    <input class="txt" id="kObs" type="text" placeholder="Ej.: contado junto con Neuquén · queda al fondo">
+    <button class="btn pri" id="kSave" style="margin-top:12px">Guardar conteo</button>
     <button class="btn gh" data-close>Cancelar</button>
   </div>
 </div></div>
@@ -993,6 +1001,13 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
     <span id="fkDesc" style="font-size:12.5px;color:var(--ink-muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span></span>
     <button class="cl" data-close aria-label="Cerrar">&times;</button></div>
   <div class="cn" id="fkBody"></div>
+</div></div>
+
+<div class="sheet" id="shSegDet"><div class="bk" data-close></div><div class="bd">
+  <div class="hh"><span style="flex:1;min-width:0"><h2 id="sdTit">Envío</h2>
+    <span id="sdSub" style="font-size:12.5px;color:var(--ink-muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span></span>
+    <button class="cl" data-close aria-label="Cerrar">&times;</button></div>
+  <div class="cn" id="sdBody"></div>
 </div></div>
 
 <div class="sheet" id="shTP"><div class="bk" data-close></div><div class="bd">
@@ -1167,6 +1182,7 @@ const ST = {
   /* Movimientos / Consumo de Repuestos (CIOT) */
   ciot: [], ciotMeta: null, mvQ: '', mvRes: [], mvShown: 0, mvPage: 50, mvBase: null,
   transp: {}, transpMeta: null,   /* Seguimiento — Registro de Transporte */
+  rxPick: [], rxPrep: [],         /* pickings RX → Preparados (Movimientos) */
   pdQ: '', pdExacta: false,
   mvFiltros: { desde: '', hasta: '', bases: [] }, mvOrden: '',
   /* Pedidos (Fill Rate) */
@@ -2424,7 +2440,8 @@ $('#kSave').onclick = async () => {
   const ub = (f.ubi || []).map(x => x[0] || 's/u').join(' | ') || 's/u';
   const reg = { cod: r.cod, desc: r.desc, tipo: r.tipo, marca: r.marca, sec: k, secLb,
     ubi: ub, sistema: s, contado: c, dif: c - s, ts: Date.now(), oper: ($('#oper').value || '').trim(),
-    motivo: (c - s) === 0 ? '' : (ST.motivo || ''), obs: (c - s) === 0 ? '' : ($('#kObs').value || '').trim() };
+    motivo: (c - s) === 0 ? '' : (ST.motivo || ''),
+    obs: ($('#kObs').value || '').trim() };   /* la observación se guarda haya o no diferencia */
   const i = ST.conteos.findIndex(x => x.cod === r.cod && x.sec === k);
   if (i >= 0) ST.conteos[i] = reg; else ST.conteos.unshift(reg);
   saveMem(); closeSheet('#shConteo'); renderConteos(); refreshBadges(); computeAlertas(true);
@@ -2447,7 +2464,8 @@ function renderConteos() {
       '<span>' + esc(c.desc || '') + '</span>' +
       '<span>' + esc(c.secLb || (SEC[c.sec] && SEC[c.sec].corto) || c.sec) + (c.ubi ? ' · ' + esc(c.ubi) : '') +
         (c.motivo ? ' · ' + esc(c.motivo) : '') + '</span>' +
-      '<span>Sistema ' + nfmt(c.sistema) + ' → contado ' + nfmt(c.contado) + '</span></div>' +
+      '<span>Sistema ' + nfmt(c.sistema) + ' → contado ' + nfmt(c.contado) + '</span>' +
+      (c.obs ? '<span style="color:var(--ink-muted);font-style:italic">💬 ' + esc(c.obs) + '</span>' : '') + '</div>' +
       '<div class="d" style="' + st + '">' + (c.dif > 0 ? '+' : '') + nfmt(c.dif) + '</div>' +
       '<button class="del" data-i="' + i + '" aria-label="Borrar">&times;</button></div>';
   }).join('');
@@ -2642,6 +2660,8 @@ const SNAP_FR   = [['dep','d'], ['cod','d'], ['desc','d'], ['tec','d'], ['grupo'
 /* Seguimiento (Transporte) — se guarda como array plano con la CLAVE
    namespaceada incluida ('key'), así el decode reconstruye el diccionario
    ST.transp tal cual sin tener que derivarla de vuelta. */
+const SNAP_RXPREP = [['form','d'], ['nodo','d'], ['remitoNum','d'], ['remitoView','d'],
+  ['cod','d'], ['desc','d'], ['cant','n'], ['dep','d'], ['origen','d'], ['fecha','f'], ['grupo','d']];
 const SNAP_TRANSP = [['key','d'], ['remito','d'], ['origen','d'], ['destino','d'],
   ['destinatario','d'], ['empresa','d'], ['operador','d'], ['guia','d'],
   ['bultos','n'], ['peso','n'], ['despacho','f'], ['arribo','f'], ['arriboAprox','f'],
@@ -2665,7 +2685,8 @@ function snapshotObj() {
     ciot: colEnc(ST.ciot || [], SNAP_CIOT),
     fr:   colEnc(ST.fr   || [], SNAP_FR),
     transpMeta: ST.transpMeta ? { when: ST.transpMeta.when, filas: ST.transpMeta.filas } : null,
-    transp: colEnc(transpAArray(ST.transp), SNAP_TRANSP)
+    transp: colEnc(transpAArray(ST.transp), SNAP_TRANSP),
+    rxPrep: colEnc(ST.rxPrep || [], SNAP_RXPREP)
   };
 }
 
@@ -2744,6 +2765,7 @@ async function aplicarSnapshot(o, origen, persistir) {
   ST.ciot = colDec(o.ciot, SNAP_CIOT);
   ST.fr   = o.fr && o.fr.n ? colDec(o.fr, SNAP_FR) : null;
   ST.transp = o.transp && o.transp.n ? arrayATransp(colDec(o.transp, SNAP_TRANSP)) : {};
+  ST.rxPrep = o.rxPrep && o.rxPrep.n ? colDec(o.rxPrep, SNAP_RXPREP) : [];
   ST.ciotMeta = o.ciotMeta ? Object.assign({}, o.ciotMeta, { desde: ventanaCiotDesde(), publicado: o.generado }) : null;
   ST.frMeta   = o.frMeta   ? Object.assign({}, o.frMeta,   { publicado: o.generado }) : null;
   ST.transpMeta = o.transpMeta ? Object.assign({}, o.transpMeta, { publicado: o.generado }) : null;
@@ -3020,6 +3042,18 @@ async function cargarStockDesde(root, forzarTodo) {
 
 /* Clave AAAAMM del primer mes de la ventana anual móvil (12 meses incluyendo
    el mes en curso). Ej.: hoy 09/2026 → 202509. */
+/* ── DOS ventanas distintas, a propósito ──────────────────────────────
+   1) LECTURA de Movimientos: histórico completo desde el 1/1/2025. Es lo que
+      alimenta Preparados RX, Movimientos y (vía transporte) Seguimiento —
+      queremos todo lo que haya, no sólo lo reciente.
+   2) CÁLCULO de Stock Sugerido: los últimos 12 meses móviles. El consumo
+      mensual promedio divide por 12, así que meterle más años distorsiona
+      el promedio; por eso esta ventana queda separada y más corta.        */
+const HIST_MOV_DESDE_ANIO = 2025;
+function histMovDesde() { return new Date(HIST_MOV_DESDE_ANIO, 0, 1); }
+function histMovMesMin() { return HIST_MOV_DESDE_ANIO * 100 + 1; }   /* AAAAMM, ej. 202501 */
+
+/* Ventana de 12 meses móviles — SÓLO para Stock Sugerido (consumo/rotación). */
 function ventanaCiotDesde() {
   const h = new Date();
   return new Date(h.getFullYear(), h.getMonth() - 11, 1);
@@ -3077,19 +3111,21 @@ async function cargarMovimientosDesde(root, forzarTodo) {
   if (actual) for (const f of await filasDe(actual.f, actual.name)) acc.push(f);
   const histDir = await buscarCarpeta(dir.h, ['argentina']);
   if (histDir) {
-    /* Ventana ANUAL MÓVIL: los últimos 12 meses contados desde hoy (no desde el
-       1/1). La necesita Stock Sugerido para calcular rotación por SKU, y de paso
-       le da más historia a Movimientos. Se compara por clave AAAAMM, así que
-       cruzar el cambio de año no requiere ningún caso especial. */
-    const mesMin = mesMinCiot();
+    /* HISTÓRICO COMPLETO desde el 1/1/2025 (no 12 meses): se leen todos los
+       archivos mensuales cuya clave AAAAMM sea >= 202501. Así Preparados RX,
+       Movimientos y Seguimiento ven todo el histórico. Stock Sugerido después
+       recorta sus propios 12 meses al calcular (mesMinCiot), no acá. */
+    const mesMin = histMovMesMin();
     const archivos = await todosLosXlsx(histDir.h);
     for (const a of archivos) {
       const m = a.name.match(/(\d{4})-(\d{2})/);
-      if (m && (Number(m[1]) * 100 + Number(m[2])) < mesMin) continue; /* fuera de los 12 meses */
+      if (m && (Number(m[1]) * 100 + Number(m[2])) < mesMin) continue; /* anterior a 2025 */
       for (const f of await filasDe(a.h, a.name)) acc.push(f);
     }
   }
-  ST.ciot = acc;
+  /* ST.ciot sólo tiene consumo técnico (lo que ya esperaban Movimientos y
+     Stock Sugerido). Los pickings RX van aparte, en ST.rxPick. */
+  separarCiotYRX(acc);
   ST.ciotMeta = { when: Date.now(), archivos: Object.keys(nuevo).length, filas: acc.length,
                   desde: ventanaCiotDesde(), leidos, reusados };
   loading(true, 'Actualizando todo', 'Guardando en memoria del dispositivo…');
@@ -3105,7 +3141,7 @@ async function ciotDesdeMemoria() {
   if (!cache) return 0;
   const acc = [];
   for (const k of Object.keys(cache)) for (const f of (cache[k].filas || [])) acc.push(f);
-  ST.ciot = acc;
+  separarCiotYRX(acc);
   ST.ciotMeta = (await DB.get('ciotMeta')) ||
     { when: null, archivos: Object.keys(cache).length, filas: acc.length, desde: ventanaCiotDesde() };
   return acc.length;
@@ -3415,6 +3451,7 @@ function basesPedidos() {
   const set = new Set();
   for (const r of (ST.fr || [])) if (r.dep) set.add(r.dep);
   for (const t of Object.values(ST.transp || {})) if (t.dep) set.add(t.dep);
+  for (const r of (ST.rxPrep || [])) if (r.dep) set.add(r.dep);   /* bases con picking RX */
   const enDatos = [...set];
   if (ST.scope === null) return enDatos.sort();
   const ok = new Set(ST.scope);
@@ -3422,7 +3459,7 @@ function basesPedidos() {
 }
 
 function renderPedidos() {
-  const hay = !!(ST.fr && ST.fr.length) || !!Object.keys(ST.transp || {}).length;
+  const hay = !!(ST.fr && ST.fr.length) || !!Object.keys(ST.transp || {}).length || !!(ST.rxPrep || []).length;
   $('#pdSinDatos').style.display = hay ? 'none' : 'block';
   if (!hay) { $('#pdBases').style.display = 'none'; $('#pdDetalle').style.display = 'none';
     $('#pdBaseBar').style.display = 'none'; $('#sugBox2').style.display = 'none';
@@ -3565,20 +3602,101 @@ function tarjetaSeguimiento(key, t) {
       '<div class="seglb">' + esc(p.lb) + '</div></div>';
   }).join('');
   const excepcion = esExcepcionSeg(t);
-  return '<div class="panel" style="margin-bottom:10px" data-remito="' + esc(key) + '">' +
-    '<div class="sku-hd" style="margin-bottom:2px;cursor:default"><span class="sku-i">' +
+  return '<div class="panel segcard" style="margin-bottom:10px;cursor:pointer" data-remito="' + esc(key) + '" role="button" tabindex="0">' +
+    '<div class="sku-hd" style="margin-bottom:2px"><span class="sku-i">' +
       '<span class="sku-cod">' + esc(displayRemito(key)) +
         (excepcion ? ' <b style="color:var(--warn)" title="Abastecedor distinto de Central Haedo">●</b>' : '') + '</span>' +
       '<span class="sku-dsc">' + esc(t.origen || '—') + ' → ' + esc(t.destino || '—') + '</span>' +
       '<span class="sku-meta">' + esc(t.destinatario || 'Sin destinatario') +
         (t.empresa ? ' · ' + esc(t.empresa) : '') + (t.guia ? ' · Guía ' + esc(t.guia) : '') + '</span>' +
-    '</span></div>' +
+    '</span><span class="qty flat" style="font-size:10px;height:auto;padding:4px 8px;border-radius:8px">Ver ▸</span></div>' +
     '<div class="segstep">' + stepperHtml + '</div>' +
     (demorado ? '<p class="note" style="color:var(--warn);font-weight:700;margin-top:8px">⚠ Debería haber llegado' +
       (t.despacho ? ' (despachado ' + dfmtSolo(t.despacho) + ')' : '') + '</p>'
       : (t.arribo ? '<p class="note" style="margin-top:8px">Arribó el ' + dfmtSolo(t.arribo) +
           (t.dias != null ? ' · ' + t.dias + ' días de tránsito' : '') + '</p>' : '')) +
   '</div>';
+}
+
+/* Contenido de un remito: qué repuestos y cantidades se prepararon/enviaron.
+   Se cruza el número de remito (limpio, sin prefijo/nodo) contra los pickings
+   RX ya parseados de Movimientos. Un mismo remito puede llevar varios códigos. */
+/* Un remito del Registro de Transporte puede AGRUPAR varios remitos en un
+   solo envío: "313-320", "17614-17632-176354", "RX26-76/77/78", etc. En
+   Movimientos, en cambio, cada número de movimiento (columna Q) es individual
+   (313 por un lado, 320 por otro). Para cruzar el contenido hay que
+   descomponer el remito del transporte en sus números sueltos y buscar cada
+   uno. splitRem hace justo eso: quita prefijos RX / RX26- y separa por
+   guión, barra o espacio, limpiando ceros a la izquierda. */
+function splitRem(remito) {
+  let s = String(remito == null ? '' : remito).trim();
+  s = s.replace(/^RX\d{0,2}-?/i, '');           /* saca prefijo RX / RX26- */
+  const partes = s.split(/[\s/\-]+/).map(x => x.replace(/[^0-9]/g, '').replace(/^0+(?=\d)/, ''))
+    .filter(x => x !== '');
+  return [...new Set(partes)];                    /* números únicos */
+}
+function contenidoRemito(key) {
+  /* números que agrupa este envío (del remito del transporte) */
+  const nums = new Set(splitRem(displayRemito(key)));
+  if (!nums.size) return [];
+  const items = [];
+  for (const r of (ST.rxPrep || [])) {
+    /* cada picking RX tiene su remitoNum (columna Q de Movimientos); matchea
+       si su número está en el conjunto que agrupa este envío. Sólo la pierna
+       positiva (base abastecida) — no las devoluciones negativas del nodo. */
+    for (const n of splitRem(r.remitoNum)) {
+      if (nums.has(n)) { items.push({ cod: r.cod, desc: r.desc, cant: r.cant, dep: r.dep, remito: r.remitoView }); break; }
+    }
+  }
+  /* dedup por código+base+remito (un mismo código puede venir en remitos
+     distintos dentro del mismo envío agrupado) */
+  const map = new Map();
+  for (const it of items) { const k = it.cod + '|' + it.dep + '|' + it.remito;
+    if (map.has(k)) map.get(k).cant += it.cant; else map.set(k, Object.assign({}, it)); }
+  return Array.from(map.values()).sort((a, b) => a.cod.localeCompare(b.cod, 'es', { numeric: true }));
+}
+function abrirDetalleSeg(key) {
+  const t = (ST.transp || {})[key]; if (!t) return;
+  const demorado = estaDemorado(t);
+  const items = contenidoRemito(key);
+  $('#sdTit').textContent = displayRemito(key);
+  $('#sdSub').textContent = (t.origen || '—') + ' → ' + (t.destino || '—');
+
+  const kv = (lb, val) => '<div class="kv"><span>' + esc(lb) + '</span><b style="text-align:right;max-width:62%">' + val + '</b></div>';
+  let h = '';
+  /* ── Estado físico / transporte ── */
+  h += '<p class="eyebrow" style="margin:2px 0 6px">Transporte</p>';
+  h += kv('Estado', demorado ? '<span style="color:var(--warn)">⚠ Debería haber llegado</span>'
+    : (t.arribo ? '<span style="color:var(--ok)">Arribó</span>' : (t.despacho ? '<span style="color:var(--link)">En tránsito</span>' : 'Preparado')));
+  h += kv('Destinatario', esc(t.destinatario || '—'));
+  h += kv('Empresa', esc(t.empresa || '—'));
+  if (t.guia) h += kv('Guía', esc(t.guia));
+  if (t.operador) h += kv('Operador', esc(t.operador));
+  if (t.despacho) h += kv('Despacho', dfmtSolo(t.despacho));
+  if (t.arriboAprox) h += kv('Arribo estimado', dfmtSolo(t.arriboAprox));
+  if (t.arribo) h += kv('Arribó', dfmtSolo(t.arribo) + (t.dias != null ? ' · ' + t.dias + ' días' : ''));
+  if (t.bultos) h += kv('Bultos', nfmt(t.bultos));
+  if (t.peso) h += kv('Peso', nfmt(t.peso) + ' kg');
+
+  /* ── Contenido del remito (qué se preparó) ── */
+  h += '<p class="eyebrow" style="margin:16px 0 6px">Contenido preparado</p>';
+  if (items.length) {
+    h += items.map(it => '<div class="panel" style="margin-bottom:8px;padding:10px 12px">' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-family:var(--f-num);font-size:13px;font-weight:700;color:var(--link)">' + esc(it.cod) + '</div>' +
+          '<div style="font-size:13.5px;color:var(--ink)">' + esc(it.desc || '—') + '</div></div>' +
+        '<div style="flex:none;text-align:right"><div style="font-size:20px;font-weight:800;color:var(--ok)">' + nfmt(it.cant) + '</div>' +
+        '<div style="font-size:11px;color:var(--ink-muted)">unidades</div></div>' +
+      '</div></div>').join('');
+    const tot = items.reduce((a, x) => a + x.cant, 0);
+    h += '<div class="kv" style="margin-top:4px"><span>Total del remito</span><b class="num">' + nfmt(tot) + ' un. · ' + items.length + (items.length === 1 ? ' código' : ' códigos') + '</b></div>';
+  } else {
+    h += '<p class="note">No hay detalle de repuestos para este remito en los datos cargados. ' +
+      'Puede ser un remito sin picking RX asociado (marzo-mayo suelen tener huecos de Movimientos en el servidor).</p>';
+  }
+  $('#sdBody').innerHTML = h;
+  openSheet('#shSegDet');
 }
 /* Búsqueda global de Pedidos (OR, técnico, remito, código, base, transporte),
    con toggle de coincidencia exacta — misma idea en las 4 solapas. */
@@ -3637,6 +3755,7 @@ function renderTabsPd() {
     /* 'sug' no sale del Fill Rate; 'seg' sale del Registro de Transporte */
     const n = k === 'sug' ? calcSugerido(ST.pdBase).filter(x => x.sug > 0).length
       : k === 'seg' ? remitosDeBase(ST.pdBase).length
+      : k === 'prep' ? preparadosDeBase(ST.pdBase, { tec: [], clas: [], segDesde:'', segHasta:'', segEmpresa:[] }).length
       : (ST.fr || []).filter(r => r.grupo === k && r.dep === ST.pdBase).length;
     return '<button class="chip' + (ST.pdTab === k ? ' on' : '') + '" data-pdtab="' + k + '">' +
       lb + ' <b>' + n + '</b></button>';
@@ -3751,9 +3870,16 @@ function renderPageSug() {
 
 /* tocar una fila abre la ficha del producto, igual que en Stock */
 $('#pdList').addEventListener('click', e => {
+  const seg = e.target.closest('[data-remito]');
+  if (seg) { abrirDetalleSeg(seg.dataset.remito); return; }
   const el = e.target.closest('[data-sugcod]'); if (!el) return;
   const r = ST.byCod && ST.byCod.get(el.dataset.sugcod);
   if (r) openFicha(r);
+});
+$('#pdList').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const seg = e.target.closest('[data-remito]'); if (!seg) return;
+  e.preventDefault(); abrirDetalleSeg(seg.dataset.remito);
 });
 
 let tsug;
@@ -3778,11 +3904,64 @@ function contarPdFiltro(f) {
     if (!pasaFiltrosPd(r, f)) continue; n++; }
   return n;
 }
+/* Clave de unificación RX ↔ Fill Rate: mismo código + misma base + misma
+   fecha de preparación (día exacto). Un picking RX y una línea de Fill Rate
+   con esta misma clave son el MISMO envío (el RX es la pierna de stock, la
+   OR es el pedido que lo originó). */
+function claveUnifica(cod, dep, fecha) {
+  const f = fecha instanceof Date && !isNaN(fecha)
+    ? fecha.getFullYear() + '-' + (fecha.getMonth() + 1) + '-' + fecha.getDate() : '';
+  return String(cod) + '|' + String(dep) + '|' + f;
+}
+/* Preparados de una base = líneas de Fill Rate (con OR) UNIDAS con los
+   pickings RX (de Movimientos). Cuando coinciden por clave, se fusionan en
+   una sola línea que lleva OR + remito; los RX que no matchean ninguna OR
+   quedan como línea propia (fuente 'rx'). */
+function preparadosDeBase(base, filtros) {
+  const f = filtros || ST.pdFiltros;
+  const frPrep = (ST.fr || []).filter(r => r.grupo === 'prep' && r.dep === base && pasaFiltrosPd(r, f));
+  const rxBase = (ST.rxPrep || []).filter(r => r.dep === base);
+
+  /* índice de RX por clave, para engancharlos a la OR que corresponda */
+  const rxPorClave = new Map();
+  for (const rx of rxBase) {
+    const k = claveUnifica(rx.cod, rx.dep, rx.fecha);
+    if (!rxPorClave.has(k)) rxPorClave.set(k, []);
+    rxPorClave.get(k).push(rx);
+  }
+  const usados = new Set();
+  const out = frPrep.map(r => {
+    const k = claveUnifica(r.cod, r.dep, r.fEnt);
+    const matches = rxPorClave.get(k);
+    if (matches && matches.length) {
+      const rx = matches[0]; usados.add(rx);            /* fusiona el primer RX que calce */
+      return Object.assign({}, r, { remitoView: rx.remitoView, nodo: rx.nodo, origen: rx.origen, unificado: true });
+    }
+    return r;
+  });
+  /* RX que no matchearon ninguna OR → línea propia (sólo si no hay filtro de
+     técnico/clasificación, porque esos filtros no aplican a un RX suelto) */
+  if (!f.tec.length && !f.clas.length) {
+    for (const rx of rxBase) {
+      if (usados.has(rx)) continue;
+      out.push({ fuente: 'rx', grupo: 'prep', dep: rx.dep, cod: rx.cod, desc: rx.desc,
+        remitoView: rx.remitoView, nodo: rx.nodo, origen: rx.origen,
+        sol: rx.cant, prep: rx.cant, pend: 0, fEnt: rx.fecha, fSolic: rx.fecha,
+        tec: '', or: rx.remitoView, clase: 'ON_TIME' });
+    }
+  }
+  return out;
+}
 function doSearchPd() {
   const f = ST.pdFiltros;
-  let res = (ST.fr || []).filter(r => r.grupo === ST.pdTab && r.dep === ST.pdBase && pasaFiltrosPd(r, f));
+  let res;
+  if (ST.pdTab === 'prep') {
+    res = preparadosDeBase(ST.pdBase, f);
+  } else {
+    res = (ST.fr || []).filter(r => r.grupo === ST.pdTab && r.dep === ST.pdBase && pasaFiltrosPd(r, f));
+  }
   if (ST.pdQ) res = res.filter(r =>
-    coincide([r.or, nombreCompleto(r.tec), r.cod, r.dep, r.desc], ST.pdQ, ST.pdExacta));
+    coincide([r.or, nombreCompleto(r.tec), r.cod, r.dep, r.desc, r.remitoView || '', r.origen || ''], ST.pdQ, ST.pdExacta));
   if (ST.pdOrden === 'sol') res.sort((a, b) => b.sol - a.sol);
   else if (ST.pdOrden === 'tec') res.sort((a, b) => nombreCompleto(a.tec).localeCompare(nombreCompleto(b.tec), 'es'));
   else res.sort((a, b) => (b.fSolic ? +b.fSolic : 0) - (a.fSolic ? +a.fSolic : 0));
@@ -3937,17 +4116,36 @@ function renderPagePd() {
   const buf = [];
   for (let i = ST.pdShown; i < end; i++) {
     const r = ST.pdRes[i];
+    if (r.fuente === 'rx') {
+      /* Preparado que salió de Movimientos (picking RX): en vez de OR se
+         muestra el remito (RX26-313) y el nodo/origen que lo abasteció. */
+      buf.push('<div class="sku compact"><div class="sku-hd">' +
+        '<span class="loc" style="background:var(--tint-brand);color:var(--link)">' + esc(r.remitoView) + '</span>' +
+        '<span class="sku-i"><span class="sku-cod">' + esc(r.cod) + '</span>' +
+        '<span class="sku-dsc">' + esc(r.desc || '—') + '</span>' +
+        '<span class="sku-meta">' + (r.fEnt ? dfmtSolo(r.fEnt) : 'sin fecha') +
+          ' · prep ' + nfmt(r.prep) +
+          (r.origen ? ' · desde ' + esc(r.origen) : '') + '</span></span>' +
+        '<span class="qty has" style="font-size:10px;line-height:1.1;text-align:center">RX</span>' +
+        '</div></div>');
+      continue;
+    }
     let badge, cls;
     if (r.grupo === 'prep') { badge = r.clase === 'ON_TIME' ? 'ON TIME' : 'LATE'; cls = r.clase === 'ON_TIME' ? 'has' : 'low'; }
     else if (r.grupo === 'venc') { badge = r.dias + 'd'; cls = 'zero'; }
     else { badge = nfmt(r.pend); cls = 'low'; }
+    /* Línea unificada: la OR trae también su remito RX abajo, para no
+       duplicar el mismo envío en dos filas. */
+    const remChip = r.unificado && r.remitoView
+      ? '<span style="color:var(--link);font-weight:700"> · ' + esc(r.remitoView) + '</span>' : '';
     buf.push('<div class="sku compact"><div class="sku-hd">' +
       '<span class="loc">OR<small>' + esc(String(r.or)) + '</small></span>' +
-      '<span class="sku-i"><span class="sku-cod">' + esc(r.cod) + '</span>' +
+      '<span class="sku-i"><span class="sku-cod">' + esc(r.cod) + remChip + '</span>' +
       '<span class="sku-dsc">' + esc(r.desc || '—') + '</span>' +
       '<span class="sku-meta">' + (r.fSolic ? dfmtSolo(r.fSolic) : 'sin fecha') +
         ' · ped ' + nfmt(r.sol) + ' / prep ' + nfmt(r.prep) +
-        (r.tec ? ' · ' + esc(nombreCompleto(r.tec)) : '') + '</span></span>' +
+        (r.tec ? ' · ' + esc(nombreCompleto(r.tec)) : '') +
+        (r.unificado && r.origen ? ' · desde ' + esc(r.origen) : '') + '</span></span>' +
       '<span class="qty ' + cls + '" style="font-size:11px;line-height:1.1;text-align:center">' + badge + '</span>' +
       '</div></div>');
   }
@@ -3986,9 +4184,71 @@ const COL_MOV = {
   repCod: 1, repDesc: 2,              /* B, C   · código y descripción del repuesto */
   deposito: 10, fecha: 12,            /* K, M   · depósito, fecha del movimiento */
   formulario: 14,                     /* O      · código del formulario (CIOT, RX00xx, TR…) */
+  remito: 16,                         /* Q      · número de remito (RX: ej. 313) */
   clienteCod: 17, clienteRazon: 18,   /* R, S   · código de cliente, razón social */
-  cantidad: 25                        /* Z      · cantidad (viene negativa, se muestra en positivo) */
+  cantidad: 25                        /* Z      · cantidad (+ base abastecida / − nodo que descuenta) */
 };
+
+/* Reparte las filas de Movimientos: CIOT a ST.ciot (consumo técnico, como
+   siempre) y los pickings RX a ST.rxPick. Después arma los "preparados RX". */
+function separarCiotYRX(filas) {
+  const ciot = [], rx = [];
+  for (const f of filas) { if (f.form === 'CIOT') ciot.push(f); else if (f.form && esFormRX(f.form)) rx.push(f); }
+  ST.ciot = ciot; ST.rxPick = rx;
+  ST.rxPrep = construirPreparadosRX(rx);
+}
+
+/* Cada picking RX genera 2 filas en Movimientos: una POSITIVA en la base
+   abastecida (la que recibió el stock) y una NEGATIVA en el nodo/central que
+   lo descontó. Un "preparado" es la fila POSITIVA: es lo que efectivamente se
+   preparó y envió a esa base. La fila negativa da el ORIGEN (nodo abastecedor)
+   y confirma el remito. Se agrupan por (formulario, remito, repuesto) para
+   emparejar las dos piernas del mismo envío. */
+function construirPreparadosRX(rx) {
+  const grupos = new Map();
+  for (const f of rx) {
+    const key = f.form + '|' + (f.remito || '') + '|' + f.cod;
+    if (!grupos.has(key)) grupos.set(key, { form: f.form, remito: f.remito, cod: f.cod, desc: f.desc,
+      fecha: f.fecha, pos: [], neg: [] });
+    const g = grupos.get(key);
+    if (!g.fecha && f.fecha) g.fecha = f.fecha;
+    if (f.cant > 0) g.pos.push(f); else if (f.cant < 0) g.neg.push(f);
+  }
+  const info = form => RX_FORM_NODO[String(form || '').toUpperCase()] || { nodo: '', pref: 'RX' };
+  const out = [];
+  for (const g of grupos.values()) {
+    const meta = info(g.form);
+    /* la base abastecida es el depósito de la(s) fila(s) positiva(s) */
+    const destinos = new Set(g.pos.map(x => x.dep).filter(Boolean));
+    /* el origen es el depósito de la(s) fila(s) negativa(s) — el nodo/central */
+    const origenes = new Set(g.neg.map(x => x.dep).filter(Boolean));
+    const cant = g.pos.reduce((a, x) => a + x.cant, 0) || Math.abs(g.neg.reduce((a, x) => a + x.cant, 0));
+    for (const dep of (destinos.size ? destinos : [''])) {
+      out.push({
+        form: g.form, nodo: meta.nodo, remitoNum: g.remito,
+        remitoView: meta.pref + '-' + g.remito,             /* ej. RX26-313 */
+        cod: g.cod, desc: g.desc, cant,
+        dep,                                                /* base abastecida */
+        origen: Array.from(origenes).join(', ') || meta.nodo,
+        fecha: g.fecha, grupo: 'prep'
+      });
+    }
+  }
+  out.sort((a, b) => (b.fecha ? +b.fecha : 0) - (a.fecha ? +a.fecha : 0));
+  return out;
+}
+
+/* Formularios de picking RX → prefijo de nodo/central abastecedor.
+   RX0021 Central Haedo · RX0023 NODO01 · RX0024 NODO02 · RX0025 NODO03 · RX0026 NODO04.
+   El prefijo corto (RX21…RX26) es el que se muestra en el remito visible. */
+const RX_FORM_NODO = {
+  RX0021: { nodo: 'HAEDO',  pref: 'RX21' },
+  RX0023: { nodo: 'NODO01', pref: 'RX23' },
+  RX0024: { nodo: 'NODO02', pref: 'RX24' },
+  RX0025: { nodo: 'NODO03', pref: 'RX25' },
+  RX0026: { nodo: 'NODO04', pref: 'RX26' }
+};
+const esFormRX = f => Object.prototype.hasOwnProperty.call(RX_FORM_NODO, String(f || '').toUpperCase());
 
 /* Nodos y Haedo no generan CIOT: solo depósitos de base (prefijo B/otros) */
 function esBaseTecnico(dep) {
@@ -4003,22 +4263,38 @@ function parseMovimientos(wb, nombre) {
   for (let i = 1; i < raw.length; i++) {
     const r = raw[i]; if (!r) continue;
     const formulario = String(r[COL_MOV.formulario] ?? '').trim();
-    if (norm(formulario) !== 'ciot') continue;
+    const nf = norm(formulario);
+    const esCiot = nf === 'ciot';
+    const esRX = esFormRX(formulario);
+    if (!esCiot && !esRX) continue;            /* sólo CIOT y los RX de picking */
     const dep = String(r[COL_MOV.deposito] ?? '').trim();
     const cod = String(r[COL_MOV.repCod] ?? '').trim();
     if (!dep || !cod) continue;
-    let cant = Number(r[COL_MOV.cantidad]) || 0; cant = Math.abs(cant);
-    if (cant <= 0) continue;
+    let cantRaw = Number(r[COL_MOV.cantidad]) || 0;
     let fecha = r[COL_MOV.fecha];
     if (fecha instanceof Date) { /* ok */ }
     else if (typeof fecha === 'number') fecha = new Date(Math.round((fecha - 25569) * 86400 * 1000));
     else fecha = fecha ? new Date(fecha) : null;
-    filas.push({
-      dep, cod, desc: oneLine(String(r[COL_MOV.repDesc] ?? '')), cant, fecha,
-      clienteCod: String(r[COL_MOV.clienteCod] ?? '').trim(),
-      cliente: oneLine(String(r[COL_MOV.clienteRazon] ?? '')),
-      archivo: nombre
-    });
+
+    if (esCiot) {
+      const cant = Math.abs(cantRaw); if (cant <= 0) continue;
+      filas.push({
+        form: 'CIOT', dep, cod, desc: oneLine(String(r[COL_MOV.repDesc] ?? '')), cant, fecha,
+        clienteCod: String(r[COL_MOV.clienteCod] ?? '').trim(),
+        cliente: oneLine(String(r[COL_MOV.clienteRazon] ?? '')),
+        archivo: nombre
+      });
+    } else {
+      /* Picking RX: se guardan TODAS las filas (positiva=base abastecida,
+         negativa=nodo/central que descontó). El armado de "preparados" cruza
+         ambas después, en construirPreparadosRX(). */
+      const formU = formulario.toUpperCase();
+      filas.push({
+        form: formU, dep, cod, desc: oneLine(String(r[COL_MOV.repDesc] ?? '')),
+        cant: cantRaw,                         /* CON signo, a propósito */
+        fecha, remito: String(r[COL_MOV.remito] ?? '').trim(), archivo: nombre
+      });
+    }
   }
   return filas;
 }
@@ -5493,7 +5769,7 @@ function renderSup() {
    No toca ningún dato: IndexedDB y localStorage siguen igual que antes,
    porque el origen (dominio) es el mismo antes y después de instalar.
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.24.0';                 /* ← subir junto con APP_VER del service-worker.js */
+const APP_VER = '3.27.1';                 /* ← subir junto con APP_VER del service-worker.js */
 let deferredPrompt = null, swReg = null;
 
 const esStandalone = () => window.matchMedia('(display-mode: standalone)').matches ||

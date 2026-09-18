@@ -413,6 +413,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
   text-transform:uppercase;letter-spacing:.01em;line-height:1.2;padding:0 1px;max-width:64px;
   word-break:break-word}
 .segpaso.done .seglb, .segpaso.actual .seglb, .segpaso.alerta .seglb{color:var(--ink)}
+
 .opt{width:100%;min-height:var(--tap);display:flex;align-items:center;gap:10px;padding:11px 12px;
   border:1.5px solid var(--border);border-radius:var(--r-md);background:var(--surface);
   margin-bottom:7px;text-align:left;font-size:15px}
@@ -817,6 +818,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <div class="kv"><span>Soporte técnico</span><b>Coordinación de Abastecimiento</b></div>
       <button class="btn gh" id="btnBuscarUpd" style="margin-top:10px">Buscar actualizaciones</button>
     </div>
+
 
     <div class="panel">
       <h2>Estado de los datos</h2>
@@ -1394,10 +1396,11 @@ function parseWorkbook(wb, fileName) {
       });
     }
 
+    const serieVal = o.tipo === 'PQ-MAQ' ? (T(rf, map.serie) || '') : '';
     if (esHaedo(T(rf, map.dep), depDesc) && esCentral(secDesc)) {
-      o.C += q; if (q > 0) o.uC.push([ubi, q]);
+      o.C += q; if (q > 0) o.uC.push([ubi, q, serieVal]);
     } else if (esHaedo(T(rf, map.dep), depDesc) && esAlta(secDesc)) {
-      o.A += q; if (q > 0) o.uA.push([ubi, q]);
+      o.A += q; if (q > 0) o.uA.push([ubi, q, serieVal]);
     } else if (q > 0) {
       const rotRow = N(rr, rf, map.rot);
       const lugar = (depDesc || 'Sin depósito').replace(/^Permaquim\s*-?\s*/i, '') +
@@ -1417,8 +1420,8 @@ function parseWorkbook(wb, fileName) {
       /* `ubi` (arriba) sólo guarda la PRIMERA ubicación por compatibilidad con
          lo que ya usaba el resto de la app; `ubis` guarda TODAS — hace falta
          para el desglose completo de "Ver stock de una base". */
-      if (ubi) { const exU = pd.ubis.find(x => x[0] === ubi);
-        if (exU) exU[1] += q; else pd.ubis.push([ubi, q]); }
+      if (ubi) { const exU = pd.ubis.find(x => x[0] === ubi && x[2] === serieVal);
+        if (exU) exU[1] += q; else pd.ubis.push([ubi, q, serieVal]); }
     }
   }
   if (!byCod.size) throw new Error('No se encontró ningún código de producto. Revisá el mapeo de columnas.');
@@ -2064,10 +2067,11 @@ function hl(text, toks) {
 }
 function ubiHtml(list, toks) {
   if (!list.length) return '<div class="ubi none">Sin ubicación</div>';
-  const vis = list.slice(0, 3).map(([u, q]) =>
+  const vis = list.slice(0, 5).map(([u, q, serie]) =>
     '<div class="ubi">' + (u ? hl(u, toks) : '<span style="opacity:.6">sin ubic.</span>') +
+    (serie ? '<small style="color:var(--link);font-weight:700;margin-left:6px" title="N° de serie">' + esc(serie) + '</small>' : '') +
     '<small class="num">' + nfmt(q) + '</small></div>').join('');
-  return vis + (list.length > 3 ? '<div class="ubi none">+' + (list.length - 3) + ' ubicación(es)</div>' : '');
+  return vis + (list.length > 5 ? '<div class="ubi none">+' + (list.length - 5) + ' más</div>' : '');
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -5109,6 +5113,30 @@ function recomendar(r) {
   if (mios.length) out.push(['⚠️', 'Diferencia pendiente de resolución registrada hoy (' + (mios[0].dif > 0 ? '+' : '') + nfmt(mios[0].dif) + ').']);
   return out;
 }
+/* N° de serie para PQ-MAQ: se muestra debajo de la ubicación principal si
+   el producto tiene al menos una serie cargada. Se extrae de uC + uA + porDep
+   (el tercer elemento de cada tupla [ubi, cant, serie]). */
+function seriesDe(r) {
+  if (r.tipo !== 'PQ-MAQ') return [];
+  const out = [];
+  for (const [u, q, s] of r.uC) if (s) out.push({ ubi: u || 'Central', serie: s, cant: q });
+  for (const [u, q, s] of r.uA) if (s) out.push({ ubi: u || 'Planta alta', serie: s, cant: q });
+  for (const [dep, pd] of Object.entries(r.porDep || {}))
+    for (const [u, q, s] of (pd.ubis || [])) if (s) out.push({ ubi: u || dep, serie: s, cant: q });
+  return out;
+}
+function seriesHtml(r) {
+  const ss = seriesDe(r);
+  if (!ss.length) return '';
+  return '<p class="eyebrow" style="margin:14px 0 6px">N° de serie</p>' +
+    ss.map(x => '<div class="kv" style="padding:4px 0"><span>' + esc(x.serie) +
+      '</span><b style="font-size:12px;color:var(--ink-muted)">' + esc(x.ubi) + ' · ' + nfmt(x.cant) + ' un.</b></div>').join('');
+}
+function filaConSerie(t, q, serie) {
+  return '<div class="r"><span>' + esc(t) +
+    (serie ? ' <b style="color:var(--link);font-weight:700;font-size:11.5px">' + esc(serie) + '</b>' : '') +
+    '</span><b class="num">' + nfmt(q) + '</b></div>';
+}
 function openFicha(r) {
   ST.fkRow = r; verProducto(r.cod);
   $('#fkCod').textContent = r.cod; $('#fkDesc').textContent = r.desc || '';
@@ -5131,9 +5159,10 @@ function openFicha(r) {
         '<div class="c"><div class="l">Estante</div><div class="v">' + esc(partes[1] || '—') + '</div></div><div class="ar">›</div>' +
         '<div class="c"><div class="l">Ubicación</div><div class="v">' + esc(partes[2] || '—') + '</div></div></div>'
       : '<p class="note">Sin ubicación asignada en el sistema.</p>') +
+    seriesHtml(r) +
     (ST.scope === null && r.uC.length + r.uA.length > 1 ? '<div class="otros" style="border:0;padding-top:4px">' +
-      r.uC.map(u => fila('Central · ' + (u[0] || 's/u'), u[1])).join('') +
-      r.uA.map(u => fila('Planta alta · ' + (u[0] || 's/u'), u[1])).join('') + '</div>' : '') +
+      r.uC.map(u => filaConSerie('Central · ' + (u[0] || 's/u'), u[1], u[2])).join('') +
+      r.uA.map(u => filaConSerie('Planta alta · ' + (u[0] || 's/u'), u[1], u[2])).join('') + '</div>' : '') +
     (recs.length ? '<p class="eyebrow" style="margin:16px 0 6px">Recomendaciones</p>' +
       recs.map(x => '<div class="al c3" style="margin-bottom:7px"><div class="m">' + x[0] + ' ' + esc(x[1]) + '</div></div>').join('') : '') +
     '<p class="eyebrow" style="margin:16px 0 6px">Información del producto</p>' +
@@ -5769,7 +5798,7 @@ function renderSup() {
    No toca ningún dato: IndexedDB y localStorage siguen igual que antes,
    porque el origen (dominio) es el mismo antes y después de instalar.
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.27.1';                 /* ← subir junto con APP_VER del service-worker.js */
+const APP_VER = '3.29.0';                 /* ← subir junto con APP_VER del service-worker.js */
 let deferredPrompt = null, swReg = null;
 
 const esStandalone = () => window.matchMedia('(display-mode: standalone)').matches ||

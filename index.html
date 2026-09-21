@@ -3535,9 +3535,15 @@ function renderChipsPd() {
 
 function renderGrillaBasesPd(bases) {
   const box = $('#pdBases');
-  if (!bases.length) { box.innerHTML = '<p class="note">No hay pedidos para tus bases en el archivo actual.</p>'; return; }
+  /* Se ocultan las bases sin ninguna actividad real (0 preparados y 0
+     pendientes) — suelen ser códigos de depósito mal cargados o inexistentes
+     en el maestro (ver PQ_ORG.deps), que mostraban 0% de Fill Rate de forma
+     engañosa (0 solicitudes ⇒ 0/0 ⇒ 0%, no un problema real de servicio).
+     Confirmado con Christian el 21/09/2026. */
+  const conActividad = bases.filter(c => { const m = metricasPd(c); return m.prep > 0 || m.pend > 0; });
+  if (!conActividad.length) { box.innerHTML = '<p class="note">No hay pedidos para tus bases en el archivo actual.</p>'; return; }
   box.innerHTML = '<p class="eyebrow" style="margin:14px 0 8px">Elegí una base para ver sus pedidos</p>' +
-    bases.map(c => {
+    conActividad.map(c => {
       const m = metricasPd(c), info = depInfo(c);
       return '<div class="sku compact" data-pdbase="' + esc(c) + '"><div class="sku-hd">' +
         '<span class="loc">' + esc(c) + '</span>' +
@@ -5812,7 +5818,7 @@ function renderSup() {
    No toca ningún dato: IndexedDB y localStorage siguen igual que antes,
    porque el origen (dominio) es el mismo antes y después de instalar.
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.29.1';                 /* ← subir junto con APP_VER del service-worker.js */
+const APP_VER = '3.29.2';                 /* ← subir junto con APP_VER del service-worker.js */
 let deferredPrompt = null, swReg = null;
 
 const esStandalone = () => window.matchMedia('(display-mode: standalone)').matches ||

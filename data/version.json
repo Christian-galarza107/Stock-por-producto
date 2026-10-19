@@ -1,11 +1,11 @@
 {
   "v": 2,
-  "updated_at": "2026-10-13T12:55:36.863Z",
-  "generado_ms": 1791896136863,
+  "updated_at": "2026-10-19T15:35:25.271Z",
+  "generado_ms": 1792424125271,
   "productos": 8839,
-  "consumos_ciot": 36524,
-  "lineas_pedidos": 9769,
-  "remitos_transporte": 2415,
-  "bytes_gz": 1659253,
-  "bytes_json": 10968739
+  "consumos_ciot": 36719,
+  "lineas_pedidos": 9951,
+  "remitos_transporte": 2422,
+  "bytes_gz": 1663869,
+  "bytes_json": 10988403
 }

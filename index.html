@@ -2,8 +2,6 @@
 <html lang="es-AR" data-tema="oscuro">
 <head>
 <meta charset="utf-8">
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
 <meta name="theme-color" content="#0f172a">
 <title>Supply Chain Permaquim</title>
@@ -17,6 +15,394 @@
 <meta name="description" content="Aplicación inteligente para consulta de stock, ubicaciones y control de inventario.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2320258A'/%3E%3Ctext x='50' y='69' font-size='50' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EPQ%3C/text%3E%3C/svg%3E">
 <style>
+/* ── Base · reset equivalente al preflight de Tailwind v3 que antes llegaba por CDN ── */
+/*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+5. Use the user's configured `sans` font-feature-settings by default.
+6. Use the user's configured `sans` font-variation-settings by default.
+7. Disable tap highlights on iOS
+*/
+
+html,
+:host {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+  font-feature-settings: normal; /* 5 */
+  font-variation-settings: normal; /* 6 */
+  -webkit-tap-highlight-color: transparent; /* 7 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font-family by default.
+2. Use the user's configured `mono` font-feature-settings by default.
+3. Use the user's configured `mono` font-variation-settings by default.
+4. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-feature-settings: normal; /* 2 */
+  font-variation-settings: normal; /* 3 */
+  font-size: 1em; /* 4 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-feature-settings: inherit; /* 1 */
+  font-variation-settings: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  letter-spacing: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+input:where([type='button']),
+input:where([type='reset']),
+input:where([type='submit']) {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Reset default styling for dialogs.
+*/
+dialog {
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden]:where(:not([hidden="until-found"])) {
+  display: none;
+}
+
 /* ── TOKENS · paleta Permaquim validada (skill pq-dashboards) ─────────── */
 :root{
   color-scheme: light dark;
@@ -299,6 +685,7 @@ mark{background:var(--tint-warn);color:inherit;border-radius:3px;padding:0 1px}
 /* ── PANELES ──────────────────────────────────────────────────────────── */
 .view{display:none}.view.on{display:block}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+  box-shadow:var(--shadow);padding:14px;margin-bottom:12px}
 /* ── Tarjetas de sector en Terminal Panamericana ── */
 .tp-secs{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
 .tp-sec-card{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r-lg);
@@ -320,7 +707,6 @@ mark{background:var(--tint-warn);color:inherit;border-radius:3px;padding:0 1px}
 .base-search-wrap{position:sticky;top:0;z-index:5;background:var(--surface);
   padding:8px 0 10px;margin-bottom:2px}
 .base-search-wrap input{width:100%;box-sizing:border-box}
-  box-shadow:var(--shadow);padding:14px;margin-bottom:12px}
 .panel h2{font-size:15px;margin-bottom:3px}
 .panel .sub{font-size:13px;color:var(--ink-muted);margin:0 0 12px}
 .btn{width:100%;min-height:var(--tap);border-radius:var(--r-md);border:1.5px solid var(--border);
@@ -634,6 +1020,336 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 .tabs button:active svg,.tabs button:active i{background:var(--surface-2)}
 .bdg{top:3px;right:calc(50% - 22px)}
 @media (max-width:340px){.tabs button svg,.tabs button i{padding:4px 9px}}
+
+/* ══════════════════════════════════════════════════════════════════════
+   FOTOS DE PRODUCTOS (v3.31.0) — componente único .pqf
+   Sólo aparece si existe data/imagenes-productos.json con al menos un
+   producto. Si no, la interfaz queda exactamente igual que antes.
+   ══════════════════════════════════════════════════════════════════════ */
+.pqf{flex:none;display:inline-grid;place-items:center;position:relative;overflow:hidden;
+  background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-xs);color:var(--ink-muted)}
+.pqf img{display:block;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .18s}
+.pqf.pqf-ok{background:#fff}                       /* fondo claro fijo: la pieza se reconoce en los dos temas */
+.pqf.pqf-ok img{opacity:1}
+.pqf svg{width:48%;height:48%;opacity:.55}
+.pqf-sm{width:44px;height:44px}
+.pqf-sm svg{width:20px;height:20px}
+@media (max-width:380px){ .pqf-sm{width:38px;height:38px} .sku-hd:has(> .pqf){gap:8px} }
+.pqf-lg,.pqf-md{display:grid;width:100%;border-radius:var(--r-md);margin:0 0 12px}
+.pqf-lg{height:190px}
+.pqf-md{height:170px}
+.pqf-lg.pqf-ok,.pqf-md.pqf-ok{cursor:zoom-in}
+.pqf-lg.pqf-ok:focus-visible,.pqf-md.pqf-ok:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.pqf-lg .pqf-lupa,.pqf-md .pqf-lupa{position:absolute;right:8px;bottom:8px;width:32px;height:32px;border-radius:var(--r-pill);
+  background:rgba(15,19,48,.62);color:#fff;display:none;place-items:center;pointer-events:none}
+.pqf-lg.pqf-ok .pqf-lupa,.pqf-md.pqf-ok .pqf-lupa{display:grid}
+.pqf-lg .pqf-lupa svg,.pqf-md .pqf-lupa svg{width:17px;height:17px;opacity:1}
+.pqf-lg.pqf-no,.pqf-md.pqf-no{height:auto;min-height:44px;display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 12px;font-size:12.5px;font-weight:600}
+.pqf-lg.pqf-no svg,.pqf-md.pqf-no svg{width:18px;height:18px;flex:none}
+
+/* ampliación a pantalla completa (es un .sheet más: el «Atrás» del celular la cierra) */
+#shFoto{z-index:80}
+#shFoto .bk{background:rgba(5,8,18,.94)}
+#shFoto .pqf-lb{position:absolute;inset:0;display:flex;flex-direction:column;color:#fff}
+#shFoto .pqf-lb-hd{flex:none;display:flex;align-items:center;gap:8px;
+  padding:calc(10px + env(safe-area-inset-top)) 12px 10px}
+#shFoto .pqf-lb-cod{flex:1;min-width:0;font-family:var(--f-num);font-weight:700;font-size:15px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#shFoto .pqf-lb-hd button{flex:none;width:44px;height:44px;border:0;border-radius:var(--r-pill);
+  background:rgba(255,255,255,.14);color:#fff;font-size:22px;line-height:1;display:grid;place-items:center}
+#shFoto .pqf-lb-hd button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+#shFoto .pqf-lb-sc{flex:1;min-height:0;overflow:auto;display:grid;place-items:center;
+  padding:0 12px calc(12px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y pinch-zoom}
+#shFoto .pqf-lb-sc img{display:block;max-width:100%;max-height:100%;object-fit:contain;background:#fff;
+  border-radius:var(--r-sm);cursor:zoom-in;user-select:none;-webkit-user-drag:none}
+#shFoto.zoom .pqf-lb-sc{place-items:start}
+#shFoto.zoom .pqf-lb-sc img{max-width:none;max-height:none;cursor:zoom-out}
+#shFoto .pqf-lb-ft{flex:none;text-align:center;font-size:12px;opacity:.7;padding:0 12px calc(10px + env(safe-area-inset-bottom))}
+
+/* ══════════════════════════════════════════════════════════════════════
+   DESIGN SYSTEM · v3.32.0
+   Capa única, al final de la cascada: tokens, escala tipográfica,
+   componentes y estados. No cambia ningún dato ni cálculo; sólo cómo se
+   presentan. Contrastes medidos (WCAG 2.2 AA ≥ 4,5:1 sobre el fondo real).
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── 1 · Tokens ─────────────────────────────────────────────────────── */
+:root{
+  --fs-2xs:12px; --fs-xs:12.5px; --fs-sm:13.5px; --fs-md:15px; --fs-lg:17px; --fs-xl:20px; --fs-2xl:24px;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px;
+  --r-xs:6px; --r-sm:8px; --r-md:12px; --r-lg:16px;
+  --tap:52px; --tap-min:44px; --wmax:640px;
+  --ease:cubic-bezier(.2,.7,.2,1); --dur:.16s;
+}
+/* tema claro — roles semánticos */
+:root, :root[data-tema="claro"]{
+  --ink-muted:#5B6180;                 /* 6,1:1 sobre blanco · 5,5:1 sobre --plane */
+  --ok:#0B7A3B; --warn:#8A5A00; --crit:#B42323;      /* ≥ 4,8:1 sobre su propio tinte */
+  --sel-bg:#E0E7FF; --sel-ink:#1E2A8A; --disabled:#9AA0B8;
+  --plane:#F2F4FA; --surface:#FFFFFF; --surface-2:#F5F6FB;
+  --border:rgba(15,19,48,.12); --border-strong:rgba(15,19,48,.22);
+  --pressed:rgba(15,19,48,.06);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-tema="claro"]){
+  --ink-muted:#94A3B8;                 /* 7:1 sobre --surface oscuro */
+  --crit:#FB7185; --ok:#34D399; --warn:#FBBF24;
+  --sel-bg:rgba(96,165,250,.18); --sel-ink:#DBEAFE; --disabled:#475569;
+  --border:rgba(148,163,184,.20); --border-strong:rgba(148,163,184,.36);
+  --pressed:rgba(255,255,255,.06);
+}}
+:root[data-tema="oscuro"]{
+  --ink-muted:#94A3B8;
+  --crit:#FB7185; --ok:#34D399; --warn:#FBBF24;
+  --sel-bg:rgba(96,165,250,.18); --sel-ink:#DBEAFE; --disabled:#475569;
+  --border:rgba(148,163,184,.20); --border-strong:rgba(148,163,184,.36);
+  --pressed:rgba(255,255,255,.06);
+}
+@media (min-width:900px){ :root{ --wmax:760px } }
+
+/* ── 2 · Base y tipografía ──────────────────────────────────────────── */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{font-size:16px;line-height:1.45;font-feature-settings:"tnum" 0}
+.num,.qty,.kpi .n,.fk .v,.dep .v,.crow .d,.sku-cod,.src .sh b,.tot b,.ubi small,.r b.num{font-variant-numeric:tabular-nums}
+.eyebrow{font-size:var(--fs-2xs);letter-spacing:.08em}
+label.lb{font-size:var(--fs-2xs);letter-spacing:.04em}
+.note{font-size:var(--fs-xs)}
+.foot{font-size:var(--fs-2xs)}
+.vtag{font-size:var(--fs-2xs)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+button:disabled,.btn:disabled{opacity:1;color:var(--disabled);border-color:var(--border);cursor:not-allowed}
+.btn.pri:disabled{background:var(--surface-2);color:var(--disabled)}
+
+/* ── 3 · Encabezado: alineado con el contenido en tablet/escritorio ── */
+.hd .t span{font-size:var(--fs-2xs);color:rgba(255,255,255,.86)}
+.hd .ib{width:var(--tap-min);height:var(--tap-min)}
+.hd .ib svg{width:20px;height:20px}
+@media (min-width:620px){
+  .hd{padding-left:max(14px, calc((100vw - var(--wmax)) / 2 + 12px));padding-right:max(14px, calc((100vw - var(--wmax)) / 2 + 12px))}
+  main,.searchwrap{max-width:var(--wmax)}
+  .tabs,.sheet .bd{max-width:var(--wmax)}
+}
+
+/* ── 4 · Buscador, chips, pills ─────────────────────────────────────── */
+.sbox input{border-color:var(--border-strong)}
+.sclr{width:var(--tap-min);height:var(--tap-min);right:4px}
+.chips{gap:8px;padding:2px 0 4px}
+.chip{height:40px;padding:0 14px;font-size:var(--fs-xs);color:var(--ink-2);border-color:var(--border);background:var(--surface)}
+.chip .car{font-size:var(--fs-2xs);opacity:1}
+.chip.on{background:var(--sel-bg);border-color:var(--link);color:var(--sel-ink)}
+[data-tema="oscuro"] .chip.on{background:var(--sel-bg);color:var(--sel-ink)}
+.chip.on{font-weight:700;box-shadow:inset 0 0 0 1px var(--link)}
+.sortpill{height:40px;font-size:var(--fs-xs)}
+.sortpill.on,[data-tema="oscuro"] .sortpill.on{background:var(--sel-bg);border-color:var(--link);color:var(--sel-ink)}
+.sortpill.on{font-weight:700;box-shadow:inset 0 0 0 1px var(--link)}
+.cattab{height:40px;font-size:var(--fs-xs);color:var(--ink-2)}
+.cattab.on{background:var(--sel-bg);border-color:var(--link);color:var(--sel-ink)}
+.count{font-size:var(--fs-sm);color:var(--ink-2)}
+.count b{color:var(--ink)}
+
+/* ── 5 · Tarjeta de producto (fila SKU) ─────────────────────────────── */
+.sku{border-radius:14px;transition:border-color var(--dur) var(--ease)}
+.sku-hd{transition:background var(--dur) var(--ease)}
+.sku:not(.compact) .sku-hd:active,.sku.compact[role=button]:active .sku-hd{background:var(--pressed)}
+@media (hover:hover){ .sku:not(.compact) .sku-hd:hover{background:var(--pressed)} }
+.sku-cod{font-size:15.5px;word-break:normal;overflow-wrap:anywhere;letter-spacing:.01em}
+.sku-dsc{font-size:var(--fs-sm);color:var(--ink-2)}
+.sku-meta{font-size:var(--fs-2xs);color:var(--ink-muted)}
+.sku-tipo{display:inline-block;font-family:var(--f-num);font-size:12px;font-weight:700;letter-spacing:.02em;
+  color:var(--ink-2);background:var(--surface-2);border:1px solid var(--border);border-radius:5px;padding:0 5px;margin-right:6px;line-height:17px}
+.loc{font-size:12px;color:var(--ink);border-color:var(--border-strong)}
+.loc small{font-size:var(--fs-2xs);opacity:1;color:var(--ink-2)}
+.loc.none{font-size:11.5px}
+.qty{font-size:17px}
+.sku-hd .qty[style]{font-size:12px!important;line-height:1.1!important}
+.qty.lg{font-size:15px}.qty.xl{font-size:12.5px}
+.chev{width:18px;height:18px}
+.src .sh{font-size:var(--fs-2xs);color:var(--ink-2)}
+.ubi{font-size:13.5px}
+.ubi small{font-size:var(--fs-2xs);opacity:1;color:var(--ink-2)}
+.ubi.none{font-size:var(--fs-2xs);opacity:1;color:var(--ink-muted)}
+.sku-bar .tot{font-size:var(--fs-xs);color:var(--ink-2)}
+.mini{height:var(--tap-min);font-size:var(--fs-sm)}
+.sku-hd .mini{height:40px}
+.bhoy,.bayer{font-size:var(--fs-2xs)}
+/* pantallas de 320–360 px: el código SKU no se parte en dos renglones */
+@media (max-width:360px){
+  main{padding-left:8px;padding-right:8px}
+  .sku-hd{gap:7px;padding:8px 9px}
+  .loc{width:66px;font-size:12px;padding:5px 2px;letter-spacing:-.01em}
+  .qty{width:44px;height:44px;font-size:15px}
+  .sku:not(.compact) .chev{display:none}
+  .sku-cod{font-size:14.5px}
+  .pqf-sm{width:34px;height:34px}
+}
+
+/* ── 6 · KPIs, accesos rápidos, listas de Inicio ─────────────────────── */
+.kpi{min-height:72px;transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease)}
+.kpi .l{font-size:var(--fs-2xs);color:var(--ink-2);letter-spacing:.01em}
+.kpi .n{font-size:23px}
+.kpi:active{background:var(--pressed);transform:none}
+@media (hover:hover){ .kpi:hover,.qa button:hover,.rec:hover{border-color:var(--border-strong)} }
+.qa button{min-height:64px;flex-direction:row;align-items:center;gap:10px;font-size:var(--fs-sm)}
+.qa button svg{flex:none}
+.qa button.wide{min-height:56px}
+.qa button:active{background:var(--pressed)}
+.rec .q{font-size:var(--fs-2xs)}
+.sechd h2{font-size:var(--fs-md)}
+.sechd button{min-height:40px;padding:8px 10px;font-size:var(--fs-xs)}
+/* barra de contexto: quién soy · qué veo · cómo están los datos */
+.ctxbar{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.ctxbar span{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:3px 10px;border-radius:var(--r-pill);
+  background:var(--surface);border:1px solid var(--border);font-size:var(--fs-2xs);font-weight:600;color:var(--ink-2)}
+.ctxbar span i{width:8px;height:8px;border-radius:50%;background:var(--ink-muted);flex:none}
+.ctxbar .on i{background:var(--ok)} .ctxbar .off i{background:var(--warn)}
+.ctxbar .nuevo{border-color:var(--ok);color:var(--ok);cursor:pointer}
+
+/* ── 7 · Paneles, botones, formularios ──────────────────────────────── */
+.panel{box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.panel h2{font-size:var(--fs-md);margin-bottom:4px}
+.panel .sub{font-size:var(--fs-xs);color:var(--ink-2)}
+.btn{font-size:var(--fs-md);transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+.btn:active{background:var(--pressed)}
+.btn.pri:active{filter:brightness(.92)}
+.btn.peligro{color:var(--crit);border-color:var(--crit);background:transparent}
+.kv{font-size:var(--fs-sm)}
+.kv span{color:var(--ink-2)}
+.txt,.fsearch{border-color:var(--border-strong)}
+.txt:focus,.fsearch:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px var(--tint-brand)}
+.chk{min-height:var(--tap-min)}
+.pill{font-size:var(--fs-2xs)}
+.chkrow{min-height:var(--tap-min)}
+.chkrow .cnt{font-size:var(--fs-2xs);color:var(--ink-2)}
+.rangofecha span{font-size:var(--fs-2xs);color:var(--ink-2)}
+#pdExactaWrap{min-height:40px;font-size:var(--fs-xs)!important;color:var(--ink-2)!important;cursor:pointer}
+#pdExactaWrap input{width:20px!important;height:20px!important}
+.grupo-sec{margin:18px 2px 8px}
+.grupo-sec h2{font-size:var(--fs-sm);color:var(--ink-2);font-family:var(--f-tit);letter-spacing:.02em}
+.zona-riesgo{border-color:var(--crit)!important;border-style:dashed!important;box-shadow:none!important;background:transparent!important}
+.zona-riesgo h2{color:var(--crit)}
+
+/* ── 8 · Barra de base seleccionada (Movimientos / Pedidos) ─────────── */
+.basebar{display:flex!important;align-items:center;gap:10px;width:100%;min-height:var(--tap-min)!important;height:auto!important;
+  padding:6px 12px!important;text-align:left;justify-content:flex-start!important;font-size:var(--fs-sm)!important;margin-bottom:6px!important}
+.basebar .bb-l{font-size:18px;color:var(--link);flex:none}
+.basebar .bb-t{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
+.basebar .bb-t b{font-family:var(--f-tit);font-size:var(--fs-md);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.basebar .bb-t small{font-family:var(--f-num);font-size:var(--fs-2xs);color:var(--ink-muted)}
+.basebar .bb-a{flex:none;font-size:var(--fs-xs);font-weight:700;color:var(--link)}
+
+/* ── 9 · Alertas y estados ──────────────────────────────────────────── */
+.al .tg{font-size:var(--fs-2xs)}
+.al .d,.al .m{font-size:var(--fs-sm)}
+.al .rc{font-size:var(--fs-xs);color:var(--ink-2)}
+.al .go{height:var(--tap-min)}
+.al-group summary{min-height:var(--tap-min)}
+.al-group summary .cnt{font-size:var(--fs-2xs);color:var(--ink-2)}
+.est{font-size:var(--fs-sm)}
+.empty h3{font-size:var(--fs-lg)}
+.empty p{font-size:var(--fs-sm);color:var(--ink-2)}
+.devol .ln{font-size:var(--fs-sm)}
+
+/* ── 10 · Ficha, ubicación ──────────────────────────────────────────── */
+.fk .l{font-size:var(--fs-2xs);color:var(--ink-2)}
+.fk .v{font-size:25px}
+.ubx .c .l{font-size:var(--fs-2xs);color:var(--ink-2);letter-spacing:.02em}
+.ubx .c .v{font-size:19px}
+.ficha dt{font-size:var(--fs-2xs)}
+.r{font-size:var(--fs-sm)}
+.r b.num{font-size:var(--fs-sm)}
+
+/* ── 11 · Hojas (paneles inferiores) ────────────────────────────────── */
+.sheet .bd{max-height:92vh;max-height:92dvh;box-shadow:0 -12px 40px -16px rgba(0,0,0,.45)}
+.sheet .hh{padding:12px 12px 10px 16px}
+.sheet .hh h2{font-size:var(--fs-lg)}
+.sheet .hh .cl{width:var(--tap-min);height:var(--tap-min);font-size:22px}
+.sheet .hh .cl:active{background:var(--pressed)}
+/* la descripción del producto ya no se corta: hasta dos renglones */
+#fkDesc,#mdDesc,#kSub,#sdSub{white-space:normal!important;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  font-size:var(--fs-xs)!important;color:var(--ink-2)!important;line-height:1.35}
+.sheet .ff .lnk{min-height:var(--tap-min);font-size:var(--fs-sm);color:var(--ink-2)}
+.sheet .cn{overscroll-behavior:contain}
+@media (min-width:620px){ .sheet .bd{border-radius:var(--r-lg);bottom:16px} }
+
+/* ── 12 · Conteo: ciego de verdad, fácil con una mano ──────────────── */
+.seg{min-height:56px;font-size:var(--fs-sm)}
+.seg small{font-size:var(--fs-2xs);color:var(--ink-2)}
+.seg.on{border-color:var(--link);background:var(--sel-bg);color:var(--sel-ink)}
+.stepper{grid-template-columns:72px 1fr 72px;gap:12px}
+.stepper button{height:72px;font-size:32px;touch-action:manipulation;user-select:none}
+#cnt{height:72px;font-size:36px}
+.dif{font-size:var(--fs-md)}
+.dif.oculto{background:var(--surface-2);color:var(--ink-2);font-weight:600;font-size:var(--fs-sm);border:1px dashed var(--border-strong)}
+.mot button{min-height:var(--tap-min);font-size:var(--fs-sm)}
+.mot button.on{border-color:var(--link);background:var(--sel-bg);color:var(--sel-ink)}
+#kSave{min-height:56px;font-size:16px}
+.crow .i span{font-size:var(--fs-xs);color:var(--ink-2)}
+.crow .del{width:var(--tap-min);height:var(--tap-min)}
+
+/* ── 13 · Seguimiento: completado · actual · pendiente · sin dato ───── */
+.seglb{font-size:var(--fs-2xs);letter-spacing:0;max-width:72px;color:var(--ink-2)}
+.segpaso.nodato .segcirc{border-style:dashed;border-color:var(--warn);color:var(--warn);background:var(--surface)}
+.segpaso.nodato .seglb{color:var(--warn)}
+.segestado{display:block;font-size:var(--fs-xs);font-weight:700;margin-top:6px;color:var(--ink-2)}
+
+/* ── 14 · Navegación inferior ───────────────────────────────────────── */
+.tabs button{font-size:12px;font-weight:600;color:var(--ink-2);min-height:56px;letter-spacing:0}
+.tabs button[data-view="vDatos"]:not(.on){opacity:1}
+.tabs button.on{color:var(--link);font-weight:700}
+.tabs button svg{width:21px;height:21px}
+.tabs button.on svg{background:var(--sel-bg)}
+.bdg{font-size:var(--fs-2xs);min-width:18px;height:18px;line-height:18px;background:var(--crit)}
+@media (max-width:360px){ .tabs button{font-size:11px} }
+
+/* ── 15 · Avisos ────────────────────────────────────────────────────── */
+#toast{font-size:var(--fs-sm);box-shadow:0 8px 24px -10px rgba(0,0,0,.5)}
+#toast.err{background:var(--crit);color:#fff}
+#netbar{font-size:var(--fs-xs);color:#1A1200;background:#FBBF24}
+#dsync #dsyncGo span,#upd p{font-size:var(--fs-xs);color:var(--ink-2)}
+#dsync #dsyncNo{min-width:var(--tap-min)}
+
+/* ── 16 · Terminal Panamericana (estilos que antes no se aplicaban) ─── */
+.tp-sec-card .snm{font-size:var(--fs-2xs)}
+.tp-sec-card .scnt{font-size:var(--fs-xs);color:var(--ink-2)}
+
+/* ── 17 · Íconos SVG que reemplazan a FontAwesome ───────────────────── */
+.ico{width:1em;height:1em;display:inline-block;vertical-align:-.125em;flex:none}
+.tabs button .ico{width:21px;height:21px;padding:4px 13px;box-sizing:content-box;border-radius:var(--r-pill);transition:background .16s}
+.tabs button.on .ico{background:var(--sel-bg)}
+.hd .ib .ico{width:20px;height:20px}
+
+/* ── 18 · Movimiento reducido ───────────────────────────────────────── */
+@media (prefers-reduced-motion:reduce){ .segpaso.actual .segcirc{animation:none} .sheet .bd{animation:none} }
+
+/* ── 19 · Stock sugerido: cuatro magnitudes, cada una con su rótulo ─── */
+.sugstrip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:0 11px 11px}
+.sugstrip>span{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:6px 8px;min-width:0}
+.sugstrip i{display:block;font-style:normal;font-size:var(--fs-2xs);font-weight:600;color:var(--ink-2);line-height:1.25}
+.sugstrip b{display:block;font-family:var(--f-num);font-size:var(--fs-lg);color:var(--ink);font-variant-numeric:tabular-nums;margin-top:2px}
+.sugstrip small{display:block;font-size:var(--fs-2xs);color:var(--ink-2)}
+.qty.sugq{width:64px;height:64px;border-radius:14px;flex-direction:column;display:flex;align-items:center;justify-content:center;line-height:1.05;font-size:20px}
+.qty.sugq small{display:block;font-family:var(--f-txt);font-size:var(--fs-2xs);font-weight:700;letter-spacing:0;margin-top:3px}
+.sugrow:active{background:var(--pressed)}
+@media (max-width:360px){ .qty.sugq{width:56px;height:56px;font-size:17px} .sugstrip{gap:4px;padding:0 9px 9px} .sugstrip>span{padding:5px 6px} }
+
+.devol .nd{background:var(--crit);color:var(--surface)}
+
+/* ── 20 · Ingreso: textos legibles sobre el azul de marca (tema claro) ── */
+#gateLogin .lb,.gl-sub{color:#fff}
+#gateLogin .note{color:#fff}
+#gateLogin .txt::placeholder{color:rgba(255,255,255,.78)}
+#gateLogin .btn.gh{color:#fff;border-color:rgba(255,255,255,.6)}
+
+/* ── 21 · Pedidos: indicadores compactos para que la lista quede a la vista ── */
+#pdKpis{gap:6px;margin:8px 0 2px}
+#pdKpis .kpi{min-height:54px;padding:7px 10px}
+#pdKpis .kpi .n{font-size:20px}
+#pdKpis .kpi .l{margin-top:3px}
+.sheet .cn:focus{outline:none}
+.sheet .cn:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+
+/* ── 22 · Inicio: con 4 indicadores (técnico, supervisor, responsable) la grilla pasa a 2×2 ── */
+.kpis:has(> .kpi:nth-child(4):last-child){grid-template-columns:repeat(2,1fr)}
 </style>
 </head>
 <body>
@@ -647,9 +1363,9 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 
     <!-- PASO 1 · identidad: nombre + legajo, sin elegir rol a mano -->
     <div id="glPaso1">
-      <label class="lb" style="margin-top:16px">Nombre completo</label>
+      <label class="lb" for="glNombre" style="margin-top:16px">Nombre completo</label>
       <input class="txt" id="glNombre" type="text" placeholder="Nombre y apellido" autocomplete="name">
-      <label class="lb">Número de legajo</label>
+      <label class="lb" for="glLegajo">Número de legajo</label>
       <input class="txt" id="glLegajo" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Ej.: 253">
       <div id="glErr0" class="al c1" style="display:none;margin:10px 0 0"><div class="m" id="glErr0Msg"></div></div>
       <button class="btn pri" id="glContinuar" style="min-height:56px;font-size:16px;margin-top:14px">Continuar</button>
@@ -669,16 +1385,16 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <div class="note" id="glIdentRes" style="text-align:center;margin:16px 0 4px;font-weight:600"></div>
 
       <div id="glCrear" style="display:none">
-        <label class="lb" style="margin-top:8px">Crear contraseña</label>
+        <label class="lb" for="glPass1" style="margin-top:8px">Crear contraseña</label>
         <input class="txt" id="glPass1" type="password" placeholder="Mínimo 4 caracteres" autocomplete="new-password">
-        <label class="lb">Confirmar contraseña</label>
+        <label class="lb" for="glPass2">Confirmar contraseña</label>
         <input class="txt" id="glPass2" type="password" placeholder="Repetila" autocomplete="new-password">
         <p class="note">Primera vez en este teléfono: elegí una contraseña para la próxima. Queda guardada
           únicamente en este dispositivo, no en ningún servidor.</p>
       </div>
 
       <div id="glIngresar" style="display:none">
-        <label class="lb" style="margin-top:8px">Contraseña</label>
+        <label class="lb" for="glPass3" style="margin-top:8px">Contraseña</label>
         <input class="txt" id="glPass3" type="password" placeholder="Tu contraseña" autocomplete="current-password">
         <button class="btn gh" id="glOlvide" type="button"
           style="margin-top:8px;font-size:12.5px;min-height:38px">¿Olvidaste tu contraseña? Reiniciarla en este teléfono</button>
@@ -705,6 +1421,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
   <div class="hero">
     <div class="hi" id="saludo">Hola</div>
     <div class="sub2" id="heroSub">Sin datos cargados</div>
+    <div class="ctxbar" id="ctxBar" aria-label="Tu sesión y el estado de los datos"></div>
   </div>
   <main id="miStock" style="padding-top:0;display:none"></main>
   <main id="inicioGral" style="padding-top:0">
@@ -754,22 +1471,29 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
   </main>
 </section>
 
-<!-- ═══ CONTEOS ═══ -->
+<!-- ═══ CONTEOS · v3.32: primero la tarea (quién cuenta + lo contado), después las herramientas ═══ -->
 <section class="view" id="vConteos">
   <main style="padding-top:14px">
     <div class="panel">
       <h2>Conteos de inventario</h2>
       <p class="sub">Se guardan sólo en este dispositivo. No tocan el sistema: se exportan para comparar contra el stock.</p>
       <label class="lb" for="oper">Quién cuenta</label>
-      <input class="txt" id="oper" type="text" placeholder="Nombre del operador" autocomplete="name">
+      <input class="txt" id="oper" type="text" placeholder="Nombre del operador" autocomplete="name" style="margin-bottom:0">
+    </div>
+    <div class="al c3" id="cntFiltroBanner" style="display:none;align-items:center;gap:8px;margin-bottom:10px">
+      <div class="m" style="flex:1">Mostrando sólo los conteos con diferencia.</div>
+      <button class="mini gh" id="cntFiltroQuitar">Ver todos</button></div>
+    <div id="cntList"></div>
+
+    <div class="grupo-sec"><h2>Exportar y compartir</h2></div>
+    <div class="panel">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
         <button class="btn pri" id="btnShare" style="margin:0">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 16V4M8 8l4-4 4 4M5 15v4a1 1 0 001 1h12a1 1 0 001-1v-4"/></svg>Compartir</button>
         <button class="btn" id="btnExpXlsx" style="margin:0">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg>Excel</button>
       </div>
-      <button class="btn" id="btnExpCsv" style="margin-top:9px">Descargar CSV</button>
-      <button class="btn gh" id="btnClrCnt" style="color:var(--crit);border-color:var(--crit)">Borrar la memoria del día</button>
+      <button class="btn" id="btnExpCsv" style="margin:9px 0 0">Descargar CSV</button>
     </div>
 
     <div class="panel">
@@ -791,17 +1515,19 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <div id="histBox"><p class="note">Ningún historial cargado.</p></div>
       <button class="btn gh" id="btnHistClr" style="margin-top:10px;display:none">Descartar historial</button>
     </div>
-    <div class="al c3" id="cntFiltroBanner" style="display:none;align-items:center;gap:8px;margin-bottom:10px">
-      <div class="m" style="flex:1">Mostrando sólo los conteos con diferencia.</div>
-      <button class="mini gh" id="cntFiltroQuitar">Ver todos</button></div>
-    <div id="cntList"></div>
+
+    <div class="panel zona-riesgo">
+      <h2>Borrar conteos de hoy</h2>
+      <p class="sub">Elimina de este teléfono todos los conteos de la jornada. Exportalos antes: no se puede deshacer.</p>
+      <button class="btn peligro" id="btnClrCnt" style="margin:0">Borrar la memoria del día</button>
+    </div>
   </main>
 </section>
 
 <!-- ═══ ALERTAS · clasificación automática sobre los datos reales ═══ -->
 <section class="view" id="vAlertas">
   <div class="hd" style="position:static">
-    <button class="ib" id="alBack" aria-label="Volver"><i class="fa-solid fa-arrow-left"></i></button>
+    <button class="ib" id="alBack" aria-label="Volver"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
     <div class="t"><b>Alertas</b></div>
   </div>
   <div class="searchwrap"><div class="chips" id="alChips"></div></div>
@@ -817,7 +1543,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 <section class="view" id="vDatos">
   <main style="padding-top:14px">
     <div class="panel">
-      <h2><i class="fa-solid fa-circle-info" style="color:var(--link);margin-right:6px"></i>Acerca de</h2>
+      <h2><span style="color:var(--link);margin-right:6px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span>Acerca de</h2>
       <div class="kv"><span>Aplicación</span><b>Supply Chain Permaquim</b></div>
       <div class="kv"><span>Versión</span><b class="vtag" id="abVer">—</b></div>
       <div class="kv"><span>Modo</span><b id="abModo">—</b></div>
@@ -831,6 +1557,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
     <div class="panel">
       <h2>Estado de los datos</h2>
       <div class="kv"><span>Última actualización</span><b id="dsWhen">—</b></div>
+      <div class="kv" id="dsFotosRow" style="display:none"><span>Fotos de productos</span><b id="dsFotos">—</b></div>
       <p class="note" id="snapNote" style="display:none"></p>
       <button class="btn gh" id="btnDataChk" style="margin-top:10px">Buscar datos nuevos</button>
     </div>
@@ -886,6 +1613,9 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 <!-- ═══ MOVIMIENTOS (Etapa 2) ═══ -->
 <section class="view" id="vMovimientos">
   <div class="searchwrap">
+    <div id="mvBaseBar" style="display:none;padding:0 0 4px">
+      <button class="btn gh basebar" id="mvBack">← Elegir otra base</button>
+    </div>
     <div class="sbox">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       <input id="mvQ" type="search" inputmode="search" autocomplete="off" autocapitalize="off"
@@ -894,13 +1624,10 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <div class="histdrop" id="mvHistQ"></div>
     </div>
     <div class="chips" id="mvChips"></div>
-    <div id="mvBaseBar" style="display:none;padding:0 14px 4px">
-      <button class="btn gh" id="mvBack" style="height:38px;font-size:13px">← Elegir otra base</button>
-    </div>
   </div>
   <main>
     <div class="panel" id="mvSinDatos" style="display:none">
-      <h2><i class="fa-solid fa-right-left" style="color:var(--link);margin-right:6px"></i>Sin datos cargados</h2>
+      <h2><span style="color:var(--link);margin-right:6px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h15M15 4l4 4-4 4M20 16H5M9 12l-4 4 4 4"/></svg></span>Sin datos cargados</h2>
       <p class="sub">Cargá los Movimientos de Stock desde <b>Acerca de</b> para ver el consumo de repuestos (CIOT)
         por base, fecha y cantidad. Las bases de técnicos son las únicas que generan este consumo —
         Nodos y Haedo no descargan CIOT.</p>
@@ -925,10 +1652,10 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <button class="sclr" id="sugQClear" aria-label="Borrar filtro">&times;</button>
       <div class="histdrop" id="sugHistQ"></div>
     </div>
-    <div class="chips" id="pdChips"></div>
     <div id="pdBaseBar" style="display:none;padding:0 0 4px">
-      <button class="btn gh" id="pdBack" style="height:38px;font-size:13px">← Elegir otra base</button>
+      <button class="btn gh basebar" id="pdBack">← Elegir otra base</button>
     </div>
+    <div class="chips" id="pdChips"></div>
     <div class="sbox" id="pdBuscadorGlobal" style="display:none;margin-top:6px">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       <input id="pdQ" type="search" inputmode="search" autocomplete="off" autocapitalize="off"
@@ -936,7 +1663,7 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
       <button class="sclr" id="pdQClear" aria-label="Borrar búsqueda">&times;</button>
       <div class="histdrop" id="pdHistQ"></div>
     </div>
-    <label style="display:flex;align-items:center;gap:7px;margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)" id="pdExactaWrap">
+    <label style="display:flex;align-items:center;gap:7px;margin:8px 0 0;font-size:12.5px;color:var(--ink-muted)" id="pdExactaWrap" hidden>
       <input type="checkbox" id="pdExacta" style="width:16px;height:16px;margin:0">Coincidencia exacta
     </label>
   </div>
@@ -958,11 +1685,11 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
 </section>
 
 <nav class="tabs" role="tablist">
-  <button class="on" data-view="vInicio" role="tab"><i class="fa-solid fa-boxes-stacked"></i><span id="tabInicioLb">Stock</span></button>
-  <button data-view="vMovimientos" role="tab"><i class="fa-solid fa-right-left"></i>Movimientos</button>
-  <button data-view="vPedidos" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.2" cy="4.3" r="2.1"/><path d="M2.4 20.2c.7-1.4 1.5-3.4 2.2-4.6.5-.9.4-1.6.1-2.4L3.4 9.4c-.3-.9.2-1.7 1-1.9.9-.2 1.7.3 1.9 1.1l.7 2.6"/><path d="M4.6 12.6h3.1"/><path d="M7.7 12.6v6.9"/><path d="M7.7 19.5h1.6"/><rect x="12" y="6.6" width="4.6" height="5.3" rx=".5"/><rect x="16.6" y="6.6" width="4.6" height="5.3" rx=".5"/><rect x="12" y="11.9" width="4.6" height="5.3" rx=".5"/><rect x="16.6" y="11.9" width="4.6" height="5.3" rx=".5"/><path d="M9.3 19.5h13"/></svg>Pedidos</button>
-  <button data-view="vConteos" role="tab"><i class="fa-solid fa-clipboard-check"></i>Inventarios<span class="bdg" id="bdgCnt" style="display:none">0</span></button>
-  <button data-view="vDatos" role="tab"><i class="fa-solid fa-circle-info"></i>Acerca de</button>
+  <button class="on" data-view="vInicio" role="tab" aria-selected="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 13.5h7v7h-7zM13.5 13.5h7v7h-7zM8.5 3.5h7v7h-7z"/></svg><span id="tabInicioLb">Stock</span></button>
+  <button data-view="vMovimientos" role="tab" aria-selected="false"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h15M15 4l4 4-4 4M20 16H5M9 12l-4 4 4 4"/></svg>Movimientos</button>
+  <button data-view="vPedidos" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.2" cy="4.3" r="2.1"/><path d="M2.4 20.2c.7-1.4 1.5-3.4 2.2-4.6.5-.9.4-1.6.1-2.4L3.4 9.4c-.3-.9.2-1.7 1-1.9.9-.2 1.7.3 1.9 1.1l.7 2.6"/><path d="M4.6 12.6h3.1"/><path d="M7.7 12.6v6.9"/><path d="M7.7 19.5h1.6"/><rect x="12" y="6.6" width="4.6" height="5.3" rx=".5"/><rect x="16.6" y="6.6" width="4.6" height="5.3" rx=".5"/><rect x="12" y="11.9" width="4.6" height="5.3" rx=".5"/><rect x="16.6" y="11.9" width="4.6" height="5.3" rx=".5"/><path d="M9.3 19.5h13"/></svg>Pedidos</button>
+  <button data-view="vConteos" role="tab" aria-selected="false"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3.5h6v3H9z"/><path d="M15 5h3.5v15.5h-13V5H9"/><path d="M8.5 13.5l2.5 2.5 4.5-5"/></svg>Inventarios<span class="bdg" id="bdgCnt" style="display:none">0</span></button>
+  <button data-view="vDatos" role="tab" aria-selected="false"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Acerca de</button>
 </nav>
 
 <div class="sheet" id="shFiltro"><div class="bk" data-close></div><div class="bd">
@@ -988,18 +1715,18 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
     <p class="eyebrow" style="margin:0 0 8px">¿Qué sector estás contando?</p>
     <div class="segs" id="kSegs"></div>
     <div id="kUbi" style="margin:10px 0 0"></div>
-    <p class="eyebrow" style="margin:14px 0 0">Cantidad contada</p>
+    <p class="eyebrow" id="kCntLb" style="margin:14px 0 0">Cantidad contada</p>
     <div class="stepper">
       <button id="kMinus" aria-label="Restar uno">−</button>
-      <input id="cnt" type="number" inputmode="numeric" pattern="[0-9]*" value="0" step="1" min="0">
+      <input id="cnt" type="number" inputmode="numeric" pattern="[0-9]*" value="0" step="1" min="0" aria-labelledby="kCntLb" enterkeyhint="done">
       <button id="kPlus" aria-label="Sumar uno">+</button>
     </div>
-    <div class="dif z" id="kDif">Sin diferencia</div>
+    <div class="dif z" id="kDif" role="status" aria-live="polite">Sin diferencia</div>
     <div id="kMotBox" style="display:none">
       <p class="eyebrow" style="margin:6px 0 6px">Motivo de la diferencia</p>
       <div class="mot" id="kMot"></div>
     </div>
-    <label class="lb" style="margin-top:12px">Observación / mensaje (opcional)</label>
+    <label class="lb" for="kObs" style="margin-top:12px">Observación / mensaje (opcional)</label>
     <input class="txt" id="kObs" type="text" placeholder="Ej.: contado junto con Neuquén · queda al fondo">
     <button class="btn pri" id="kSave" style="margin-top:12px">Guardar conteo</button>
     <button class="btn gh" data-close>Cancelar</button>
@@ -1012,6 +1739,18 @@ label.lb{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-
     <button class="cl" data-close aria-label="Cerrar">&times;</button></div>
   <div class="cn" id="fkBody"></div>
 </div></div>
+
+<div class="sheet" id="shFoto"><div class="bk" data-close></div>
+  <div class="pqf-lb" role="dialog" aria-modal="true" aria-labelledby="pqfLbCod">
+    <div class="pqf-lb-hd">
+      <span class="pqf-lb-cod" id="pqfLbCod">—</span>
+      <button type="button" id="pqfLbZoom" aria-label="Acercar" title="Acercar">+</button>
+      <button type="button" data-close aria-label="Cerrar foto" title="Cerrar">&times;</button>
+    </div>
+    <div class="pqf-lb-sc" id="pqfLbSc"><img id="pqfLbImg" alt=""></div>
+    <div class="pqf-lb-ft" id="pqfLbFt">Doble toque o «+» para acercar</div>
+  </div>
+</div>
 
 <div class="sheet" id="shSegDet"><div class="bk" data-close></div><div class="bd">
   <div class="hh"><span style="flex:1;min-width:0"><h2 id="sdTit">Envío</h2>
@@ -2117,6 +2856,241 @@ function locHtml(fuentes, toks) {
   return '<span class="loc">' + hl(best[0], toks || []) +
     (n > 1 ? '<small>+' + (n - 1) + ' ubic.</small>' : '') + '</span>';
 }
+/* ══════════════ FOTOS DE PRODUCTOS (v3.31.0) ════════════════════════════
+   Fuente: data/imagenes-productos.json, que genera el sincronizador de
+   fotos en la PC a partir de «13. IMAGENES PRODUCTOS». Es un archivo
+   independiente de database.json.gz: las fotos no viajan con los datos ni
+   intervienen en ningún cálculo, filtro, total o alerta.
+
+   Reglas que NO se negocian:
+     · coincidencia EXACTA por código (el sincronizador ya resolvió la
+       correspondencia contra Stock); nunca se muestra la foto de otro código.
+     · si no hay catálogo publicado, la interfaz queda idéntica a la v3.30.
+     · si una foto no carga (sin señal, no cacheada, borrada), se muestra un
+       recuadro neutro y la consulta sigue como si nada.
+   ════════════════════════════════════════════════════════════════════════ */
+const PQF = (() => {
+  const URL_CAT = 'data/imagenes-productos.json';
+  const SCHEMA_OK = [1];
+  const ICO_FOTO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/>' +
+    '<circle cx="9" cy="10" r="1.7"/><path d="M21 16l-5-5-8.5 8.5"/></svg>';
+  const ICO_LUPA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" ' +
+    'aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8.5v5M8.5 11h5"/></svg>';
+  let cat = null;
+  const fallidas = new Set();
+  let io = null, mo = null, pend = false, lbEntrada = null, lbCod = '', lbFoco = null;
+
+  /* rutas relativas al sitio, sólo .webp: un catálogo adulterado no puede
+     inyectar URLs externas, javascript: ni salir de la carpeta publicada */
+  const rutaOk = p => typeof p === 'string' && p.length < 300 && /^[A-Za-z0-9_\-\/]+\.webp$/.test(p) &&
+    p.indexOf('..') < 0 && p.charAt(0) !== '/';
+  function valido(o) {
+    return !!(o && SCHEMA_OK.indexOf(o.schema_version) >= 0 && o.products &&
+      typeof o.products === 'object' && !Array.isArray(o.products));
+  }
+  const activo = () => !!(cat && cat._n > 0);
+  function usar(o) {
+    if (!valido(o)) return false;
+    o._n = Object.keys(o.products).length;
+    cat = o; return true;
+  }
+  function entrada(cod) {
+    if (!activo() || cod == null) return null;
+    const k = String(cod);
+    if (!Object.prototype.hasOwnProperty.call(cat.products, k)) return null;
+    const e = cat.products[k];
+    return e && rutaOk(e.m) && rutaOk(e.d) ? e : null;
+  }
+
+  /* ── HTML del componente ─────────────────────────────────────────────
+     tam: 'sm' miniatura de listado (decorativa) · 'lg' ficha · 'md' detalle */
+  function html(cod, tam) {
+    if (!activo()) return '';
+    tam = tam || 'sm';
+    const e = entrada(cod);
+    if (!e) {
+      return tam === 'sm'
+        ? '<span class="pqf pqf-sm pqf-no" aria-hidden="true" data-pqf-cod="' + esc(cod) + '">' + ICO_FOTO + '</span>'
+        : '<div class="pqf pqf-' + tam + ' pqf-no" data-pqf-cod="' + esc(cod) + '">' + ICO_FOTO + '<span>Sin fotografía cargada</span></div>';
+    }
+    const sm = tam === 'sm', src = sm ? e.m : e.d;
+    const w = (sm ? e.mw : e.dw) | 0, h = (sm ? e.mh : e.dh) | 0;
+    if (sm) return '<span class="pqf pqf-sm" aria-hidden="true" data-pqf="' + esc(src) + '" data-pqf-cod="' + esc(cod) + '">' +
+      '<img alt="" width="' + w + '" height="' + h + '" decoding="async"></span>';
+    return '<div class="pqf pqf-' + tam + '" data-pqf="' + esc(src) + '" data-pqf-cod="' + esc(cod) + '">' +
+      '<img alt="Foto del producto ' + esc(cod) + '" width="' + w + '" height="' + h + '" decoding="async">' +
+      '<span class="pqf-lupa">' + ICO_LUPA + '</span></div>';
+  }
+
+  /* ── carga diferida: sólo lo visible o a punto de entrar en pantalla ── */
+  function sinFoto(el, motivo) {
+    el.classList.remove('pqf-ok'); el.classList.add('pqf-no');
+    el.removeAttribute('role'); el.removeAttribute('tabindex'); el.removeAttribute('aria-label');
+    el.innerHTML = el.classList.contains('pqf-sm') ? ICO_FOTO : ICO_FOTO + '<span>' + esc(motivo) + '</span>';
+  }
+  function cargar(el) {
+    const src = el.getAttribute('data-pqf'), img = el.querySelector('img');
+    if (!src || !img) return;
+    const motivo = navigator.onLine === false ? 'Foto no disponible sin conexión' : 'No se pudo cargar la foto';
+    if (fallidas.has(src)) { sinFoto(el, motivo); return; }
+    img.onload = () => {
+      el.classList.add('pqf-ok');
+      if (!el.classList.contains('pqf-sm')) {
+        el.setAttribute('role', 'button'); el.setAttribute('tabindex', '0');
+        el.setAttribute('aria-label', 'Ampliar foto del producto ' + (el.getAttribute('data-pqf-cod') || ''));
+      }
+    };
+    img.onerror = () => { fallidas.add(src); sinFoto(el, navigator.onLine === false
+      ? 'Foto no disponible sin conexión' : 'No se pudo cargar la foto'); };
+    img.src = src;
+  }
+  function escanear(root) {
+    if (!activo()) return;
+    (root || document).querySelectorAll('[data-pqf]:not([data-pqf-v])').forEach(el => {
+      el.setAttribute('data-pqf-v', '1');
+      if (io) io.observe(el); else cargar(el);
+    });
+  }
+  function vigilar() {
+    if (mo || !activo()) return;
+    if ('IntersectionObserver' in window) {
+      io = new IntersectionObserver(ents => ents.forEach(en => {
+        if (en.isIntersecting) { io.unobserve(en.target); cargar(en.target); }
+      }), { rootMargin: '320px 0px' });
+    }
+    /* un único punto de enganche para todos los módulos: cualquier fila que
+       se dibuje con el componente se detecta sola, sin tocar cada render */
+    mo = new MutationObserver(() => {
+      if (pend) return; pend = true;
+      requestAnimationFrame(() => { pend = false; escanear(document); });
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+    escanear(document);
+  }
+
+  /* ── catálogo: primero el guardado (instantáneo y offline), después la red ── */
+  async function cargarLocal() {
+    try { const o = await DB.get('fotosCat'); if (usar(o)) vigilar(); } catch (e) {}
+  }
+  async function refrescar() {
+    if (!(location.protocol === 'http:' || location.protocol === 'https:')) return false;
+    if (navigator.onLine === false) return false;
+    let o;
+    try {
+      /* 'no-cache' = revalida con el servidor (ETag): si no cambió, responde
+         304 y no se baja de nuevo. El catálogo nunca viaja con database.json.gz */
+      const r = await fetch(URL_CAT, { cache: 'no-cache' });
+      if (r.status === 404) return false;          /* todavía no se publicaron fotos: todo sigue igual */
+      if (!r.ok) return false;
+      o = await r.json();
+    } catch (e) { return false; }                  /* sin señal o JSON inválido: se conserva el anterior */
+    if (!valido(o)) return false;
+    if (cat && cat.catalog_version && cat.catalog_version === o.catalog_version) return false;
+    const antes = activo();
+    usar(o);
+    try { await DB.set('fotosCat', o); } catch (e) {}
+    /* foto agregada, reemplazada o quitada: el nombre de archivo cambia con
+       el contenido, así que se repinta sólo lo que está en pantalla y cambió */
+    document.querySelectorAll('.pqf[data-pqf-cod]').forEach(el => {
+      const cod = el.getAttribute('data-pqf-cod'), e = entrada(cod);
+      const tam = el.classList.contains('pqf-sm') ? 'sm' : el.classList.contains('pqf-md') ? 'md' : 'lg';
+      const quiere = e ? (tam === 'sm' ? e.m : e.d) : null;
+      if (quiere !== (el.getAttribute('data-pqf') || null)) el.outerHTML = html(cod, tam);
+    });
+    if (!antes && activo()) vigilar();
+    if (typeof renderDatos === 'function') renderDatos();
+    return true;
+  }
+
+  /* ── ampliación ───────────────────────────────────────────────────── */
+  function abrir(cod) {
+    const e = entrada(cod); if (!e) return;
+    lbEntrada = e; lbCod = String(cod);
+    const sh = $('#shFoto'), img = $('#pqfLbImg');
+    sh.classList.remove('zoom'); img.style.width = '';
+    img.alt = 'Foto ampliada del producto ' + lbCod;
+    img.onerror = () => { $('#pqfLbFt').textContent = navigator.onLine === false
+      ? 'La foto no está disponible sin conexión.' : 'No se pudo cargar la foto.'; };
+    img.onload = () => { $('#pqfLbFt').textContent = 'Doble toque o «+» para acercar'; };
+    img.src = e.d;
+    $('#pqfLbCod').textContent = lbCod;
+    $('#pqfLbZoom').textContent = '+'; $('#pqfLbZoom').setAttribute('aria-label', 'Acercar');
+    lbFoco = document.activeElement;
+    openSheet('#shFoto');
+    setTimeout(() => { const b = sh.querySelector('.pqf-lb-hd [data-close]'); if (b) b.focus(); }, 30);
+  }
+  function zoom(cx, cy) {
+    const sh = $('#shFoto'), img = $('#pqfLbImg'), sc = $('#pqfLbSc');
+    if (!img.naturalWidth) return;
+    if (sh.classList.contains('zoom')) {
+      sh.classList.remove('zoom'); img.style.width = '';
+      $('#pqfLbZoom').textContent = '+'; $('#pqfLbZoom').setAttribute('aria-label', 'Acercar'); return;
+    }
+    const r = img.getBoundingClientRect();
+    const fx = cx == null ? .5 : Math.min(1, Math.max(0, (cx - r.left) / r.width));
+    const fy = cy == null ? .5 : Math.min(1, Math.max(0, (cy - r.top) / r.height));
+    /* al menos 2×, o el tamaño real de la imagen de detalle si es mayor */
+    const w = Math.max(r.width * 2, img.naturalWidth);
+    sh.classList.add('zoom'); img.style.width = Math.round(w) + 'px';
+    $('#pqfLbZoom').textContent = '−'; $('#pqfLbZoom').setAttribute('aria-label', 'Alejar');
+    requestAnimationFrame(() => {
+      sc.scrollLeft = img.offsetWidth * fx - sc.clientWidth / 2;
+      sc.scrollTop = img.offsetHeight * fy - sc.clientHeight / 2;
+    });
+  }
+  function init() {
+    window.addEventListener('online', () => {
+      fallidas.clear();
+      document.querySelectorAll('.pqf.pqf-no[data-pqf-cod]').forEach(el => {
+        const cod = el.getAttribute('data-pqf-cod'); if (!entrada(cod)) return;
+        const tam = el.classList.contains('pqf-sm') ? 'sm' : el.classList.contains('pqf-md') ? 'md' : 'lg';
+        el.outerHTML = html(cod, tam);
+      });
+    });
+    document.addEventListener('click', ev => {
+      const el = ev.target.closest('.pqf-lg.pqf-ok, .pqf-md.pqf-ok');
+      if (el) { ev.stopPropagation(); abrir(el.getAttribute('data-pqf-cod')); }
+    });
+    document.addEventListener('keydown', ev => {
+      if (ev.key !== 'Enter' && ev.key !== ' ') return;
+      const el = ev.target.closest && ev.target.closest('.pqf-lg.pqf-ok, .pqf-md.pqf-ok');
+      if (el) { ev.preventDefault(); abrir(el.getAttribute('data-pqf-cod')); }
+    });
+    /* Escape cierra SÓLO la foto (no la ficha que está debajo) */
+    window.addEventListener('keydown', ev => {
+      if (ev.key === 'Escape' && $('#shFoto').classList.contains('on')) {
+        ev.stopPropagation(); closeSheet('#shFoto');
+      }
+    }, true);
+    $('#pqfLbZoom').addEventListener('click', () => zoom());
+    /* tocar fuera de la foto (sin zoom) también la cierra */
+    $('#pqfLbSc').addEventListener('click', ev => {
+      if (ev.target === ev.currentTarget && !$('#shFoto').classList.contains('zoom')) closeSheet('#shFoto');
+    });
+    /* al cerrar, el foco vuelve a la foto de la ficha (navegación con teclado) */
+    new MutationObserver(() => {
+      if (!$('#shFoto').classList.contains('on') && lbFoco) {
+        const f = lbFoco; lbFoco = null; $('#pqfLbImg').removeAttribute('src');
+        if (document.contains(f)) try { f.focus({ preventScroll: true }); } catch (e) {}
+      }
+    }).observe($('#shFoto'), { attributes: true, attributeFilter: ['class'] });
+    $('#pqfLbImg').addEventListener('dblclick', ev => zoom(ev.clientX, ev.clientY));
+    let ultimoToque = 0;
+    $('#pqfLbImg').addEventListener('touchend', ev => {
+      const t = Date.now();
+      if (t - ultimoToque < 300 && ev.changedTouches[0]) {
+        ev.preventDefault(); zoom(ev.changedTouches[0].clientX, ev.changedTouches[0].clientY);
+      }
+      ultimoToque = t;
+    });
+  }
+  function resumen() {
+    return activo() ? { n: cat._n, updatedAt: cat.updated_at || null } : null;
+  }
+  return { init, html, cargarLocal, refrescar, resumen, activo, entrada };
+})();
+
 function filaSKU(r, o) {
   o = o || {};
   const toks = o.toks || [];
@@ -2126,10 +3100,11 @@ function filaSKU(r, o) {
   const info = '<span class="sku-i">' +
     '<span class="sku-cod">' + hl(r.cod, toks) + '</span>' +
     '<span class="sku-dsc">' + hl(r.desc || '\u2014', toks) + '</span>' +
-    ((r.marca || r.maq) ? '<span class="sku-meta">' +
+    ((r.tipo || r.marca || r.maq) ? '<span class="sku-meta">' +
+      (r.tipo ? '<span class="sku-tipo">' + esc(r.tipo) + '</span>' : '') +
       hl([r.marca, r.maq].filter(Boolean).join(' \u00b7 '), toks) + '</span>' : '') +
     (o.extra || '') + badgeFor(r.cod) + '</span>';
-  const nucleo = locHtml(fuentes, toks) + info +
+  const nucleo = locHtml(fuentes, toks) + PQF.html(r.cod, 'sm') + info +
     '<span class="' + qtyCls(cant) + '">' + nfmt(cant) + '</span>';
 
   if (!o.expandible) {
@@ -2364,9 +3339,11 @@ function saveMem() {
   const dias = Object.keys(ST.mem).sort().slice(-30);
   const out = {}; for (const d of dias) out[d] = ST.mem[d];
   ST.mem = out;
+  let ok = true;
   try { localStorage.setItem(MEM_KEY, JSON.stringify(ST.mem)); }
-  catch (e) { toast('No se pudo guardar en el teléfono (memoria llena)', 4000); }
+  catch (e) { ok = false; toast('No se pudo guardar en el teléfono (memoria llena)', 4000); }
   ST.hoySet = new Set(ST.conteos.map(c => c.cod));
+  return ok;
 }
 /* marca visible en la tarjeta: evita que otro turno vuelva a contar lo mismo */
 function badgeFor(cod) {
@@ -2405,6 +3382,7 @@ function openConteo(r, baseCtx) {
   /* Conteo ciego: SIEMPRE arranca en 0, nunca precargado con el stock del
      sistema. El operario cuenta desde cero; el sistema sólo se muestra
      como referencia en paintDif() una vez que ingresa su propio número. */
+  ST.cntVisto = false;   /* v3.32: la referencia del sistema queda oculta hasta que el operario carga su número */
   paintSegs(); $('#cnt').value = '0'; paintDif(); openSheet('#shConteo');
 }
 function paintSegs() {
@@ -2412,16 +3390,16 @@ function paintSegs() {
   if (fus.length <= 1) {
     const f = fus[0] || { lb: '—', val: 0, ubi: [] };
     $('#kSegs').innerHTML = '<div class="seg on" style="grid-column:1 / -1;cursor:default">' +
-      esc(f.lb) + '<small>Sistema: ' + nfmt(f.val) + '</small></div>';
+      esc(f.lb) + (ST.cntVisto ? '<small>Sistema: ' + nfmt(f.val) + '</small>' : '') + '</div>';
   } else {
     $('#kSegs').innerHTML = fus.map((f, i) =>
-      '<button class="seg' + (ST.targetIdx === i ? ' on' : '') + '" data-i="' + i + '">' +
-      esc(f.lb) + '<small>Sistema: ' + nfmt(f.val) + '</small></button>').join('');
+      '<button class="seg' + (ST.targetIdx === i ? ' on' : '') + '" data-i="' + i + '" aria-pressed="' + (ST.targetIdx === i) + '">' +
+      esc(f.lb) + (ST.cntVisto ? '<small>Sistema: ' + nfmt(f.val) + '</small>' : '') + '</button>').join('');
   }
   const u = (fus[ST.targetIdx] || {}).ubi || [];
   $('#kUbi').innerHTML = '<p class="eyebrow" style="margin:0 0 6px">Ubicación</p>' +
     (u.length ? u.map(([x, q]) => '<div class="ubi" style="background:var(--surface-2)">' +
-      (x || 'sin ubicación') + '<small class="num">' + nfmt(q) + '</small></div>').join('')
+      esc(x || 'sin ubicación') + (ST.cntVisto ? '<small class="num">' + nfmt(q) + '</small>' : '') + '</div>').join('')
     : '<div class="ubi none" style="background:var(--surface-2)">Sin ubicación asignada</div>');
 }
 $('#kMot').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
@@ -2429,10 +3407,15 @@ $('#kMot').addEventListener('click', e => { const b = e.target.closest('button')
   $$('#kMot button').forEach(x => x.classList.toggle('on', x.dataset.m === ST.motivo)); });
 $('#kSegs').addEventListener('click', e => { if ((ST.targetFuentes || []).length <= 1) return;
   const b = e.target.closest('.seg'); if (!b) return;
-  ST.targetIdx = +b.dataset.i; $('#cnt').value = '0'; paintSegs(); paintDif(); });
+  ST.targetIdx = +b.dataset.i; $('#cnt').value = '0'; ST.cntVisto = false; paintSegs(); paintDif(); });
 const sysVal = () => ((ST.targetFuentes || [])[ST.targetIdx] || { val: 0 }).val;
 function paintDif() {
   const c = numOf($('#cnt').value) || 0, s = sysVal(), d = c - s, el = $('#kDif');
+  if (!ST.cntVisto) {   /* conteo ciego */
+    el.className = 'dif oculto';
+    el.textContent = 'Conteo ciego: cargá lo que contaste. La referencia del sistema aparece después.';
+    $('#kMotBox').style.display = 'none'; return;
+  }
   el.className = 'dif ' + (d === 0 ? 'z' : d > 0 ? 'p' : 'n');
   el.textContent = d === 0 ? '✓ Coincide con el sistema (' + nfmt(s) + ')'
     : (d > 0 ? '▲ Sobran ' : '▼ Faltan ') + nfmt(Math.abs(d)) + ' · sistema ' + nfmt(s);
@@ -2441,9 +3424,16 @@ function paintDif() {
     el.className = 'dif ' + (grave ? 'n' : 'p'); }
   $('#kMotBox').style.display = d === 0 ? 'none' : 'block';
 }
-$('#cnt').addEventListener('input', paintDif);
-$('#kPlus').onclick = () => { $('#cnt').value = String((numOf($('#cnt').value) || 0) + 1); paintDif(); };
-$('#kMinus').onclick = () => { $('#cnt').value = String(Math.max(0, (numOf($('#cnt').value) || 0) - 1)); paintDif(); };
+function revelarSistema() { if (!ST.cntVisto) { ST.cntVisto = true; paintSegs(); } }
+$('#cnt').addEventListener('input', () => { revelarSistema(); paintDif(); });
+$('#cnt').addEventListener('focus', e => { try { e.target.select(); } catch (er) {} });
+$('#kPlus').onclick = () => { $('#cnt').value = String((numOf($('#cnt').value) || 0) + 1); revelarSistema(); paintDif(); };
+$('#kMinus').onclick = () => { $('#cnt').value = String(Math.max(0, (numOf($('#cnt').value) || 0) - 1)); revelarSistema(); paintDif(); };
+/* cerrar sin guardar después de haber cargado algo: se pide confirmación (toque accidental en el fondo o la X) */
+$('#shConteo').addEventListener('click', e => {
+  if (!e.target.closest('[data-close]') || !ST.cntVisto) return;
+  if (!confirm('¿Descartar este conteo sin guardarlo?')) { e.stopImmediatePropagation(); e.preventDefault(); }
+}, true);
 $('#kSave').onclick = async () => {
   const r = ST.target; if (!r) return;
   const c = numOf($('#cnt').value) || 0, s = sysVal();
@@ -2455,8 +3445,17 @@ $('#kSave').onclick = async () => {
     motivo: (c - s) === 0 ? '' : (ST.motivo || ''),
     obs: ($('#kObs').value || '').trim() };   /* la observación se guarda haya o no diferencia */
   const i = ST.conteos.findIndex(x => x.cod === r.cod && x.sec === k);
+  const antes = i >= 0 ? ST.conteos[i] : null;
   if (i >= 0) ST.conteos[i] = reg; else ST.conteos.unshift(reg);
-  saveMem(); closeSheet('#shConteo'); renderConteos(); refreshBadges(); computeAlertas(true);
+  if (!saveMem()) {   /* v3.32: nunca se informa "guardado" si el teléfono no lo guardó */
+    if (i >= 0) ST.conteos[i] = antes; else ST.conteos.shift();
+    ST.hoySet = new Set(ST.conteos.map(c => c.cod));
+    const t = $('#toast'); toast('El conteo NO se guardó: la memoria del teléfono está llena. Exportá y liberá espacio.', 6000);
+    if (t) { t.classList.add('err'); setTimeout(() => t.classList.remove('err'), 6200); }
+    return;
+  }
+  ST.cntVisto = false;
+  closeSheet('#shConteo'); renderConteos(); refreshBadges(); computeAlertas(true);
   toast((i >= 0 ? 'Conteo actualizado · ' : 'Conteo guardado · ') + r.cod);
 };
 function renderConteos() {
@@ -2479,12 +3478,14 @@ function renderConteos() {
       '<span>Sistema ' + nfmt(c.sistema) + ' → contado ' + nfmt(c.contado) + '</span>' +
       (c.obs ? '<span style="color:var(--ink-muted);font-style:italic">💬 ' + esc(c.obs) + '</span>' : '') + '</div>' +
       '<div class="d" style="' + st + '">' + (c.dif > 0 ? '+' : '') + nfmt(c.dif) + '</div>' +
-      '<button class="del" data-i="' + i + '" aria-label="Borrar">&times;</button></div>';
+      '<button class="del" data-i="' + ST.conteos.indexOf(c) + '" aria-label="Borrar el conteo de ' + esc(c.cod) + '">&times;</button></div>';
   }).join('');
 }
 $('#cntFiltroQuitar').addEventListener('click', () => { ST.cntSoloDif = false; renderConteos(); });
 $('#cntList').addEventListener('click', async e => { const b = e.target.closest('.del'); if (!b) return;
-  ST.conteos.splice(+b.dataset.i, 1); saveMem(); renderConteos(); refreshBadges(); ST._alFresh = false; });
+  const ix = +b.dataset.i, c = ST.conteos[ix]; if (!c) return;
+  if (!confirm('¿Borrar el conteo de ' + c.cod + ' (' + (c.secLb || c.sec) + ', contado ' + nfmt(c.contado) + ')?')) return;
+  ST.conteos.splice(ix, 1); saveMem(); renderConteos(); refreshBadges(); ST._alFresh = false; });
 $('#btnClrCnt').onclick = async () => {
   if (!confirm('¿Borrar los ' + ST.conteos.length + ' conteos guardados? No se puede deshacer.')) return;
   ST.conteos = []; saveMem(); renderConteos(); refreshBadges(); ST._alFresh = false; toast('Memoria del día borrada'); };
@@ -2894,8 +3895,9 @@ function mostrarAvisoDatos(ver) {
   const sub = $('#dsyncSub');
   if (sub) sub.textContent = (f && !isNaN(f) ? 'Publicados el ' + dfmt(f) + '. ' : '') + 'Tocar para sincronizar.';
   el.classList.add('on');
+  try { pintarContexto(); } catch (e) {}
 }
-function ocultarAvisoDatos() { const el = $('#dsync'); if (el) el.classList.remove('on'); }
+function ocultarAvisoDatos() { const el = $('#dsync'); if (el) el.classList.remove('on'); try { pintarContexto(); } catch (e) {} }
 
 /* Chequeo en segundo plano: compara el updated_at remoto contra el que quedó
    guardado en el dispositivo. No baja nada hasta que el usuario lo pide. */
@@ -2942,6 +3944,11 @@ function renderDatos() {
                 .filter(x => x && !isNaN(x));
   const ultimo = whens.length ? Math.max.apply(null, whens) : null;
   const dw = $('#dsWhen'); if (dw) dw.textContent = ultimo ? dfmt(new Date(ultimo)) : '—';
+  /* v3.31.0 — fotos: sólo cantidad y fecha, sin rutas internas */
+  const fr = $('#dsFotosRow'), fres = (typeof PQF !== 'undefined') ? PQF.resumen() : null;
+  if (fr) { fr.style.display = fres ? 'flex' : 'none';
+    if (fres) $('#dsFotos').textContent = fres.n.toLocaleString('es-AR') + ' productos' +
+      (fres.updatedAt ? ' · ' + dfmt(new Date(fres.updatedAt)) : ''); }
 
   const sn = $('#snapNote');
   if (sn) {
@@ -3489,6 +4496,7 @@ function renderPedidos() {
   $('#pdSinDatos').style.display = hay ? 'none' : 'block';
   if (!hay) { $('#pdBases').style.display = 'none'; $('#pdDetalle').style.display = 'none';
     $('#pdBaseBar').style.display = 'none'; $('#sugBox2').style.display = 'none';
+    $('#pdExactaWrap').style.display = 'none'; $('#pdBuscadorGlobal').style.display = 'none';
     renderChipsPd(); return; }
 
   const bases = basesPedidos();
@@ -3499,8 +4507,10 @@ function renderPedidos() {
   $('#pdBases').style.display = eligiendo ? 'block' : 'none';
   $('#pdDetalle').style.display = eligiendo ? 'none' : 'block';
   $('#pdBaseBar').style.display = (!eligiendo && !unaSola) ? 'block' : 'none';
+  if (!eligiendo) pintarBaseBar('#pdBack', ST.pdBase);
   renderChipsPd();
-  if (eligiendo) { $('#sugBox2').style.display = 'none'; renderGrillaBasesPd(bases); return; }
+  if (eligiendo) { $('#sugBox2').style.display = 'none'; $('#pdExactaWrap').hidden = true; $('#pdExactaWrap').style.display = 'none';
+    $('#pdBuscadorGlobal').style.display = 'none'; renderGrillaBasesPd(bases); return; }
   renderKpisPd(); renderTabsPd(); pintarTabPd();
 }
 
@@ -3509,7 +4519,7 @@ function pintarTabPd() {
   const esSug = ST.pdTab === 'sug', esSeg = ST.pdTab === 'seg';
   $('#sugBox2').style.display = esSug ? 'flex' : 'none';
   $('#pdBuscadorGlobal').style.display = esSug ? 'none' : 'flex';
-  $('#pdExactaWrap').style.display = esSug ? 'none' : 'flex';
+  $('#pdExactaWrap').hidden = esSug; $('#pdExactaWrap').style.display = esSug ? 'none' : 'flex';
   renderChipsPd(); renderKpisPd();
   if (esSug) doSearchSug(); else if (esSeg) doSearchSeg(); else doSearchPd();
 }
@@ -3620,6 +4630,12 @@ function estadoSeg(t) {
      además ya arribó (ahí sí, los 4 pasos quedan hechos). */
   return t.arribo ? 4 : 2;
 }
+function estadoTextoSeg(t, demorado) {
+  if (t.arribo) return 'Estado: arribó';
+  if (demorado) return 'Estado: en tránsito, demorado';
+  if (t.despacho) return 'Estado: en tránsito';
+  return 'Estado: preparado · sin fecha de despacho registrada';
+}
 function tarjetaSeguimiento(key, t) {
   const completos = estadoSeg(t);
   const demorado = estaDemorado(t);
@@ -3629,7 +4645,9 @@ function tarjetaSeguimiento(key, t) {
     const esActual = idx === completos + 1 && idx <= 4;
     let cls = done ? 'done' : (esActual ? 'actual' : '');
     if (esActual && demorado) cls += ' alerta';
-    const icono = done ? CHECK_SVG_SEG : (cls.indexOf('alerta') >= 0 ? '⚠' : '');
+    /* v3.32: sin despacho ni arribo no hay dato para afirmar el tránsito (mismo criterio que el detalle: "Preparado") */
+    if (esActual && !t.despacho && !t.arribo) cls = 'nodato';
+    const icono = done ? CHECK_SVG_SEG : (cls.indexOf('alerta') >= 0 ? '⚠' : (cls === 'nodato' ? '?' : ''));
     return '<div class="segpaso ' + cls + '"><div class="linea"></div><div class="segcirc">' + icono + '</div>' +
       '<div class="seglb">' + esc(p.lb) + '</div></div>';
   }).join('');
@@ -3642,7 +4660,8 @@ function tarjetaSeguimiento(key, t) {
       '<span class="sku-meta">' + esc(t.destinatario || 'Sin destinatario') +
         (t.empresa ? ' · ' + esc(t.empresa) : '') + (t.guia ? ' · Guía ' + esc(t.guia) : '') + '</span>' +
     '</span><span class="qty flat" style="font-size:10px;height:auto;padding:4px 8px;border-radius:8px">Ver ▸</span></div>' +
-    '<div class="segstep">' + stepperHtml + '</div>' +
+    '<div class="segstep" role="img" aria-label="' + esc(estadoTextoSeg(t, demorado)) + '">' + stepperHtml + '</div>' +
+    '<span class="segestado">' + esc(estadoTextoSeg(t, demorado)) + '</span>' +
     (demorado ? '<p class="note" style="color:var(--warn);font-weight:700;margin-top:8px">⚠ Debería haber llegado' +
       (t.despacho ? ' (despachado ' + dfmtSolo(t.despacho) + ')' : '') + '</p>'
       : (t.arribo ? '<p class="note" style="margin-top:8px">Arribó el ' + dfmtSolo(t.arribo) +
@@ -3792,6 +4811,9 @@ function renderTabsPd() {
     return '<button class="chip' + (ST.pdTab === k ? ' on' : '') + '" data-pdtab="' + k + '">' +
       lb + ' <b>' + n + '</b></button>';
   }).join('');
+  const act = $('#pdTabs .chip.on');
+  if (act) requestAnimationFrame(() => { const c = $('#pdTabs');
+    if (c && act.offsetLeft + act.offsetWidth > c.scrollLeft + c.clientWidth || act.offsetLeft < c.scrollLeft) c.scrollLeft = act.offsetLeft - 12; });
 }
 
 /* ══════════════════ STOCK SUGERIDO POR BASE ══════════════════════════
@@ -3878,17 +4900,18 @@ function renderPageSug() {
   for (let i = ST.sugShown; i < end; i++) {
     const x = ST.sugRes[i];
     const cls = x.sug > 0 ? (x.act === 0 ? 'zero' : 'low') : 'has';
-    buf.push('<div class="sku compact" data-sugcod="' + esc(x.cod) + '"><div class="sku-hd">' +
-      '<span class="loc">SUG</span>' +
+    buf.push('<div class="sku compact sugrow" data-sugcod="' + esc(x.cod) + '" role="button" tabindex="0" style="cursor:pointer"><div class="sku-hd">' +
+      PQF.html(x.cod, 'sm') +
       '<span class="sku-i"><span class="sku-cod">' + hl(x.cod, toks) + '</span>' +
       '<span class="sku-dsc">' + hl(x.desc || '—', toks) + '</span>' +
-      '<span class="sku-meta">consumo 12 m <b>' + nfmt(x.anual) + '</b> · ' +
-        x.mensual.toFixed(1).replace('.', ',') + '/mes</span>' +
-      '<span class="sku-meta">stock <b>' + nfmt(x.act) + '</b> · objetivo 3 m <b>' + nfmt(x.obj) + '</b>' +
-        (x.ult ? ' · último consumo ' + dfmtSolo(x.ult) : '') + '</span></span>' +
-      '<span class="qty ' + cls + '" style="text-align:center;line-height:1.05">' + nfmt(x.sug) +
-        '<small style="display:block;font-size:9px;opacity:.75;font-weight:600">' +
-        (x.sug > 0 ? 'a enviar' : 'cubierto') + '</small></span>' +
+      (x.ult ? '<span class="sku-meta">Último consumo ' + dfmtSolo(x.ult) + '</span>' : '') + '</span>' +
+      '<span class="qty sugq ' + cls + '">' + nfmt(x.sug) +
+        '<small>' + (x.sug > 0 ? 'a enviar' : 'cubierto') + '</small></span>' +
+      '</div>' +
+      '<div class="sugstrip" aria-label="Consumo, objetivo y stock">' +
+        '<span><i>Consumo 12 meses</i><b>' + nfmt(x.anual) + '</b><small>' + x.mensual.toFixed(1).replace('.', ',') + ' por mes</small></span>' +
+        '<span><i>Objetivo 3 meses</i><b>' + nfmt(x.obj) + '</b></span>' +
+        '<span><i>Stock en la base</i><b>' + nfmt(x.act) + '</b></span>' +
       '</div></div>');
   }
   const tmp = document.createElement('div'); tmp.innerHTML = buf.join('');
@@ -3914,6 +4937,12 @@ $('#pdList').addEventListener('keydown', e => {
   e.preventDefault(); abrirDetalleSeg(seg.dataset.remito);
 });
 
+/* v3.32 · las filas de Sugerido son botones: Enter/Espacio abren la ficha igual que el toque */
+$('#pdList').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const el = e.target.closest('[data-sugcod]'); if (!el) return;
+  e.preventDefault(); const r = ST.byCod && ST.byCod.get(el.dataset.sugcod); if (r) openFicha(r);
+});
 let tsug;
 $('#sugQ').addEventListener('input', e => { ST.sugQ = e.target.value;
   $('#sugQClear').classList.toggle('on', !!ST.sugQ); histPd.ocultarYa();
@@ -4153,6 +5182,7 @@ function renderPagePd() {
          muestra el remito (RX26-313) y el nodo/origen que lo abasteció. */
       buf.push('<div class="sku compact"><div class="sku-hd">' +
         '<span class="loc" style="background:var(--tint-brand);color:var(--link)">' + esc(r.remitoView) + '</span>' +
+        PQF.html(r.cod, 'sm') +
         '<span class="sku-i"><span class="sku-cod">' + esc(r.cod) + '</span>' +
         '<span class="sku-dsc">' + esc(r.desc || '—') + '</span>' +
         '<span class="sku-meta">' + (r.fEnt ? dfmtSolo(r.fEnt) : 'sin fecha') +
@@ -4171,7 +5201,7 @@ function renderPagePd() {
     const remChip = r.unificado && r.remitoView
       ? '<span style="color:var(--link);font-weight:700"> · ' + esc(r.remitoView) + '</span>' : '';
     buf.push('<div class="sku compact"><div class="sku-hd">' +
-      '<span class="loc">OR<small>' + esc(String(r.or)) + '</small></span>' +
+      '<span class="loc">OR<small>' + esc(String(r.or)) + '</small></span>' + PQF.html(r.cod, 'sm') +
       '<span class="sku-i"><span class="sku-cod">' + esc(r.cod) + remChip + '</span>' +
       '<span class="sku-dsc">' + esc(r.desc || '—') + '</span>' +
       '<span class="sku-meta">' + (r.fSolic ? dfmtSolo(r.fSolic) : 'sin fecha') +
@@ -4398,12 +5428,22 @@ function renderMovimientos() {
   $('#mvDetalle').style.display = eligiendo ? 'none' : 'block';
   $('#mvBaseBar').style.display = (!eligiendo && !unaSola && (ST.mvBase || combinada)) ? 'block' : 'none';
   document.querySelector('#vMovimientos .sbox').style.display = eligiendo ? 'none' : 'flex';
+  if (!eligiendo) pintarBaseBar('#mvBack', combinada ? null : ST.mvBase, combinada ? ST.mvFiltros.bases.length : 0);
   renderChipsMov();
 
   if (eligiendo) { renderGrillaBasesMov(bases); return; }
   doSearchMov();
 }
 
+/* v3.32 · barra de base: qué base estoy viendo y cómo cambiarla, en un solo control */
+function pintarBaseBar(sel, code, varias) {
+  const b = $(sel); if (!b) return;
+  const d = code ? depInfo(code) : null;
+  const nom = varias ? varias + ' bases combinadas' : ((d && d.desc) || code || '—');
+  b.innerHTML = '<span class="bb-l" aria-hidden="true">←</span><span class="bb-t"><b>' + esc(nom) + '</b>' +
+    (code && !varias ? '<small>' + esc(code) + '</small>' : '') + '</span><span class="bb-a">Cambiar base</span>';
+  b.setAttribute('aria-label', 'Viendo ' + nom + '. Cambiar de base');
+}
 function renderGrillaBasesMov(bases) {
   const box = $('#mvBases');
   if (!bases.length) { box.innerHTML = '<p class="note">No hay consumos CIOT para tus bases en el archivo actual.</p>'; return; }
@@ -4557,7 +5597,7 @@ function renderPageMov() {
        es sólo lo que se descargó en ese movimiento puntual. Un color neutro,
        y toda la fila es tocable para ver el detalle completo. */
     buf.push('<div class="sku compact" data-mvidx="' + i + '" role="button" tabindex="0" style="cursor:pointer"><div class="sku-hd">' +
-      '<span class="loc">' + esc(r.dep) + '</span>' +
+      '<span class="loc">' + esc(r.dep) + '</span>' + PQF.html(r.cod, 'sm') +
       '<span class="sku-i"><span class="sku-cod">' + hl(r.cod, toks) + '</span>' +
       '<span class="sku-dsc">' + hl(r.desc || '—', toks) + '</span>' +
       '<span class="sku-meta">' + (r.fecha ? dfmtSolo(r.fecha) : 'sin fecha') +
@@ -4585,7 +5625,7 @@ function abrirDetalleMov(r) {
   const d = depInfo(r.dep);
   $('#mdCod').textContent = r.cod;
   $('#mdDesc').textContent = r.desc || prod && prod.desc || '';
-  $('#mdBody').innerHTML =
+  $('#mdBody').innerHTML = PQF.html(r.cod, 'md') +
     '<div class="kv"><span>Repuesto</span><b>' + esc(r.cod) + '</b></div>' +
     '<div class="kv"><span>Descripción</span><b style="text-align:right;max-width:62%">' + esc(r.desc || prod && prod.desc || '—') + '</b></div>' +
     '<div class="kv"><span>Máquina asociada</span><b style="text-align:right;max-width:62%">' +
@@ -4618,7 +5658,8 @@ $('#mvBtnMore').addEventListener('click', renderPageMov);
 /* ══════════════ NAVEGACIÓN ══════════════ */
 function go(id) {
   $$('.view').forEach(v => v.classList.toggle('on', v.id === id));
-  $$('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.view === id));
+  $$('.tabs button').forEach(b => { const on = b.dataset.view === id; b.classList.toggle('on', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false'); });
   window.scrollTo(0, 0);
   /* cada pantalla conserva su estado; sólo se repintan las derivadas */
   if (id === 'vInicio') renderInicio();
@@ -4636,12 +5677,30 @@ $$('.tabs button').forEach(b => b.onclick = () => go(b.dataset.view));
    del celular SIEMPRE encuentra algo coherente para deshacer, y nunca
    sale de la PWA de golpe mientras hay un conteo o un detalle abierto. */
 function openSheet(s) {
+  prepararDialogo(s);
+  const prevFoco = document.activeElement;
   $(s).classList.add('on'); document.body.style.overflow = 'hidden';
+  $(s)._foco = prevFoco;
+  if (s !== '#shFoto') setTimeout(() => { const c = $(s).querySelector('.hh [data-close], .hh .cl, [data-close]:not(.bk)');
+    if (c && $(s).classList.contains('on')) try { c.focus({ preventScroll: true }); } catch (e) {} }, 40);
   ST.sheetStack.push(s);
   history.pushState({ pq: true, sheet: s }, '', location.href);
 }
+/* v3.32 · cada hoja se anuncia como diálogo modal con su título */
+function prepararDialogo(s) {
+  const sh = $(s); if (!sh || sh._dlg) return; sh._dlg = true;
+  const bd = sh.querySelector('.bd') || sh.querySelector('[role=dialog]'); if (!bd) return;
+  if (!bd.getAttribute('role')) bd.setAttribute('role', 'dialog');
+  bd.setAttribute('aria-modal', 'true');
+  bd.querySelectorAll('.cn').forEach(cn => { if (!cn.hasAttribute('tabindex')) cn.setAttribute('tabindex', '0'); });  /* zona con scroll accesible por teclado */
+  const h = bd.querySelector('.hh h2'); if (h && !bd.getAttribute('aria-labelledby')) {
+    if (!h.id) h.id = sh.id + 'Tit';
+    bd.setAttribute('aria-labelledby', h.id); }
+}
 function reallyCloseSheet(s) {
   $(s).classList.remove('on');
+  const f = $(s)._foco; $(s)._foco = null;
+  if (f && document.contains(f) && s !== '#shFoto') setTimeout(() => { try { f.focus({ preventScroll: true }); } catch (e) {} }, 0);
   const i = ST.sheetStack.lastIndexOf(s); if (i >= 0) ST.sheetStack.splice(i, 1);
   if (!ST.sheetStack.length) document.body.style.overflow = '';
 }
@@ -5043,8 +6102,25 @@ function renderInicio() {
     showExtras(main);
   }
 
+  pintarContexto();
   if (!ST._inicioListo) { ST._inicioListo = true;
     requestAnimationFrame(() => requestAnimationFrame(() => { main.style.opacity = '1'; })); }
+}
+/* v3.32 · barra de contexto: quién soy, qué alcance tengo, conexión y novedad de datos.
+   Usa sólo datos que la app ya tiene (login, conexión, aviso de datos nuevos). */
+function pintarContexto() {
+  const box = $('#ctxBar'); if (!box) return;
+  const l = ST.login, rol = l ? l.rol : 'nacional';
+  const bases = (l && l.bases) || [];
+  const alcance = rol === 'nacional' ? 'Todo el país'
+    : bases.length === 1 ? ((depInfo(bases[0].code) || {}).desc || bases[0].desc || bases[0].code) + ' · ' + bases[0].code
+    : bases.length + ' bases a cargo';
+  const on = navigator.onLine !== false;
+  const nuevos = !!($('#dsync') && $('#dsync').classList.contains('on'));
+  box.innerHTML = '<span>' + esc(ROL_LB[rol] || 'Usuario') + '</span><span>' + esc(alcance) + '</span>' +
+    '<span class="' + (on ? 'on' : 'off') + '"><i></i>' + (on ? 'Con conexión' : 'Sin conexión · datos del dispositivo') + '</span>' +
+    (nuevos ? '<span class="nuevo" role="button" tabindex="0" id="ctxNuevos">Hay datos nuevos · actualizar</span>' : '');
+  const n = $('#ctxNuevos'); if (n) n.onclick = () => { const g = $('#dsyncGo'); if (g) g.click(); };
 }
 /* helpers de renderInicio */
 function hideExtras(m) {
@@ -5178,7 +6254,7 @@ function openFicha(r) {
     : '<p class="eyebrow" style="margin:0 0 6px">Stock en ' + (ST.scope.length > 1 ? 'tus bases' : 'tu base') + '</p>' +
       fuentesDisponibles(r).map(f => fila(f.lb, f.val)).join('') +
       (ST.scope.length > 1 ? '<div class="kv" style="margin-top:6px"><span>Total</span><b class="num">' + nfmt(r.tot) + '</b></div>' : '');
-  $('#fkBody').innerHTML =
+  $('#fkBody').innerHTML = PQF.html(r.cod, 'lg') +
     '<div class="est ' + st.c + '">' + (st.c === 'ok' ? '🟢' : st.c === 'no' ? '🔴' : '🟡') + ' ' + st.t + '</div>' +
     cabecera +
     '<p class="eyebrow" style="margin:14px 0 0">Ubicación</p>' +
@@ -5833,7 +6909,7 @@ function renderSup() {
    No toca ningún dato: IndexedDB y localStorage siguen igual que antes,
    porque el origen (dominio) es el mismo antes y después de instalar.
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.30.1';                 /* ← subir junto con APP_VER del service-worker.js */
+const APP_VER = '3.32.0';                 /* ← subir junto con APP_VER del service-worker.js */
 let deferredPrompt = null, swReg = null;
 
 const esStandalone = () => window.matchMedia('(display-mode: standalone)').matches ||
@@ -5846,6 +6922,7 @@ const esSafari = () => /^((?!chrome|android|crios|fxios|edgios).)*safari/i.test(
 /* — estado de red — */
 function pintarRed() {
   const on = navigator.onLine;
+  try { pintarContexto(); } catch (e) {}
   $('#netbar').classList.toggle('on', !on);
   const ab = $('#abNet'); if (ab) ab.textContent = on ? '🌐 Online' : '📡 Sin conexión';
 }
@@ -5961,6 +7038,8 @@ function rutaInicial() {
   renderSesion();
   if (ST.login) cerrarLogin(); else abrirLogin();
   loadPrefs(); ST.hist = null; renderHist(); renderConteos(); redNote();
+  /* v3.31.0 — fotos: nunca bloquean ni rompen el arranque */
+  try { PQF.init(); await PQF.cargarLocal(); } catch (e) {}
   ST.updatedAt = (await DB.get('dataUpdatedAt')) || null;
 
   if (window.PQ_DATA && window.PQ_DATA.rows && window.PQ_DATA.rows.length) {
@@ -5992,7 +7071,8 @@ function rutaInicial() {
   /* Chequeo transparente de datos nuevos, en segundo plano y sin bloquear
      la pantalla. Se repite cada 30 minutos con la app abierta, y cada vez
      que vuelve la conexión o el usuario vuelve a la app. */
-  const chequeo = () => { chequearActualizacion(false).catch(() => {}); };
+  const chequeo = () => { chequearActualizacion(false).catch(() => {});
+    try { PQF.refrescar().catch(() => {}); } catch (e) {} };
   setTimeout(chequeo, 1200);
   setInterval(chequeo, 30 * 60 * 1000);
   window.addEventListener('online', () => setTimeout(chequeo, 1500));

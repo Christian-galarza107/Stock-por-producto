@@ -4,13 +4,26 @@
    PARA PUBLICAR UNA VERSIÓN NUEVA: cambiar SÓLO la constante APP_VER.
    Eso invalida el caché viejo y dispara el aviso "Hay una nueva versión".
    ══════════════════════════════════════════════════════════════════════ */
-const APP_VER = '3.30.1';
+const APP_VER = '3.32.0';
 const CACHE   = 'stock-en-planta-v' + APP_VER;
+
+/* Fotos de productos (v3.31.0) — caché PROPIO, separado del de arranque.
+   · No depende de APP_VER: actualizar la app no borra las fotos ya vistas.
+   · Nunca se precachea: sólo se guarda lo que el usuario efectivamente miró.
+   · Tope por tamaño de variante; al pasarlo se descartan las menos recientes.
+   · Los nombres de archivo llevan el hash del contenido: una foto
+     reemplazada tiene otro nombre, así que caché-primero nunca muestra
+     una foto vieja (el catálogo apunta al nombre nuevo). */
+const FOTOS_CACHE = 'pq-fotos-v1';
+const FOTOS_TOPE  = { m: 1500, d: 150 };     /* miniaturas ~5-10 KB · detalle ~40-80 KB */
+const RX_FOTO     = /\/data\/imagenes\/([a-z])\/[^/]+\.webp$/;
+const RX_CAT_FOTO = /\/data\/imagenes-productos\.json$/;
 
 /* Desde la v3.0.0 la interfaz usa Tailwind y FontAwesome por CDN.
    Se precachean acá para que, después de la primera carga, sigan
    andando sin conexión igual que el resto de la app. */
-const EXTERNAL_ORIGINS = ['https://cdn.tailwindcss.com', 'https://cdnjs.cloudflare.com'];
+/* v3.32.0: la app ya no usa ningún CDN (Tailwind y FontAwesome se reemplazaron por CSS y SVG propios). */
+const EXTERNAL_ORIGINS = [];
 
 /* Todo lo que la app necesita para arrancar sin conexión.
    El HTML pesa ~1 MB porque lleva SheetJS embebido: se cachea igual. */
@@ -23,9 +36,7 @@ const PRECACHE = [
   './maskable-192.png',
   './maskable-512.png',
   './apple-touch-icon.png',
-  './favicon-32.png',
-  'https://cdn.tailwindcss.com',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css'
+  './favicon-32.png'
 ];
 
 self.addEventListener('install', e => {
@@ -39,7 +50,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)));
+    await Promise.all(keys.filter(k => k !== CACHE && k !== FOTOS_CACHE).map(k => caches.delete(k)));
     if (self.registration.navigationPreload) await self.registration.navigationPreload.enable();
     await self.clients.claim();
   })());
@@ -77,6 +88,38 @@ self.addEventListener('fetch', e => {
     return;
   }
 
+  /* Fotos (v3.31.0): caché primero; sin red y sin copia → 504 y la app
+     muestra el recuadro neutro. Una foto jamás bloquea ni rompe nada. */
+  const mFoto = url.origin === self.location.origin && url.pathname.match(RX_FOTO);
+  if (mFoto) {
+    e.respondWith((async () => {
+      let c = null;
+      try { c = await caches.open(FOTOS_CACHE); } catch (err) {}
+      const hit = c && await c.match(req, { ignoreSearch: true });
+      if (hit) { e.waitUntil(tocarFoto(c, req, hit.clone())); return hit; }
+      try {
+        const net = await fetch(req);
+        if (net && net.ok && c) e.waitUntil(guardarFoto(c, req, net.clone(), mFoto[1]));
+        return net;
+      } catch (err) { return new Response('', { status: 504, statusText: 'sin conexion' }); }
+    })());
+    return;
+  }
+  /* Catálogo de fotos: red primero (con revalidación), copia como respaldo */
+  if (url.origin === self.location.origin && RX_CAT_FOTO.test(url.pathname)) {
+    e.respondWith((async () => {
+      try {
+        const net = await fetch(req);
+        if (net && net.ok) { try { const c = await caches.open(FOTOS_CACHE); await c.put(url.pathname, net.clone()); } catch (err) {} }
+        return net;
+      } catch (err) {
+        try { const c = await caches.open(FOTOS_CACHE); const hit = await c.match(url.pathname); if (hit) return hit; } catch (e2) {}
+        return new Response('', { status: 504 });
+      }
+    })());
+    return;
+  }
+
   /* GitHub Data Hub (v3.15.0): todo lo que cuelga de /data/ SIEMPRE se busca
      en la red primero. Si se sirviera desde caché, el celular seguiría viendo
      los datos de la semana pasada aunque ya se hubiera publicado un paquete
@@ -105,3 +148,26 @@ self.addEventListener('fetch', e => {
     } catch (err) { return new Response('', { status: 504 }); }
   })());
 });
+
+/* ── caché de fotos: tope y «más recientes primero» ─────────────────── */
+async function guardarFoto(c, req, res, variante) {
+  try {
+    await c.put(req, res);
+    await recortarFotos(c, variante);
+  } catch (err) {
+    /* almacenamiento lleno (QuotaExceededError): se libera la mitad de las
+       miniaturas/detalles más viejos y se sigue sin guardar esta foto */
+    try { await recortarFotos(c, variante, true); } catch (e2) {}
+  }
+}
+async function tocarFoto(c, req, res) {
+  /* re-guardar mueve la entrada al final del orden: la más usada sobrevive al recorte */
+  try { await c.delete(req, { ignoreSearch: true }); await c.put(req, res); } catch (err) {}
+}
+async function recortarFotos(c, variante, agresivo) {
+  const tope = FOTOS_TOPE[variante] || 200;
+  const keys = (await c.keys()).filter(k => {
+    const m = new URL(k.url).pathname.match(RX_FOTO); return m && m[1] === variante; });
+  const sobra = agresivo ? Math.ceil(keys.length / 2) : keys.length - tope;
+  for (let i = 0; i < sobra; i++) await c.delete(keys[i]);
+}
